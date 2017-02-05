@@ -1,0 +1,56 @@
+<div class="controls">
+    <?= $tabs ?>
+    <?= $this->qlink(
+        $this->translate('Add New Grafana Graph') ,
+        'grafana/graph/new',
+        null,
+        array(
+            'class'             => 'action-link',
+            'data-base-target'  => '_next',
+            'icon'              => 'plus',
+            'title'             => $this->translate('Add a new Grafana graph.')
+        )
+    ) ?>
+</div>
+<div class="content">
+<?php /** @var \Icinga\Application\Config $graph */ if ($graphs->isEmpty()): ?>
+    <p><?= $this->translate('No graph has been added yet.') ?></p>
+<?php return; endif ?>
+    <table class="grafana-graphs-table common-table table-row-selectable" data-base-target="_next">
+        <thead>
+            <tr>
+                <th><?= $this->translate('ServiceName') ?></th>
+                <th><?= $this->translate('Dashboard') ?></th>
+                <th><?= $this->translate('PanelID') ?></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($graphs as $name => $graph): /** @var object $role */ ?>
+            <tr>
+                <td>
+                    <?= $this->qlink(
+                        $name,
+                        'grafana/graph/update',
+                        array('graph' => $name),
+                        array('title' => sprintf($this->translate('Update integration %s'), $name))
+                    ) ?>
+                </td>
+                <td><?= $this->escape($graph->dashboard) ?></td>
+                <td><?= $this->escape($graph->panelId) ?></td>
+                <td class="icon-col text-right">
+                    <?= $this->qlink(
+                        '',
+                        'grafana/graph/remove',
+                        array('graph' => $name),
+                        array(
+                            'class' => 'action-link',
+                            'icon'  => 'cancel',
+                            'title' => sprintf($this->translate('Remove integration %s'), $name)
+                        )
+                    ) ?>
+                </td>
+            </tr>
+        <?php endforeach ?>
+        </tbody>
+    </table>
+</div>
