@@ -22,6 +22,7 @@
                 <th><?= $this->translate('ServiceName') ?></th>
                 <th><?= $this->translate('Dashboard') ?></th>
                 <th><?= $this->translate('PanelID') ?></th>
+                <th><?= $this->translate('Timerange') ?></th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +38,7 @@
                 </td>
                 <td><?= $this->escape($graph->dashboard) ?></td>
                 <td><?= $this->escape($graph->panelId) ?></td>
+                <td><?= $this->escape($graph->timerange) ?></td>
                 <td class="icon-col text-right">
                     <?= $this->qlink(
                         '',

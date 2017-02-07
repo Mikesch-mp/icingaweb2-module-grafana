@@ -51,20 +51,41 @@ class GraphForm extends ConfigForm
                 'placeholder'   => 'DashboardName',
                 'label'         => $this->translate('Dashboard name'),
                 'description'   => $this->translate('Name of the Grafana dashboard that will be used.'),
-                'required'      => true,
+                'required'      => true
             )
         );
 
         $this->addElement(
-            'text',
+            'number',
             'panelId',
             array(
                 'placeholder'   => '1',
                 'label'         => $this->translate('PanelId'),
                 'description'   => $this->translate('The panelId iof the Graph that will be used'),
-                'required'      => true,
+                'required'      => true
             )
         );
+        $this->addElement(
+            'select',
+            'timerange',
+            array(
+                'label'         => $this->translate('Timerange now-'),
+                'multiOptions'  => array(
+				 ''    => $this->translate('Use default'),
+                                 '1h'  => $this->translate('1 hour'),
+                                 '3h'  => $this->translate('3 hours'),
+                                 '6h'  => $this->translate('6 hours'),
+                                 '8h'  => $this->translate('8 hours'),
+                                 '12h' => $this->translate('12 hours'),
+                                 '24h' => $this->translate('24 hours'),
+                                 '2d'  => $this->translate('2 days'),
+                ),
+                'description'  => $this->translate('Timerange to use for the graph.'),
+                'required'     => false
+            )
+        );
+
+
     }
 
     /**
@@ -100,8 +121,12 @@ class GraphForm extends ConfigForm
         $name = $this->getElement('name')->getValue();
         $values = array(
             'dashboard'   => $this->getElement('dashboard')->getValue(),
-            'panelId'       => $this->getElement('panelId')->getValue()
+            'panelId'     => $this->getElement('panelId')->getValue(),
+            'timerange'   => $this->getElement('timerange')->getValue()
         );
+	if (empty($values['timerange'])) {
+            $values['timerange'] = null;
+        }
         if ($this->boundGraph === null) {
             $successNotification = $this->translate('Graph saved');
             try {

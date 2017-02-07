@@ -23,7 +23,6 @@ class Grapher extends GrapherHook
     protected $protocol = "http";
     protected $timerange = "6h";
     protected $username = null;
-    //protected $use_nrpe_command = true;
     protected $width = 640;
 
     protected function init()
@@ -42,7 +41,6 @@ class Grapher extends GrapherHook
 	$this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
 
-	//$this->use_nrpe_command = $this->config->get('use_nrpe_command', $this->use_nrpe_command);
         if($this->username != null){
             if($this->password != null){
                 $this->auth = $this->username.":".$this->password."@";
@@ -65,6 +63,7 @@ class Grapher extends GrapherHook
 	
       $this->dashboard = $this->graphconfig->get($serviceName, 'dashboard', 'icinga2-default');
       $this->panelId = $this->graphconfig->get($serviceName, 'panelId', '1');
+      $this->timerange = $this->graphconfig->get($serviceName, 'timerange', $this->timerange);
 
       return $this;
     }
