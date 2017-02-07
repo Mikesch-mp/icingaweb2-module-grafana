@@ -1,4 +1,4 @@
-name: Grafana
+name: Grafana Module
 description: "file:///README.md"
 url: "https://github.com/Mikesch-mp/icingaweb2-module-grafana"
 tags: Module, Icinga Web 2, Performance Data, Grafana, InfluxDB
