@@ -81,6 +81,23 @@ class GeneralConfigForm extends ConfigForm
                 'description'           => $this->translate('Graph width in pixels.')
             )
         );
+        $this->addElement(
+            'select',
+            'grafana_timerange',
+            array(
+                'label'                 => $this->translate('Timerange now-'),
+                'multiOptions' => array(
+				'1h' => $this->translate('1 hour'),
+                                '3h' => $this->translate('3 hours'),
+                                '6h' => $this->translate('6 hours'),
+                                '8h' => $this->translate('8 hours'),
+                                '12h' => $this->translate('12 hours'),
+                                '24h' => $this->translate('24 hours'),
+                                '2d' => $this->translate('2 days'),
+                ),
+                'description'           => $this->translate('Timerange to use for the graphs.')
+            )
+        );
 /**
         $this->addElement(
             'select',

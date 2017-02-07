@@ -21,6 +21,7 @@ class Grapher extends GrapherHook
     protected $grafanaHost = null;
     protected $password = null;
     protected $protocol = "http";
+    protected $timerange = "6h";
     protected $username = null;
     //protected $use_nrpe_command = true;
     protected $width = 640;
@@ -37,8 +38,10 @@ class Grapher extends GrapherHook
 	}
         $this->password = $this->config->get('password', $this->password);
         $this->protocol = $this->config->get('protocol', $this->protocol);
+        $this->timerange = $this->config->get('timerange', $this->timerange);
 	$this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
+
 	//$this->use_nrpe_command = $this->config->get('use_nrpe_command', $this->use_nrpe_command);
         if($this->username != null){
             if($this->password != null){
@@ -68,9 +71,8 @@ class Grapher extends GrapherHook
 
     private function getPreviewImage($serviceName, $hostName)
     {
-        $from = "now-8h";
 	$pngUrl = sprintf(
-			'%s://%s%s/render/dashboard-solo/db/%s?var-hostname=%s&var-service=%s&panelId=%s&width=%s&height=%s&theme=light&from=%s&to=now',
+			'%s://%s%s/render/dashboard-solo/db/%s?var-hostname=%s&var-service=%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
 			$this->protocol,
 			$this->auth,
 			$this->grafanaHost,
@@ -80,7 +82,7 @@ class Grapher extends GrapherHook
 			$this->panelId,
 			$this->width,
 			$this->height,
-			$from
+			$this->timerange
 	);
 
         $ctx = stream_context_create(array('ssl' => array("verify_peer"=>false, "verify_peer_name"=>false), 'http' => array('method' => 'GET', 'timeout' => 5)));
@@ -127,7 +129,7 @@ class Grapher extends GrapherHook
 
 	$this->getGraphConf($serviceName);
 
-	$html = '<a href="%s://%s%s/dashboard/db/%s?var-hostname=%s&var-service=%s';
+	$html = '<a href="%s://%s%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
 
         if ( $this->dashboard != "icinga2-default")
 	{
@@ -144,6 +146,7 @@ class Grapher extends GrapherHook
 		$this->dashboard,
 		urlencode($hostName),
 		rawurlencode($serviceName),
+                $this->timerange,
 		$this->getPreviewImage($serviceName, $hostName)
 	);
 
