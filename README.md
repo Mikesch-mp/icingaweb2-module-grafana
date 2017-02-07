@@ -54,15 +54,18 @@ The global time range for the graphs, default: *6h*
 
 **Name of Service**
 
-The name (not display name) of the service which you want to configure a graph for.
+*(Required)* The name (not display name) of the service which you want to configure a graph for.
+If you parametrized services, for example 'disk /data', you can use 'disk' as servicename, so 
+all disk checks get same graph. If you configure graphs 'disk' and one for 'disk /somedir',  
+the service 'disk /somedir' will use the graph configured in 'disk /somedir'.
 
 **Dashboard name**
 
-The name of the Grafana dashboard to use.
+*(Required)* The name of the Grafana dashboard to use.
 
 **PanelId**
 
-The panelId of the graph. You can get if if you click on "share" at the graph title.
+*(Required)* The panelId of the graph. You can get if if you click on "share" at the graph title.
 
 **Timerange now-**
 
