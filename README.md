@@ -48,7 +48,7 @@ The graph width in pixel, default : *640*
 
 **Timerange now-**
 
-The global time range for the graphs, default: *6h'
+The global time range for the graphs, default: *6h*
 
 ## Graph configuration
 
