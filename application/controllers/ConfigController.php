@@ -8,9 +8,11 @@ use Icinga\Module\Grafana\Forms\Config\GeneralConfigForm;
 
 class ConfigController extends Controller
 {
-    /**
-     * General configuration
-     */
+    public function init()
+    {
+        $this->assertPermission('config/modules');
+    }
+
     public function indexAction()
     {
         $form = new GeneralConfigForm();

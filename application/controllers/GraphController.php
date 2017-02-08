@@ -11,6 +11,11 @@ use Icinga\Web\Notification;
 
 class GraphController extends Controller
 {
+    public function init()
+    {
+	$this->assertPermission('grafana/graph');
+    }
+
     /**
      * List Grafana graphs
      */
