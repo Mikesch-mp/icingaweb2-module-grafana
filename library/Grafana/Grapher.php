@@ -128,7 +128,7 @@ class Grapher extends GrapherHook
 
 	$this->getGraphConf($serviceName);
 
-	$html = '<a href="%s://%s%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
+	$html = '<a href="%s://%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
 
         if ( $this->dashboard != "icinga2-default")
 	{
@@ -140,7 +140,6 @@ class Grapher extends GrapherHook
         return sprintf(
 		$html,
 		$this->protocol,
-		$this->auth,
 		$this->grafanaHost,
 		$this->dashboard,
 		urlencode($hostName),
