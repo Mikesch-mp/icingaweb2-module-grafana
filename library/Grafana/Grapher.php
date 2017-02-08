@@ -24,6 +24,7 @@ class Grapher extends GrapherHook
     protected $timerange = "6h";
     protected $username = null;
     protected $width = 640;
+    protected $enableLink = true;
 
     protected function init()
     {
@@ -40,6 +41,7 @@ class Grapher extends GrapherHook
         $this->timerange = $this->config->get('timerange', $this->timerange);
 	$this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
+	$this->enableLink = $this->config->get('enableLink', $this->enableLink);
 
         if($this->username != null){
             if($this->password != null){
@@ -127,6 +129,11 @@ class Grapher extends GrapherHook
         }
 
 	$this->getGraphConf($serviceName);
+
+	if ($this->enableLink == "no") 
+        {
+		return $this->getPreviewImage($serviceName, $hostName);
+	}
 
 	$html = '<a href="%s://%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
 

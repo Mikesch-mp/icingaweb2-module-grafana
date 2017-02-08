@@ -7,8 +7,10 @@ Insert Grafana graphs into Icinga Web 2 to display performance metrics.
 ## Requirements
 
 Icinga Web 2 (>= 2.4.0)
+
 Grafana (>= 4.1)
-InfluxDB
+
+InfluxDB or any other valid data source
 
 ## Installation
 
@@ -23,54 +25,42 @@ Import the 2 json files into your Grafana server. The default dashboard must be 
 There are various configuration settings to tweak how the module behaves.
 
 **Username**
-
 *(Optional)* The HTTP Basic Auth user name used to access Grafana. 
 
 **Password**
-
 *(Optional)* The HTTP Basic Auth password used to access Grafana. You need to set username too.
 
 **Host**
-
 *(Required)* The Grafana server host name (and port).
 
 **Protocol**
-
 The protocol used to access the Grafana server, default: *http*
 
 **Graph height**
-
 The graph height in pixel, default: *280*
 
 **Graph width**
-
 The graph width in pixel, default : *640*
 
 **Timerange now-**
-
-The global time range for the graphs, default: *6h*
+The global time range for the graphs, default: *6h'
 
 ## Graph configuration
 
 **Name of Service**
-
-*(Required)* The name (not display name) of the service which you want to configure a graph for.
-If you parametrized services, for example 'disk /data', you can use 'disk' as servicename, so 
-all disk checks get same graph. If you configure graphs 'disk' and one for 'disk /somedir',  
-the service 'disk /somedir' will use the graph configured in 'disk /somedir'.
+The name (not display name) of the service which you want to configure a graph for.
 
 **Dashboard name**
-
-*(Required)* The name of the Grafana dashboard to use.
+The name of the Grafana dashboard to use.
 
 **PanelId**
-
-*(Required)* The panelId of the graph. You can get if if you click on "share" at the graph title.
+The panelId of the graph. You can get if if you click on "share" at the graph title.
 
 **Timerange now-**
-
 The time range for this service graph only.
 
+**Enable link**
+Enables the perfdata image as an link to the Grafana dashboard.
 
 ## Hats off to
 

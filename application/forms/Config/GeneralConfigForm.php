@@ -98,23 +98,18 @@ class GeneralConfigForm extends ConfigForm
                 'description'           => $this->translate('Timerange to use for the graphs.')
             )
         );
-/**
         $this->addElement(
             'select',
-            'grafana_use_nrpe_command',
+            'grafana_enableLink',
             array(
-                'label'                 => $this->translate('Use nrpe_command'),
+                'label'                 => $this->translate('Enable link'),
 		'multiOptions' => array(
-                                'true' => $this->translate('True'),
-                                'false' => $this->translate('False'),
+                                'yes' => $this->translate('Yes'),
+                                'no' => $this->translate('No'),
                 ),
-                'description'           => $this->translate(
-                        'Use nrpe_command instead of check_command as measurements.'
-                        . 'See README on how to configure Icinga2 to use nrpe_command in InfluxdbWriter feature.'
-                )
+                'description'           => $this->translate('Image is an link to the dashboard on the Grafana server.')
             )
         );
-**/
     }
 }
 
