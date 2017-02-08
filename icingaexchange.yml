@@ -8,11 +8,11 @@ type: Module
 license: gplv2
 releases:
   -
-    name: v1.0.0
+    name: v1.0.1
     description: "Current"
     files:
       -
-        name: icingaweb2-module-grafana-1.0.0.zip
+        name: icingaweb2-module-grafana-1.0.1.zip
         url: "https://github.com/Mikesch-mp/icingaweb2-module-grafana/archive/v1.0.0.zip"
         description: Module file for Icinga Web 2
-        checksum: 2cf1288b77a929c9436be1bedb64937e
+        checksum: 913fe3976b9778cacf01e88e91a1a677
