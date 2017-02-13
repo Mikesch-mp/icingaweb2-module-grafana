@@ -13,6 +13,7 @@ $this->provideConfigTab('config', array(
 
 if ($auth->hasPermission('grafana/graph'))
 {
+   $this->menuSection(N_('Configuration'))->add('Grafana Graphs')->setUrl('grafana/graph')->setPriority(900);
    $this->provideConfigTab('graph', array(
        'title' => 'Graphs',
        'label' => 'Graphs',
