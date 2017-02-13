@@ -33,7 +33,7 @@
                         $name,
                         'grafana/graph/update',
                         array('graph' => $name),
-                        array('title' => sprintf($this->translate('Update integration %s'), $name))
+                        array('title' => sprintf($this->translate('Update Grafana graph %s'), $name))
                     ) ?>
                 </td>
                 <td><?= $this->escape($graph->dashboard) ?></td>
@@ -47,7 +47,7 @@
                         array(
                             'class' => 'action-link',
                             'icon'  => 'cancel',
-                            'title' => sprintf($this->translate('Remove integration %s'), $name)
+                            'title' => sprintf($this->translate('Remove Grafana graph %s'), $name)
                         )
                     ) ?>
                 </td>

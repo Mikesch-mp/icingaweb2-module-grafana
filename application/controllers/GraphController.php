@@ -46,7 +46,7 @@ class GraphController extends Controller
         $this->view->form = $graphs;
     }
     /**
-     * Remove a trouble ticket system integration
+     * Remove a graph
      */
     public function removeAction()
     {
@@ -81,7 +81,7 @@ class GraphController extends Controller
         $this->view->form = $confirmation;
     }
     /**
-     * Update a trouble ticket system integration
+     * Update a graph
      */
     public function updateAction()
     {
