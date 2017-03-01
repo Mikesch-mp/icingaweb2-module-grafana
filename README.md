@@ -10,15 +10,16 @@ Icinga Web 2 (>= 2.4.0)
 
 Grafana (>= 4.1)
 
-InfluxDB or any other valid data source
+InfluxDB or any other valid data source 
 
 ## Installation
 
-Just extract this to your Icinga Web 2 module folder in a folder called grafana.
+* Extract this to your Icinga Web 2 module folder in a folder called grafana.
+* Enable the module (Configuration -> Modules -> grafana -> enable).
+* Configure the module and save configuration (Configuration -> Modules -> grafana -> Configuration). 
+* With InfluxDB Datasource: Import the 2 json files into your Grafana server. The default dashboard must be named 'icinga2-default'.
 
-(Configuration -> Modules -> grafana -> enable).
-
-Import the 2 json files into your Grafana server. The default dashboard must be named 'icinga2-default'!.
+__*If you use Graphite or other datasources, you have to edit the 2 dashboards metric queries, or create new dashboards!__
 
 ## Configuration
 
@@ -42,8 +43,25 @@ The graph height in pixel, default: *280*
 **Graph width**
 The graph width in pixel, default : *640*
 
-**Timerange now-**
-The global time range for the graphs, default: *6h'
+**Timerange**
+The global time range for the graphs, default: *6h*
+
+**Enable Link**
+Enables/disable the graph as a link to Grafana dashboard, default: *yes*
+
+
+Example (/etc/icingaweb2/modules/grafana/)config.ini
+```
+[grafana]
+username = "you grafana username"
+host = "hostname:3000"
+protocol = "https"
+password = "123456"
+height = "280"
+width = "640"
+timerange = "3h"
+enableLink = "yes"
+``` 
 
 ## Graph configuration
 
@@ -56,11 +74,9 @@ The name of the Grafana dashboard to use.
 **PanelId**
 The panelId of the graph. You can get if if you click on "share" at the graph title.
 
-**Timerange now-**
+**Timerange**
 The time range for this service graph only.
 
-**Enable link**
-Enables the perfdata image as an link to the Grafana dashboard.
 
 ## Hats off to
 
