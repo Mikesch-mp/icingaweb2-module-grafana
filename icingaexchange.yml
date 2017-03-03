@@ -9,7 +9,7 @@ license: gplv2
 releases:
   -
     name: v1.0.2
-    description: "Current"
+    description: "Update 1.0.2"
     files:
       -
         name: icingaweb2-module-grafana-1.0.2.tar.gz

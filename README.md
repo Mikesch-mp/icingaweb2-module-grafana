@@ -10,16 +10,17 @@ Icinga Web 2 (>= 2.4.0)
 
 Grafana (>= 4.1)
 
-InfluxDB or any other valid data source 
+InfluxDB, Graphite and PNP(untested)
 
 ## Installation
 
 * Extract this to your Icinga Web 2 module folder in a folder called grafana.
 * Enable the module (Configuration -> Modules -> grafana -> enable).
 * Configure the module and save configuration (Configuration -> Modules -> grafana -> Configuration). 
-* With InfluxDB Datasource: Import the 2 json files into your Grafana server. The default dashboard must be named 'icinga2-default'.
+* Depending on your datasource import the 2 json files into your Grafana server. 
+  The default dashboard name is 'icinga2-default', but you can configure it now too.
 
-__*If you use Graphite or other datasources, you have to edit the 2 dashboards metric queries, or create new dashboards!__
+__*If you use PNP datasources, you have to edit the 2 dashboards metric queries, or create new dashboards!__
 
 ## Configuration
 
@@ -49,6 +50,12 @@ The global time range for the graphs, default: *6h*
 **Enable Link**
 Enables/disable the graph as a link to Grafana dashboard, default: *yes*
 
+**Default Dashboard**
+The name of the defaut dashboard that should be used for not configured graphs. Important, panelID must be 1! Default: *icinga-default*
+
+**Datasource type**
+The type of your Grafana datasource (InfluxDB,Graphite or PNP),default: *InfluxDB*
+
 
 Example (/etc/icingaweb2/modules/grafana/)config.ini
 ```
@@ -61,6 +68,8 @@ height = "280"
 width = "640"
 timerange = "3h"
 enableLink = "yes"
+defaultdashboard = "icinga2-default"
+datasource = "influxdb"
 ``` 
 
 ## Graph configuration

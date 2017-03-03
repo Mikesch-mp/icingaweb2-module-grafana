@@ -25,6 +25,8 @@ class Grapher extends GrapherHook
     protected $username = null;
     protected $width = 640;
     protected $enableLink = true;
+    protected $defaultDashboard = "icinga2-default";
+    protected $datasource = null;
 
     protected function init()
     {
@@ -42,6 +44,8 @@ class Grapher extends GrapherHook
 	$this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
 	$this->enableLink = $this->config->get('enableLink', $this->enableLink);
+        $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
+	$this->datasource = $this->config->get('datasource', $this->datasource);
 
         if($this->username != null){
             if($this->password != null){
@@ -63,7 +67,7 @@ class Grapher extends GrapherHook
            $serviceName = strtok($serviceName, ' ');
         }
 	
-      $this->dashboard = $this->graphconfig->get($serviceName, 'dashboard', 'icinga2-default');
+      $this->dashboard = $this->graphconfig->get($serviceName, 'dashboard', $this->defaultDashboard);
       $this->panelId = $this->graphconfig->get($serviceName, 'panelId', '1');
       $this->timerange = $this->graphconfig->get($serviceName, 'timerange', $this->timerange);
 
@@ -130,6 +134,11 @@ class Grapher extends GrapherHook
 
 	$this->getGraphConf($serviceName);
 
+	if ($this->datasource == "graphite") {
+            $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
+            $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
+        }
+
 	if ($this->enableLink == "no") 
         {
 		return $this->getPreviewImage($serviceName, $hostName);
@@ -137,7 +146,7 @@ class Grapher extends GrapherHook
 
 	$html = '<a href="%s://%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
 
-        if ( $this->dashboard != "icinga2-default")
+        if ( $this->dashboard != $this->defaultDashboard )
 	{
 		$html .= '&panelId=' . $this->panelId .'&fullscreen';
 	}

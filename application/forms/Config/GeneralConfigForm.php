@@ -43,7 +43,7 @@ class GeneralConfigForm extends ConfigForm
             'text',
             'grafana_host',
             array(
-                'value'         	=> 'server.name:3000',
+                'placeholder'         	=> 'server.name:3000',
                 'label'         	=> $this->translate('Host'),
                 'description'   	=> $this->translate('Host name of the Grafana server.'),
                 'required'              => true
@@ -120,6 +120,29 @@ class GeneralConfigForm extends ConfigForm
                 'description'           => $this->translate('Image is an link to the dashboard on the Grafana server.')
             )
         );
+        $this->addElement(
+            'text',
+            'grafana_defaultdashboard',
+            array(
+                'value'                 => 'icinga-default',
+                'label'                 => $this->translate('Default dashboard'),
+                'description'           => $this->translate('Name of the default dashboard.'),
+            )
+        );
+        $this->addElement(
+            'select',
+            'grafana_datasource',
+            array(
+                'label'                 => $this->translate('Datasource Type'),
+                'multiOptions' => array(
+                                 'influxdb'   => $this->translate('InfluxDB'),
+                                 'graphite'   => $this->translate('Graphite'),
+                                 'pnp'        => $this->translate('PNP'),
+                ),
+                'description'           => $this->translate('Grafana Datasource Type.')
+            )
+        );
+
     }
 }
 
