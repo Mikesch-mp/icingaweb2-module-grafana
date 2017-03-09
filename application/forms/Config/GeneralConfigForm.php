@@ -142,7 +142,15 @@ class GeneralConfigForm extends ConfigForm
                 'description'           => $this->translate('Grafana Datasource Type.')
             )
         );
+        $this->addElement(
+            'text',
+            'grafana_excludes',
+            array(
+                'value'                 => '',
+                'label'                 => $this->translate('Exclude services'),
+                'description'           => $this->translate('Description')
+            )
+        );
 
     }
 }
-
