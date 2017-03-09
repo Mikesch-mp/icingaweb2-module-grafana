@@ -16,8 +16,8 @@ InfluxDB, Graphite and PNP(untested)
 
 * Extract this to your Icinga Web 2 module folder in a folder called grafana.
 * Enable the module (Configuration -> Modules -> grafana -> enable).
-* Configure the module and save configuration (Configuration -> Modules -> grafana -> Configuration). 
-* Depending on your datasource import the 2 json files into your Grafana server. 
+* Configure the module and save configuration (Configuration -> Modules -> grafana -> Configuration).
+* Depending on your datasource import the 2 json files into your Grafana server.
   The default dashboard name is 'icinga2-default', but you can configure it now too.
 
 __*If you use PNP datasources, you have to edit the 2 dashboards metric queries, or create new dashboards!__
@@ -27,7 +27,7 @@ __*If you use PNP datasources, you have to edit the 2 dashboards metric queries,
 There are various configuration settings to tweak how the module behaves.
 
 **Username**
-*(Optional)* The HTTP Basic Auth user name used to access Grafana. 
+*(Optional)* The HTTP Basic Auth user name used to access Grafana.
 
 **Password**
 *(Optional)* The HTTP Basic Auth password used to access Grafana. You need to set username too.
@@ -56,6 +56,9 @@ The name of the defaut dashboard that should be used for not configured graphs. 
 **Datasource type**
 The type of your Grafana datasource (InfluxDB,Graphite or PNP),default: *InfluxDB*
 
+**Exclude services**
+A comma separated list of service names where no graphs should be fetched. Example: *ping4,hostalive,ping6*
+
 
 Example (/etc/icingaweb2/modules/grafana/)config.ini
 ```
@@ -70,7 +73,7 @@ timerange = "3h"
 enableLink = "yes"
 defaultdashboard = "icinga2-default"
 datasource = "influxdb"
-``` 
+```
 
 ## Graph configuration
 
@@ -90,4 +93,3 @@ The time range for this service graph only.
 ## Hats off to
 
 This module borrows a lot from https://github.com/Icinga/icingaweb2-module-generictts & https://github.com/Icinga/icingaweb2-module-pnp.
-

@@ -27,6 +27,7 @@ class Grapher extends GrapherHook
     protected $enableLink = true;
     protected $defaultDashboard = "icinga2-default";
     protected $datasource = null;
+    protected $excludes = null;
 
     protected function init()
     {
@@ -41,11 +42,12 @@ class Grapher extends GrapherHook
         $this->password = $this->config->get('password', $this->password);
         $this->protocol = $this->config->get('protocol', $this->protocol);
         $this->timerange = $this->config->get('timerange', $this->timerange);
-	$this->height = $this->config->get('height', $this->height);
+	      $this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
-	$this->enableLink = $this->config->get('enableLink', $this->enableLink);
+	      $this->enableLink = $this->config->get('enableLink', $this->enableLink);
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
-	$this->datasource = $this->config->get('datasource', $this->datasource);
+	      $this->datasource = $this->config->get('datasource', $this->datasource);
+        $this->excludes = $this->config->get('excludes', $this->excludes);
 
         if($this->username != null){
             if($this->password != null){
@@ -56,7 +58,12 @@ class Grapher extends GrapherHook
         } else {
             $this->auth = "";
         }
+        if($this->excludes != null){
+          $this->excludes = explode(",",$this->excludes);
+        }
     }
+
+
 
     private function getGraphConf($serviceName)
     {
@@ -66,7 +73,7 @@ class Grapher extends GrapherHook
         if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) && ($this->graphconfig->hasSection($serviceName) == False )) {
            $serviceName = strtok($serviceName, ' ');
         }
-	
+
       $this->dashboard = $this->graphconfig->get($serviceName, 'dashboard', $this->defaultDashboard);
       $this->panelId = $this->graphconfig->get($serviceName, 'panelId', '1');
       $this->timerange = $this->graphconfig->get($serviceName, 'timerange', $this->timerange);
@@ -119,6 +126,7 @@ class Grapher extends GrapherHook
 
     public function getPreviewHtml(MonitoredObject $object)
     {
+
 	// enable_perfdata = true ?
         if (! $object->process_perfdata) {
             return '';
@@ -132,6 +140,10 @@ class Grapher extends GrapherHook
             $hostName = $object->host->getName();
         }
 
+        if (in_array($serviceName,$this->excludes)) {
+           return '';
+        }
+
 	$this->getGraphConf($serviceName);
 
 	if ($this->datasource == "graphite") {
@@ -139,7 +151,7 @@ class Grapher extends GrapherHook
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
 
-	if ($this->enableLink == "no") 
+	if ($this->enableLink == "no")
         {
 		return $this->getPreviewImage($serviceName, $hostName);
 	}
@@ -150,7 +162,7 @@ class Grapher extends GrapherHook
 	{
 		$html .= '&panelId=' . $this->panelId .'&fullscreen';
 	}
-	
+
 	$html .= '"target="_blank">%s</a>';
 
         return sprintf(

@@ -105,4 +105,3 @@ class GraphController extends Controller
         $this->view->form = $graphs;
     }
 }
-
