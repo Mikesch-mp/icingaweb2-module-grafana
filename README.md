@@ -51,7 +51,7 @@ The global time range for the graphs, default: *6h*
 Enables/disable the graph as a link to Grafana dashboard, default: *yes*
 
 **Default Dashboard**
-The name of the defaut dashboard that should be used for not configured graphs. Important, panelID must be 1! Default: *icinga-default*
+The name of the defaut dashboard that should be used for not configured graphs. Important, panelID must be 1! Default: *icinga2-default*
 
 **Datasource type**
 The type of your Grafana datasource (InfluxDB,Graphite or PNP),default: *InfluxDB*
