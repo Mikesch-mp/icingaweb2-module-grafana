@@ -124,7 +124,7 @@ class GeneralConfigForm extends ConfigForm
             'text',
             'grafana_defaultdashboard',
             array(
-                'value'                 => 'icinga-default',
+                'value'                 => 'icinga2-default',
                 'label'                 => $this->translate('Default dashboard'),
                 'description'           => $this->translate('Name of the default dashboard.'),
             )
