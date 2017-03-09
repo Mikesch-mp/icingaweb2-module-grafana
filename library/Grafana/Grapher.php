@@ -59,7 +59,7 @@ class Grapher extends GrapherHook
             $this->auth = "";
         }
         if($this->excludes != null){
-          $this->excludes = explode(',',$this->excludes);
+          $this->excludes = explode(",",$this->excludes);
         }
     }
 
@@ -126,9 +126,7 @@ class Grapher extends GrapherHook
 
     public function getPreviewHtml(MonitoredObject $object)
     {
-        if (in_array($serviceName,$excludes){
-          return '';
-        }
+
 	// enable_perfdata = true ?
         if (! $object->process_perfdata) {
             return '';
@@ -140,6 +138,10 @@ class Grapher extends GrapherHook
         } elseif ($object instanceof Service) {
             $serviceName = $object->service_description;
             $hostName = $object->host->getName();
+        }
+
+        if (in_array($serviceName,$this->excludes)) {
+           return '';
         }
 
 	$this->getGraphConf($serviceName);
