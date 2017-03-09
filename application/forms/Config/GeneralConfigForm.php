@@ -148,7 +148,7 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'value'                 => '',
                 'label'                 => $this->translate('Exclude services'),
-                'description'           => $this->translate('Description')
+                'description'           => $this->translate('Define your excludes separated by ","')
             )
         );
 
