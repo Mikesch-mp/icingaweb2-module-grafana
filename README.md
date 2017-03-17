@@ -14,6 +14,7 @@ InfluxDB, Graphite and PNP(untested)
 
 ## Installation
 
+* **Enable basic auth or anonymous access in your Grafana configuration.**
 * Extract this to your Icinga Web 2 module folder in a folder called grafana.
 * Enable the module (Configuration -> Modules -> grafana -> enable).
 * Configure the module and save configuration (Configuration -> Modules -> grafana -> Configuration). 

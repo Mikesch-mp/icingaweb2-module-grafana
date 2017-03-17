@@ -1,14 +1,13 @@
 <?php
 
-namespace Icinga\Module\Grafana;
+namespace Icinga\Module\Grafana\ProvidedHook;
 
 use Icinga\Application\Config;
 use Icinga\Exception\ConfigurationError;
+use Icinga\Application\Hook\GrapherHook;
 use Icinga\Module\Monitoring\Object\MonitoredObject;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Object\Service;
-use Icinga\Module\Monitoring\Plugin\PerfdataSet;
-use Icinga\Web\Hook\GrapherHook;
 use Icinga\Web\Url;
 
 class Grapher extends GrapherHook
@@ -36,7 +35,7 @@ class Grapher extends GrapherHook
         $this->grafanaHost = $this->config->get('host', $this->grafanaHost);
 	if ( $this->grafanaHost == null)
         {
-           return "<p>No Grafana Host configured!</p>";
+           return "<p>No Grafana host configured!</p>";
 	}
         $this->password = $this->config->get('password', $this->password);
         $this->protocol = $this->config->get('protocol', $this->protocol);
@@ -98,9 +97,9 @@ class Grapher extends GrapherHook
         }
 
         $img = 'data:image/png;base64,'.base64_encode($imgBinary);
-        $html = '<img src="%s" alt="%s" width="%d" height="%d" />';
+        $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" />';
         return sprintf(
-            $html,
+            $imghtml,
             $img,
             rawurlencode($serviceName),
             $this->width,
@@ -138,22 +137,25 @@ class Grapher extends GrapherHook
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
+	$html = "";
+        foreach(explode(',' , $this->panelId) as $panelid) {
+            $this->panelId = $panelid;
 
-	if ($this->enableLink == "no") 
-        {
+	    if ($this->enableLink == "no") 
+            {
 		return $this->getPreviewImage($serviceName, $hostName);
-	}
+	    }
 
-	$html = '<a href="%s://%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
+	    $html .= '<a href="%s://%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
 
-        if ( $this->dashboard != $this->defaultDashboard )
-	{
+            if ( $this->dashboard != $this->defaultDashboard )
+	    {
 		$html .= '&panelId=' . $this->panelId .'&fullscreen';
-	}
+	    }
 	
-	$html .= '"target="_blank">%s</a>';
+	    $html .= '"target="_blank">%s</a>';
 
-        return sprintf(
+            $html = sprintf(
 		$html,
 		$this->protocol,
 		$this->grafanaHost,
@@ -162,7 +164,8 @@ class Grapher extends GrapherHook
 		rawurlencode($serviceName),
                 $this->timerange,
 		$this->getPreviewImage($serviceName, $hostName)
-	);
-
+	   );
+        }
+        return $html;
     }
 }

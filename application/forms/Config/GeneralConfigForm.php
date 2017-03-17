@@ -24,7 +24,6 @@ class GeneralConfigForm extends ConfigForm
             'text',
             'grafana_username',
             array(
-                'placeholder'   	=> '***',
                 'label'         	=> $this->translate('Username'),
                 'description'   	=> $this->translate('The HTTP Basic Auth user name used to access Grafana.')
             )
@@ -34,7 +33,6 @@ class GeneralConfigForm extends ConfigForm
             'grafana_password',
             array(
 		'renderPassword'	=> true,
-                'placeholder'   	=> '***',
                 'label'         	=> $this->translate('Password'),
                 'description'   	=> $this->translate('The HTTP Basic Auth password used to access Grafana.')
             )
@@ -43,7 +41,7 @@ class GeneralConfigForm extends ConfigForm
             'text',
             'grafana_host',
             array(
-                'placeholder'         	=> 'server.name:3000',
+                'placeholder'         	=> 'example server.name:3000',
                 'label'         	=> $this->translate('Host'),
                 'description'   	=> $this->translate('Host name of the Grafana server.'),
                 'required'              => true

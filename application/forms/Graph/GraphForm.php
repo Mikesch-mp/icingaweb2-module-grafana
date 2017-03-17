@@ -55,12 +55,12 @@ class GraphForm extends ConfigForm
         );
 
         $this->addElement(
-            'number',
+            'text',
             'panelId',
             array(
-                'placeholder'   => '1',
-                'label'         => $this->translate('PanelId'),
-                'description'   => $this->translate('The panelId iof the Graph that will be used'),
+                'placeholder'   => 'example 1 or 1,4,10 ...',
+                'label'         => $this->translate('PanelId(s)'),
+                'description'   => $this->translate('Single panelId or comma seperated list of panelIds that will be used to show the graph(s).'),
                 'required'      => true
             )
         );
