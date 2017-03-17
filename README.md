@@ -82,7 +82,7 @@ The name (not display name) of the service which you want to configure a graph f
 The name of the Grafana dashboard to use.
 
 **PanelId**
-The panelId of the graph. You can get if if you click on "share" at the graph title.
+Single panelId or comma seperated list of panelIds for the graph(s). You can get if if you click on "share" at the graph title.
 
 **Timerange**
 The time range for this service graph only.
