@@ -89,7 +89,7 @@ The time range for this service graph only.
 
 
 ## FAQ
-** Search Order**
+**Search Order**
 The Module will search first for the service name, then for parametrized service name and last for service check_command name.
 
 If none of the above is configured, it will use the default dashboard.
