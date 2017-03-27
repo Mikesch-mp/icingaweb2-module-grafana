@@ -75,18 +75,30 @@ datasource = "influxdb"
 
 ## Graph configuration
 
-**Name of Service**
-The name (not display name) of the service which you want to configure a graph for.
+**Name**
+The name (not display name) of the service or check_command which you want to configure a graph for.
 
 **Dashboard name**
 The name of the Grafana dashboard to use.
 
 **PanelId**
-Single panelId or comma seperated list of panelIds for the graph(s). You can get if if you click on "share" at the graph title.
+The panelId of the graph. You can get if if you click on "share" at the graph title.
 
 **Timerange**
 The time range for this service graph only.
 
+
+## FAQ
+** Search Order**
+The Module will search first for the service name, then for parametrized service name and last for service check_command name.
+
+If none of the above is configured, it will use the default dashboard.
+
+Example: Service = "MySQL Users", check_command = mysql_health 
+
+First it will search for a configration with Name = "MySQL Usage", 
+
+then for "MySQL", last for the check_command used like "mysql_health"
 
 ## Hats off to
 

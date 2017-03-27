@@ -37,8 +37,8 @@ class GraphForm extends ConfigForm
             'text',
             'name',
             array(
-                'description'   => $this->translate('The name of the service which should use a premade dashboard'),
-                'label'         => $this->translate('Name of service'),
+                'description'   => $this->translate('The name of the service or check_command which should use a premade dashboard'),
+                'label'         => $this->translate('Name'),
                 'required'      => true
             )
         );

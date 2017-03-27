@@ -57,7 +57,7 @@ class Grapher extends GrapherHook
         }
     }
 
-    private function getGraphConf($serviceName)
+    private function getGraphConf($serviceName, $serviceCommand)
     {
 
         $graphconfig = Config::module('grafana', 'graphs');
@@ -65,6 +65,10 @@ class Grapher extends GrapherHook
         if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) && ($this->graphconfig->hasSection($serviceName) == False )) {
            $serviceName = strtok($serviceName, ' ');
         }
+	if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphconfig->hasSection($serviceName) == False )) {
+           $serviceName = $serviceCommand;
+        }
+
 	
       $this->dashboard = $this->graphconfig->get($serviceName, 'dashboard', $this->defaultDashboard);
       $this->panelId = $this->graphconfig->get($serviceName, 'panelId', '1');
@@ -131,13 +135,15 @@ class Grapher extends GrapherHook
             $hostName = $object->host->getName();
         }
 
-	$this->getGraphConf($serviceName);
+	$this->getGraphConf($serviceName, $object->check_command);
+
 
 	if ($this->datasource == "graphite") {
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
-	$html = "";
+	$return_html = "";
+	
         foreach(explode(',' , $this->panelId) as $panelid) {
             $this->panelId = $panelid;
 
@@ -146,7 +152,7 @@ class Grapher extends GrapherHook
 		return $this->getPreviewImage($serviceName, $hostName);
 	    }
 
-	    $html .= '<a href="%s://%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
+	    $html = '<a href="%s://%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
 
             if ( $this->dashboard != $this->defaultDashboard )
 	    {
@@ -165,7 +171,8 @@ class Grapher extends GrapherHook
                 $this->timerange,
 		$this->getPreviewImage($serviceName, $hostName)
 	   );
+	   $return_html .= $html;
         }
-        return $html;
+        return $return_html;
     }
 }
