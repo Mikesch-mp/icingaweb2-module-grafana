@@ -46,13 +46,19 @@ class Grapher extends GrapherHook
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
 	$this->datasource = $this->config->get('datasource', $this->datasource);
 
-        if($this->username != null){
-            if($this->password != null){
+        if($this->username != null)
+        {
+            if($this->password != null)
+            {
                 $this->auth = $this->username.":".$this->password."@";
-            } else {
-                $this->auth = $this->username."@";
             }
-        } else {
+            else
+           {
+                $this->auth = $this->username."@";
+           }
+        }
+        else
+        {
             $this->auth = "";
         }
     }
@@ -62,10 +68,12 @@ class Grapher extends GrapherHook
 
         $graphconfig = Config::module('grafana', 'graphs');
         $this->graphconfig = $graphconfig;
-        if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) && ($this->graphconfig->hasSection($serviceName) == False )) {
+        if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) && ($this->graphconfig->hasSection($serviceName) == False )) 
+        {
            $serviceName = strtok($serviceName, ' ');
         }
-	if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphconfig->hasSection($serviceName) == False )) {
+	if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphconfig->hasSection($serviceName) == False )) 
+        {
            $serviceName = $serviceCommand;
         }
 
@@ -96,7 +104,8 @@ class Grapher extends GrapherHook
         $ctx = stream_context_create(array('ssl' => array("verify_peer"=>false, "verify_peer_name"=>false), 'http' => array('method' => 'GET', 'timeout' => 5)));
         $imgBinary = @file_get_contents($pngUrl, false, $ctx);
         $error = error_get_last();
-        if ($error !== null) {
+        if ($error !== null)
+        {
             return "Graph currently unavailable: ".$error["message"];
         }
 
@@ -113,9 +122,12 @@ class Grapher extends GrapherHook
 
     public function has(MonitoredObject $object)
     {
-        if (($object instanceof Host)||($object instanceof Service)) {
+        if (($object instanceof Host)||($object instanceof Service)) 
+        {
             return true;
-        } else {
+        } 
+        else
+        {
             return false;
         }
     }
@@ -123,14 +135,18 @@ class Grapher extends GrapherHook
     public function getPreviewHtml(MonitoredObject $object)
     {
 	// enable_perfdata = true ?
-        if (! $object->process_perfdata) {
+        if (! $object->process_perfdata) 
+        {
             return '';
         }
 
-        if ($object instanceof Host) {
+        if ($object instanceof Host) 
+        {
             $serviceName = $object->check_command;
 	    $hostName = $object->host_name;
-        } elseif ($object instanceof Service) {
+        } 
+        elseif ($object instanceof Service) 
+        {
             $serviceName = $object->service_description;
             $hostName = $object->host->getName();
         }
@@ -138,39 +154,44 @@ class Grapher extends GrapherHook
 	$this->getGraphConf($serviceName, $object->check_command);
 
 
-	if ($this->datasource == "graphite") {
+	if ($this->datasource == "graphite") 
+        {
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
+
 	$return_html = "";
 	
         foreach(explode(',' , $this->panelId) as $panelid) {
+
             $this->panelId = $panelid;
 
 	    if ($this->enableLink == "no") 
             {
-		return $this->getPreviewImage($serviceName, $hostName);
+		$html = $this->getPreviewImage($serviceName, $hostName);
 	    }
+            else 
+            {
+	        $html = '<a href="%s://%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
 
-	    $html = '<a href="%s://%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
-
-            if ( $this->dashboard != $this->defaultDashboard )
-	    {
-		$html .= '&panelId=' . $this->panelId .'&fullscreen';
-	    }
+                if ( $this->dashboard != $this->defaultDashboard )
+	        {
+		    $html .= '&panelId=' . $this->panelId .'&fullscreen';
+	        }
 	
-	    $html .= '"target="_blank">%s</a>';
+	        $html .= '"target="_blank">%s</a>';
 
-            $html = sprintf(
-		$html,
-		$this->protocol,
-		$this->grafanaHost,
-		$this->dashboard,
-		urlencode($hostName),
-		rawurlencode($serviceName),
-                $this->timerange,
-		$this->getPreviewImage($serviceName, $hostName)
-	   );
+                $html = sprintf(
+		    $html,
+		    $this->protocol,
+		    $this->grafanaHost,
+		    $this->dashboard,
+		    urlencode($hostName),
+		    rawurlencode($serviceName),
+                    $this->timerange,
+		    $this->getPreviewImage($serviceName, $hostName)
+	       );
+           }
 	   $return_html .= $html;
         }
         return $return_html;
