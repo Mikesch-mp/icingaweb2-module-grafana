@@ -119,6 +119,19 @@ class GeneralConfigForm extends ConfigForm
             )
         );
         $this->addElement(
+            'select',
+            'grafana_defaultdashboardstore',
+            array(
+                'label'                 => $this->translate('Datasource Backend'),
+                'multiOptions' => array(
+                                 'db'   => $this->translate('Database'),
+                                 'file'   => $this->translate('File'),
+                ),
+                'description'           => $this->translate('Grafana Backend Type.')
+            )
+        );
+
+        $this->addElement(
             'text',
             'grafana_defaultdashboard',
             array(
