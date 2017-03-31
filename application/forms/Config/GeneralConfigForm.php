@@ -53,21 +53,20 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'label'         	=> 'Protocol',
  		'multiOptions' => array(
-                    		'http' => $this->translate('Unsecure: http'),
-                    		'https' => $this->translate('Secure: https'),
+                    'http'              => $this->translate('Unsecure: http'),
+                    'https'             => $this->translate('Secure: https'),
             	),
                 'description'   	=> $this->translate('Protocol used to access Grafana.'),
             'class' => 'autosubmit',
             )
         );
-
         $this->addElement(
             'text',
             'grafana_height',
             array(
                 'value'           	=> '280',
                 'label'                 => $this->translate('Graph height'),
-                'description'           => $this->translate('Graph height in pixels.')
+                'description'           => $this->translate('The default graph height in pixels.')
             )
         );
         $this->addElement(
@@ -76,7 +75,7 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'value'           	=> '640',
                 'label'                 => $this->translate('Graph width'),
-                'description'           => $this->translate('Graph width in pixels.')
+                'description'           => $this->translate('The default graph width in pixels.')
             )
         );
         $this->addElement(
@@ -85,25 +84,25 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'label'                 => $this->translate('Timerange'),
                 'multiOptions' => array(
-                                 ''    => $this->translate('Use default'),
-                                 '5m'  => $this->translate('Last 5 minutes'),
-                                 '15m'  => $this->translate('Last 15 minutes'),
-                                 '30m'  => $this->translate('Last 30 minutes'),
-                                 '1h'  => $this->translate('Last 1 hour'),
-                                 '3h'  => $this->translate('Last 3 hours'),
-                                 '6h'  => $this->translate('Last 6 hours'),
-                                 '8h'  => $this->translate('Last 8 hours'),
-                                 '12h' => $this->translate('Last 12 hours'),
-                                 '24h' => $this->translate('Last 24 hours'),
-                                 '2d'  => $this->translate('Last 2 days'),
-                                 '7d'  => $this->translate('Last 7 days'),
-                                 '30d'  => $this->translate('Last 30 days'),
-                                 '60d'  => $this->translate('Last 60 days'),
-                                 '6M'  => $this->translate('Last 6 months'),
-                                 '1y'  => $this->translate('Last 1 year'),
-                                 '2y'  => $this->translate('Last 2 years'),
+                    ''                      => $this->translate('Use default'),
+                    '5m'                    => $this->translate('Last 5 minutes'),
+                    '15m'                   => $this->translate('Last 15 minutes'),
+                    '30m'                   => $this->translate('Last 30 minutes'),
+                    '1h'                    => $this->translate('Last 1 hour'),
+                    '3h'                    => $this->translate('Last 3 hours'),
+                    '6h'                    => $this->translate('Last 6 hours'),
+                    '8h'                    => $this->translate('Last 8 hours'),
+                    '12h'                   => $this->translate('Last 12 hours'),
+                    '24h'                   => $this->translate('Last 24 hours'),
+                    '2d'                    => $this->translate('Last 2 days'),
+                    '7d'                    => $this->translate('Last 7 days'),
+                    '30d'                   => $this->translate('Last 30 days'),
+                    '60d'                   => $this->translate('Last 60 days'),
+                    '6M'                    => $this->translate('Last 6 months'),
+                    '1y'                    => $this->translate('Last 1 year'),
+                    '2y'                    => $this->translate('Last 2 years'),
                 ),
-                'description'           => $this->translate('Timerange to use for the graphs.')
+                'description'           => $this->translate('The default timerange to use for the graphs.')
             )
         );
         $this->addElement(
@@ -112,10 +111,19 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'label'                 => $this->translate('Enable link'),
 		'multiOptions' => array(
-                                'yes' => $this->translate('Yes'),
-                                'no' => $this->translate('No'),
+                    'yes'                   => $this->translate('Yes'),
+                    'no'                    => $this->translate('No'),
                 ),
                 'description'           => $this->translate('Image is an link to the dashboard on the Grafana server.')
+            )
+        );
+        $this->addElement(
+            'text',
+            'grafana_defaultdashboard',
+            array(
+                'value'                     => 'icinga2-default',
+                'label'                     => $this->translate('Default dashboard'),
+                'description'               => $this->translate('Name of the default dashboard.'),
             )
         );
         $this->addElement(
@@ -124,20 +132,10 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'label'                 => $this->translate('Datasource Backend'),
                 'multiOptions' => array(
-                                 'db'   => $this->translate('Database'),
-                                 'file'   => $this->translate('File'),
+                    'db'                    => $this->translate('Database'),
+                    'file'                  => $this->translate('File'),
                 ),
                 'description'           => $this->translate('Grafana Backend Type.')
-            )
-        );
-
-        $this->addElement(
-            'text',
-            'grafana_defaultdashboard',
-            array(
-                'value'                 => 'icinga2-default',
-                'label'                 => $this->translate('Default dashboard'),
-                'description'           => $this->translate('Name of the default dashboard.'),
             )
         );
         $this->addElement(
@@ -146,9 +144,9 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'label'                 => $this->translate('Datasource Type'),
                 'multiOptions' => array(
-                                 'influxdb'   => $this->translate('InfluxDB'),
-                                 'graphite'   => $this->translate('Graphite'),
-                                 'pnp'        => $this->translate('PNP'),
+                    'influxdb'              => $this->translate('InfluxDB'),
+                    'graphite'              => $this->translate('Graphite'),
+                    'pnp'                   => $this->translate('PNP'),
                 ),
                 'description'           => $this->translate('Grafana Datasource Type.')
             )
