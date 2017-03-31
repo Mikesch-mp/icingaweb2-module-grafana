@@ -54,6 +54,9 @@ Enables/disable the graph as a link to Grafana dashboard, default: *yes*
 **Default Dashboard**
 The name of the defaut dashboard that should be used for not configured graphs. Important, panelID must be 1! Default: *icinga2-default*
 
+**Datasource backend**
+The backend of Grafana (file or  database),default: *Database*
+
 **Datasource type**
 The type of your Grafana datasource (InfluxDB,Graphite or PNP),default: *InfluxDB*
 
@@ -71,6 +74,7 @@ timerange = "3h"
 enableLink = "yes"
 defaultdashboard = "icinga2-default"
 datasource = "influxdb"
+defaultdashboardstore = "db"
 ``` 
 
 ## Graph configuration
@@ -86,6 +90,12 @@ The panelId of the graph. You can get if if you click on "share" at the graph ti
 
 **Timerange**
 The time range for this service graph only.
+
+**Height**
+The graph height in pixel, if default should not be used.
+
+**width**
+The width in pixel, if default should not be used.
 
 
 ## FAQ
