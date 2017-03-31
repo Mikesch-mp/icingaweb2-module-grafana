@@ -25,6 +25,7 @@ class Grapher extends GrapherHook
     protected $width = 640;
     protected $enableLink = true;
     protected $defaultDashboard = "icinga2-default";
+    protected $defaultDashboardStore = "db";
     protected $datasource = null;
 
     protected function init()
@@ -44,6 +45,7 @@ class Grapher extends GrapherHook
         $this->width = $this->config->get('width', $this->width);
 	$this->enableLink = $this->config->get('enableLink', $this->enableLink);
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
+        $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
 	$this->datasource = $this->config->get('datasource', $this->datasource);
 
         if($this->username != null)
@@ -79,6 +81,7 @@ class Grapher extends GrapherHook
 
 	
       $this->dashboard = $this->graphconfig->get($serviceName, 'dashboard', $this->defaultDashboard);
+      $this->dashboardstore = $this->graphconfig->get($serviceName, 'dashboardstore', $this->defaultDashboardStore);
       $this->panelId = $this->graphconfig->get($serviceName, 'panelId', '1');
       $this->timerange = $this->graphconfig->get($serviceName, 'timerange', $this->timerange);
 
@@ -88,10 +91,11 @@ class Grapher extends GrapherHook
     private function getPreviewImage($serviceName, $hostName)
     {
 	$pngUrl = sprintf(
-			'%s://%s%s/render/dashboard-solo/db/%s?var-hostname=%s&var-service=%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
+			'%s://%s%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
 			$this->protocol,
 			$this->auth,
 			$this->grafanaHost,
+			$this->dashboardstore,
 			$this->dashboard,
 			urlencode($hostName),
 			rawurlencode($serviceName),
@@ -172,7 +176,7 @@ class Grapher extends GrapherHook
 	    }
             else 
             {
-	        $html = '<a href="%s://%s/dashboard/db/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
+	        $html = '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
 
                 if ( $this->dashboard != $this->defaultDashboard )
 	        {
@@ -185,6 +189,7 @@ class Grapher extends GrapherHook
 		    $html,
 		    $this->protocol,
 		    $this->grafanaHost,
+		    $this->dashboardstore,
 		    $this->dashboard,
 		    urlencode($hostName),
 		    rawurlencode($serviceName),
