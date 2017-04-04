@@ -83,6 +83,7 @@ class Grapher extends GrapherHook
       $this->dashboard = $this->graphconfig->get($serviceName, 'dashboard', $this->defaultDashboard);
       $this->dashboardstore = $this->graphconfig->get($serviceName, 'dashboardstore', $this->defaultDashboardStore);
       $this->panelId = $this->graphconfig->get($serviceName, 'panelId', '1');
+      $this->customVars = $this->graphconfig->get($serviceName, 'customVars', '');
       $this->timerange = $this->graphconfig->get($serviceName, 'timerange', $this->timerange);
       $this->height = $this->graphconfig->get($serviceName, 'height', $this->height);
       $this->width = $this->graphconfig->get($serviceName, 'width', $this->width);
@@ -93,7 +94,7 @@ class Grapher extends GrapherHook
     private function getPreviewImage($serviceName, $hostName)
     {
 	$pngUrl = sprintf(
-			'%s://%s%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
+			'%s://%s%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
 			$this->protocol,
 			$this->auth,
 			$this->grafanaHost,
@@ -101,12 +102,12 @@ class Grapher extends GrapherHook
 			$this->dashboard,
 			urlencode($hostName),
 			rawurlencode($serviceName),
+			$this->customVars,
 			$this->panelId,
 			$this->width,
 			$this->height,
 			$this->timerange
 	);
-
         $ctx = stream_context_create(array('ssl' => array("verify_peer"=>false, "verify_peer_name"=>false), 'http' => array('method' => 'GET', 'timeout' => 5)));
         $imgBinary = @file_get_contents($pngUrl, false, $ctx);
         $error = error_get_last();
@@ -140,8 +141,8 @@ class Grapher extends GrapherHook
 
     public function getPreviewHtml(MonitoredObject $object)
     {
-	// enable_perfdata = true ?
-        if (! $object->process_perfdata) 
+	// enable_perfdata = true ?  || no perfdata into service
+        if (! $object->process_perfdata || ! $object->perfdata)
         {
             return '';
         }
@@ -149,16 +150,17 @@ class Grapher extends GrapherHook
         if ($object instanceof Host) 
         {
             $serviceName = $object->check_command;
-	    $hostName = $object->host_name;
+            $customVars = $object->fetchCustomvars()->customvars;
+            $hostName = $object->host_name;
         } 
         elseif ($object instanceof Service) 
         {
             $serviceName = $object->service_description;
+            $customVars = $object->fetchCustomvars()->customvars;
             $hostName = $object->host->getName();
         }
 
 	$this->getGraphConf($serviceName, $object->check_command);
-
 
 	if ($this->datasource == "graphite") 
         {
@@ -167,7 +169,14 @@ class Grapher extends GrapherHook
         }
 
 	$return_html = "";
-	
+        
+        // replace template to customVars from Icinga2
+	foreach($customVars as $k => $v){
+		$search[] = "\$$k\$";
+		$replace[] = is_string($v) ? $v : null;
+		$this->customVars = str_replace($search, $replace, $this->customVars);
+	}
+
         foreach(explode(',' , $this->panelId) as $panelid) {
 
             $this->panelId = $panelid;
