@@ -1,5 +1,5 @@
 Name: Grafana
-Version: 1.0.7
+Version: 1.0.8
 Depends: monitoring
 Description: Grafana - A perfdata visualisation module
  Shows Grafana graphs for captured metrics.
@@ -11,10 +11,12 @@ Description: Grafana - A perfdata visualisation module
  * InfluxDB or Graphite as datasource backend.
 
 
- Thanks for bug repoting/fixing goes to:
+ Thanks for bug repoting/fixing or enhancements goes to:
 
  Thilo W.
 
  Robert G.
 
  Peter N.
+
+ Alex

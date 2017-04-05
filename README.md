@@ -88,6 +88,9 @@ The name of the Grafana dashboard to use.
 **PanelId**
 The panelId of the graph. You can get if if you click on "share" at the graph title.
 
+**CustomVars**
+Here you can set custom variables to be used for grafana.
+
 **Timerange**
 The time range for this service graph only.
 
