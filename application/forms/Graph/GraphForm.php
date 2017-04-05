@@ -64,6 +64,18 @@ class GraphForm extends ConfigForm
                 'required'      => true
             )
         );
+
+        $this->addElement(
+            'text',
+            'customVars',
+            array(
+                'placeholder'   => '&var-example=$my_variable$',
+                'label'         => $this->translate('Custom Variables'),
+                'description'   => $this->translate('Custom variables from monitoring'),
+                'required'      => false
+            )
+        );
+
         $this->addElement(
             'select',
             'timerange',
@@ -148,12 +160,16 @@ class GraphForm extends ConfigForm
         $values = array(
             'dashboard'   => $this->getElement('dashboard')->getValue(),
             'panelId'     => $this->getElement('panelId')->getValue(),
+            'customVars'  => $this->getElement('customVars')->getValue(),
             'timerange'   => $this->getElement('timerange')->getValue(),
             'height'      => $this->getElement('height')->getValue(),
             'width'       => $this->getElement('width')->getValue()
         );
 	if (empty($values['timerange'])) {
             $values['timerange'] = null;
+        }
+	if (empty($values['customVars'])) {
+            $values['customVars'] = null;
         }
         if (empty($values['height'])) {
             $values['height'] = null;
