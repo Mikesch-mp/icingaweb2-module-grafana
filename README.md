@@ -19,7 +19,7 @@ Add Grafana graphs into Icinga Web 2 to display performance metrics.
 
 ## Requirements
 
-* [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.0)
+* [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.1)
 * [Grafana](https://grafana.com/) (>= 4.1)
 * [InfluxDB](https://docs.influxdata.com/influxdb/), [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
 
