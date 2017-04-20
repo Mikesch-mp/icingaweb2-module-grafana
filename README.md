@@ -12,6 +12,8 @@ Grafana (>= 4.1)
 
 InfluxDB, Graphite and PNP(untested)
 
+PHP with curl enabled
+
 ## Installation
 
 * **Enable basic auth or anonymous access in your Grafana configuration.**
