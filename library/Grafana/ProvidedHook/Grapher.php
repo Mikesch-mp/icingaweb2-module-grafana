@@ -57,7 +57,9 @@ class Grapher extends GrapherHook
         $this->grafanaHost = $this->config->get('host', $this->grafanaHost);
 	if ( $this->grafanaHost == null)
         {
-           return "<p>No Grafana host configured!</p>";
+            throw new ConfigurationError(
+                'No Grafana host configured!'
+            );
 	}
         $this->password = $this->config->get('password', $this->password);
         $this->protocol = $this->config->get('protocol', $this->protocol);
