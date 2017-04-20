@@ -112,7 +112,11 @@ class Grapher extends GrapherHook
       $this->dashboardstore = $this->graphconfig->get($serviceName, 'dashboardstore', $this->defaultDashboardStore);
       $this->panelId = $this->graphconfig->get($serviceName, 'panelId', '1');
       $this->customVars = $this->graphconfig->get($serviceName, 'customVars', '');
-      $this->timerange = $this->graphconfig->get($serviceName, 'timerange', $this->timerange);
+      if ( Url::fromRequest()->hasParam('timerange') ) {
+         $this->timerange = Url::fromRequest()->getParam('timerange');
+      } else {
+         $this->timerange = $this->graphconfig->get($serviceName, 'timerange', $this->timerange);
+      }
       $this->height = $this->graphconfig->get($serviceName, 'height', $this->height);
       $this->width = $this->graphconfig->get($serviceName, 'width', $this->width);
 
