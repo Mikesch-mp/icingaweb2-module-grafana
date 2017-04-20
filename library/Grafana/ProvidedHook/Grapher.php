@@ -237,6 +237,7 @@ class Grapher extends GrapherHook
         foreach ($this->timeranges as $key => $value) {
              $menu .=  $this->getTimerangeLink($hostName, $serviceName, $value, $key) .'  :  ';
 	}
+	$menu = substr($menu, 0, -3);
 	$menu .= '</div>';
 	$html = "";
 
