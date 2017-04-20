@@ -1,70 +1,97 @@
-# Grafana module for Icinga Web 2
+# Grafana Module for Icinga Web 2
 
-## General Information
+#### Table of Contents
 
-Insert Grafana graphs into Icinga Web 2 to display performance metrics.
+1. [About](#about)
+2. [Requirements](#requirements)
+3. [Installation](#installation)
+4. [Configuration](#configuration)
+5. [FAQ](#faq)
+6. [Thanks](#thanks)
+
+
+## About
+
+Add Grafana graphs into Icinga Web 2 to display performance metrics.
+
+![Icinga Web 2 Grafana Integration](doc/images/icingaweb2_grafana_screenshot_01.png "Grafana")
+![Icinga Web 2 Grafana Integration](doc/images/icingaweb2_grafana_screenshot_02.png "Grafana")
 
 ## Requirements
 
-Icinga Web 2 (>= 2.4.0)
-
-Grafana (>= 4.1)
-
-InfluxDB, Graphite and PNP(untested)
+* [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.0)
+* [Grafana](https://grafana.com/) (>= 4.1)
+* [InfluxDB](https://docs.influxdata.com/influxdb/), [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
 
 ## Installation
 
-* **Enable basic auth or anonymous access in your Grafana configuration.**
-* Extract this to your Icinga Web 2 module folder in a folder called grafana.
-* Enable the module (Configuration -> Modules -> grafana -> enable).
-* Configure the module and save configuration (Configuration -> Modules -> grafana -> Configuration). 
-* Depending on your datasource import the 2 json files into your Grafana server. 
-  The default dashboard name is 'icinga2-default', but you can configure it now too.
+Extract this module to your Icinga Web 2 modules directory as `grafana` directory.
 
-__*If you use PNP datasources, you have to edit the 2 dashboards metric queries, or create new dashboards!__
+Git clone:
+
+```
+cd /usr/share/icingaweb2/modules
+git clone https://github.com/Mikesch-mp/icingaweb2-module-grafana.git grafana
+```
+
+Tarball download (latest [release](https://github.com/Mikesch-mp/icingaweb2-module-grafana/releases)):
+
+```
+cd /usr/share/icingaweb2/modules
+wget https://github.com/Mikesch-mp/icingaweb2-module-grafana/archive/v1.0.10.zip
+unzip v1.0.10.zip
+mv icingaweb2-module-grafana-1.0.10 grafana
+```
+
+Enable the module in the Icinga Web 2 frontend in `Configuration -> Modules -> grafana -> enable`.
+You can also enable the module by using the `icingacli` command:
+
+```
+icingacli module enable grafana
+```
+
+### Grafana Preparations
+
+Enable basic auth or anonymous access in your Grafana configuration.
+
+Choose which datasource to use (InfluxDB, Graphite). Import the JSON files from the `dashboards`
+directory.
+
+* `base-metrics.json`
+* `icinga2-default.json`
+
+The default dashboard name is 'icinga2-default'. You can also configure it inside the module.
+
+There are currently no default dashboards for PNP available. Please create them on your own and send a PR.
+
 
 ## Configuration
 
-There are various configuration settings to tweak how the module behaves.
+### Global Configuration
 
-**Username**
-*(Optional)* The HTTP Basic Auth user name used to access Grafana. 
+You can edit global configuration settings in Icinga Web 2 in `Configuration -> Modules -> grafana -> Configuration`.
 
-**Password**
-*(Optional)* The HTTP Basic Auth password used to access Grafana. You need to set username too.
-
-**Host**
-*(Required)* The Grafana server host name (and port).
-
-**Protocol**
-The protocol used to access the Grafana server, default: *http*
-
-**Graph height**
-The graph height in pixel, default: *280*
-
-**Graph width**
-The graph width in pixel, default : *640*
-
-**Timerange**
-The global time range for the graphs, default: *6h*
-
-**Enable Link**
-Enables/disable the graph as a link to Grafana dashboard, default: *yes*
-
-**Default Dashboard**
-The name of the defaut dashboard that should be used for not configured graphs. Important, panelID must be 1! Default: *icinga2-default*
-
-**Datasource backend**
-The backend of Grafana (file or  database),default: *Database*
-
-**Datasource type**
-The type of your Grafana datasource (InfluxDB,Graphite or PNP),default: *InfluxDB*
+Setting            | Description
+-------------------|-------------------
+host               | **Required.** Grafana server host name (and port).
+username           | **Optional.** HTTP Basic Auth user name to access Grafana.
+password           | **Optional.** HTTP Basic Auth password to access Grafana. Requires the username setting.
+protocol           | **Optional.** Protocol used to access the Grafana server. Defaults to `http`.
+graph height       | **Optional.** Graph height in pixel. Defaults to `280`.
+graph width        | **Optional.** Graph width in pixel. Defaults to `640`.
+timerange          | **Optional.** Global time range for graphs. Defaults to `6h`.
+enableLink         | **Optional.** Enable/disable graph with a rendered URL to the Grafana dashboard. Defaults to `yes`.
+datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.
+defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.
+defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.
 
 
-Example (/etc/icingaweb2/modules/grafana/)config.ini
+Example:
 ```
+vim /etc/icingaweb2/modules/grafana/config.ini
+
 [grafana]
-username = "you grafana username"
+username = "your grafana username"
 host = "hostname:3000"
 protocol = "https"
 password = "123456"
@@ -75,45 +102,53 @@ enableLink = "yes"
 defaultdashboard = "icinga2-default"
 datasource = "influxdb"
 defaultdashboardstore = "db"
-``` 
+```
 
-## Graph configuration
+### Graph Configuration
 
-**Name**
-The name (not display name) of the service or check_command which you want to configure a graph for.
+You can add specific graph configuration settings in Icinga Web 2 in `Configuration -> Grafana Graphs`.
 
-**Dashboard name**
-The name of the Grafana dashboard to use.
+Setting            | Description
+-------------------|-------------------
+name               | **Optional.** The name (not the `display_name`) of the service or check command where a graph should be rendered.
+dashboard          | **Optional.** Name of the Grafana dashboard to use.
+panelId            | **Optional.** Graph panelId. Open Grafana and select to share your dashboard to extract the value.
+customVars         | **Optional.** Set additional custom variables used for Grafana.
+timerange          | **Optional.** Specify the time range for this graph.
+height             | **Optional.** Graph height in pixel. Overrides global default.
+width              | **Optional.** Graph width in pixel. Overrides global default.
 
-**PanelId**
-The panelId of the graph. You can get if if you click on "share" at the graph title.
+Example:
+```
+vim /etc/icingaweb2/modules/grafana/graphs.ini
 
-**CustomVars**
-Here you can set custom variables to be used for grafana.
+[check_command]
+dashboard = "my-own"
+panelId = "42"
+customVars = "&os=$os$"
+timerange = "3h"
+height = "100"
+width = "150"
 
-**Timerange**
-The time range for this service graph only.
-
-**Height**
-The graph height in pixel, if default should not be used.
-
-**width**
-The width in pixel, if default should not be used.
+```
 
 
 ## FAQ
-**Search Order**
-The Module will search first for the service name, then for parametrized service name and last for service check_command name.
 
-If none of the above is configured, it will use the default dashboard.
+### Search Order
 
-Example: Service = "MySQL Users", check_command = mysql_health 
+This module prefers the `service name`, then looks for an optional `parametrized service nam` and for the `service check command name`.
 
-First it will search for a configration with Name = "MySQL Usage", 
+If there is no match, it will use the default dashboard as fallback.
 
-then for "MySQL", last for the check_command used like "mysql_health"
+Example:
 
-## Hats off to
+```
+Service = "MySQL Users", check_command = mysql_health
+```
+At first glance `Name = "MySQL Usage"` must provide a match. Then `MySQL` and last but not least any service
+`check_command` attribute which is set to `mysql_health`.
+
+## Thanks
 
 This module borrows a lot from https://github.com/Icinga/icingaweb2-module-generictts & https://github.com/Icinga/icingaweb2-module-pnp.
-
