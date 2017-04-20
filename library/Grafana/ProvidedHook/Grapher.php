@@ -123,16 +123,28 @@ class Grapher extends GrapherHook
       return $this;
     }
 
-    private function getTimerangeLink($hostName, $serviceName, $rangeName, $timeRange)
+    private function getTimerangeLink($object, $rangeName, $timeRange)
     {
+        if ($object instanceof Host)
+        {
+	    $array = [
+                  'host'       => $object->host_name,
+                  'timerange'  => $timeRange
+            ];
+	    $link = 'monitoring/host/show';
+        } else {
+            $array = [
+                  'host'       => $object->host->getName(),
+                  'service'    => $object->service_description,
+                  'timerange'  => $timeRange
+            ];
+	     $link = 'monitoring/service/show';
+        }
+
         return $this->view->qlink(
                                 $rangeName,
-                                'monitoring/service/show',
-                                array(
-                                    'host'       => $hostName,
-                                    'service'    => $serviceName,
-                                    'timerange'  => $timeRange
-                                ),
+                                $link,
+                                $array,
                                 array(
                                         'class'             => 'action-link',
                                         'data-base-target'  => '_self',
@@ -208,23 +220,23 @@ class Grapher extends GrapherHook
         if ($object instanceof Host) 
         {
             $serviceName = $object->check_command;
-            $customVars = $object->fetchCustomvars()->customvars;
             $hostName = $object->host_name;
         } 
         elseif ($object instanceof Service) 
         {
             $serviceName = $object->service_description;
-            $customVars = $object->fetchCustomvars()->customvars;
             $hostName = $object->host->getName();
         }
+        $customVars = $object->fetchCustomvars()->customvars;
 
 	$this->getGraphConf($serviceName, $object->check_command);
 
-	if ($this->datasource == "graphite") 
+        if ($this->datasource == "graphite")
         {
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
+
 	$return_html = "";
         
         // replace template to customVars from Icinga2
@@ -233,9 +245,10 @@ class Grapher extends GrapherHook
 		$replace[] = is_string($v) ? $v : null;
 		$this->customVars = str_replace($search, $replace, $this->customVars);
 	}
+
         $menu = '<div class="scrollmenu" style="overflow: auto; white-space: nowrap; padding: 8px">';
         foreach ($this->timeranges as $key => $value) {
-             $menu .=  $this->getTimerangeLink($object->host_name, $object->service_description, $value, $key) .'  :  ';
+             $menu .=  $this->getTimerangeLink($object, $value, $key) .'  :  ';
 	}
 	$menu = substr($menu, 0, -3);
 	$menu .= '</div>';
