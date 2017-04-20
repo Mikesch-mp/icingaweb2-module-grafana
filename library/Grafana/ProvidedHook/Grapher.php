@@ -2,6 +2,7 @@
 
 namespace Icinga\Module\Grafana\ProvidedHook;
 
+use Icinga\Application\Icinga;
 use Icinga\Application\Config;
 use Icinga\Exception\ConfigurationError;
 use Icinga\Application\Hook\GrapherHook;
@@ -9,6 +10,7 @@ use Icinga\Module\Monitoring\Object\MonitoredObject;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Web\Url;
+use Icinga\Web\View;
 
 class Grapher extends GrapherHook
 {
@@ -27,11 +29,30 @@ class Grapher extends GrapherHook
     protected $defaultDashboard = "icinga2-default";
     protected $defaultDashboardStore = "db";
     protected $datasource = null;
+    protected $timeranges = [
+                          '5m'   => '5 minutes',
+                          '15m'  => '15 minutes',
+                          '30m'  => '30 minutes',
+                          '1h'   => '1 hour',
+                          '3h'   => '3 hours',
+                          '6h'   => '6 hours',
+                          '8h'   => '8 hours',
+                          '12h'  => '12 hours',
+                          '24h'  => '24 hours',
+                          '2d'   => '2 days',
+                          '7d'   => '7 days',
+                          '30d'  => '30 days',
+                          '60d'  => '60 days',
+                          '6M'   => '6 months',
+                          '1y'   => '1 year',
+                          '2y'   => '2 years',
+    ];
+
+
 
     protected function init()
     {
-        $config = Config::module('grafana')->getSection('grafana');
-	$this->config = $config;
+	$this->config = Config::module('grafana')->getSection('grafana');
         $this->username = $this->config->get('username', $this->username);
         $this->grafanaHost = $this->config->get('host', $this->grafanaHost);
 	if ( $this->grafanaHost == null)
@@ -40,14 +61,21 @@ class Grapher extends GrapherHook
 	}
         $this->password = $this->config->get('password', $this->password);
         $this->protocol = $this->config->get('protocol', $this->protocol);
-        $this->timerange = $this->config->get('timerange', $this->timerange);
+
+	// Check if there is a timerange in url params
+	if ( Url::fromRequest()->hasParam('timerange') ) {
+           $this->timerange = Url::fromRequest()->getParam('timerange');
+	} else {
+           $this->timerange = $this->config->get('timerange', $this->timerange);
+        }
+
 	$this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
 	$this->enableLink = $this->config->get('enableLink', $this->enableLink);
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
         $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
 	$this->datasource = $this->config->get('datasource', $this->datasource);
-
+        $this->view = Icinga::app()->getViewRenderer()->view;
         if($this->username != null)
         {
             if($this->password != null)
@@ -91,6 +119,24 @@ class Grapher extends GrapherHook
       return $this;
     }
 
+    private function getTimerangeLink($hostName, $serviceName, $rangeName, $timeRange)
+    {
+        return $this->view->qlink(
+                                $rangeName,
+                                'monitoring/service/show',
+                                array(
+                                    'host'       => $hostName,
+                                    'service'    => $serviceName,
+                                    'timerange'  => $timeRange
+                                ),
+                                array(
+                                        'class'             => 'action-link',
+                                        'data-base-target'  => '_self',
+                                        'title'             => 'Set timerange for graph to '. $rangeName
+                                )
+        );
+    }
+
     private function getPreviewImage($serviceName, $hostName)
     {
 	$pngUrl = sprintf(
@@ -108,13 +154,21 @@ class Grapher extends GrapherHook
 			$this->height,
 			$this->timerange
 	);
-        $ctx = stream_context_create(array('ssl' => array("verify_peer"=>false, "verify_peer_name"=>false), 'http' => array('method' => 'GET', 'timeout' => 5)));
-        $imgBinary = @file_get_contents($pngUrl, false, $ctx);
-        $error = error_get_last();
-        if ($error !== null)
+
+        // fetch image with curl
+        $curl_handle = curl_init();
+        curl_setopt($curl_handle,CURLOPT_URL,$pngUrl);
+        curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,2);
+        curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($curl_handle,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($curl_handle,CURLOPT_TIMEOUT,5);
+        $imgBinary = curl_exec($curl_handle);
+        if(curl_error($curl_handle))
         {
-            return "Graph currently unavailable: ".$error["message"];
+            return 'Graph currently unavailable: :' . curl_error($curl_handle);
         }
+        curl_close($curl_handle);
+
 
         $img = 'data:image/png;base64,'.base64_encode($imgBinary);
         $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" />';
@@ -167,7 +221,6 @@ class Grapher extends GrapherHook
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
-
 	$return_html = "";
         
         // replace template to customVars from Icinga2
@@ -176,6 +229,12 @@ class Grapher extends GrapherHook
 		$replace[] = is_string($v) ? $v : null;
 		$this->customVars = str_replace($search, $replace, $this->customVars);
 	}
+        $menu = '<div class="scrollmenu" style="overflow: auto; white-space: nowrap; padding: 8px">';
+        foreach ($this->timeranges as $key => $value) {
+             $menu .=  $this->getTimerangeLink($hostName, $serviceName, $value, $key) .'  :  ';
+	}
+	$menu .= '</div>';
+	$html = "";
 
         foreach(explode(',' , $this->panelId) as $panelid) {
 
@@ -183,11 +242,11 @@ class Grapher extends GrapherHook
 
 	    if ($this->enableLink == "no") 
             {
-		$html = $this->getPreviewImage($serviceName, $hostName);
+		$html .= $this->getPreviewImage($serviceName, $hostName);
 	    }
             else 
             {
-	        $html = '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
+	        $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
 
                 if ( $this->dashboard != $this->defaultDashboard )
 	        {
@@ -210,6 +269,6 @@ class Grapher extends GrapherHook
            }
 	   $return_html .= $html;
         }
-        return $return_html;
+        return $menu.$return_html;
     }
 }
