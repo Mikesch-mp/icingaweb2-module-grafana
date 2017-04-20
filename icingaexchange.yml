@@ -89,11 +89,11 @@ releases:
         description: Module file for Icinga Web 2
         checksum: a0cfb4de358e39fd037e5b8cf4d4fdb5
   -
-    name: v1.0.10
-    description: "Update 1.0.10"
+    name: v1.0.11
+    description: "Update 1.0.11"
     files:
       -
-        name: icingaweb2-module-grafana-1.0.10.tar.gz
-        url: "https://github.com/Mikesch-mp/icingaweb2-module-grafana/archive/v1.0.10.tar.gz"
+        name: icingaweb2-module-grafana-1.0.11.tar.gz
+        url: "https://github.com/Mikesch-mp/icingaweb2-module-grafana/archive/v1.0.11.tar.gz"
         description: Module file for Icinga Web 2
         checksum: 12f5ce788d98dcc52d29f52a8bc3b9db
