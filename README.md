@@ -14,8 +14,8 @@
 
 Add Grafana graphs into Icinga Web 2 to display performance metrics.
 
-![Icinga Web 2 Grafana Integration](doc/images/icingaweb2_grafana_screenshot_01.png "Grafana")
-![Icinga Web 2 Grafana Integration](doc/images/icingaweb2_grafana_screenshot_02.png "Grafana")
+![Icinga Web 2 Grafana Integration](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/icingaweb2_grafana_screenshot_01.png "Grafana")
+![Icinga Web 2 Grafana Integration](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/icingaweb2_grafana_screenshot_02.png "Grafana")
 
 ## Requirements
 
