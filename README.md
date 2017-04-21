@@ -22,8 +22,7 @@ Add Grafana graphs into Icinga Web 2 to display performance metrics.
 * [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.1)
 * [Grafana](https://grafana.com/) (>= 4.1)
 * [InfluxDB](https://docs.influxdata.com/influxdb/), [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
-
-* PHP with curl enabled
+* [PHP](https://www.php.net) with curl enabled (for proxy mode)
 
 ## Installation
 
@@ -36,13 +35,13 @@ cd /usr/share/icingaweb2/modules
 git clone https://github.com/Mikesch-mp/icingaweb2-module-grafana.git grafana
 ```
 
-Tarball download (latest [release](https://github.com/Mikesch-mp/icingaweb2-module-grafana/releases)):
+Tarball download (latest [release](https://github.com/Mikesch-mp/icingaweb2-module-grafana/releases/latest)):
 
 ```
 cd /usr/share/icingaweb2/modules
-wget https://github.com/Mikesch-mp/icingaweb2-module-grafana/archive/v1.0.10.zip
-unzip v1.0.10.zip
-mv icingaweb2-module-grafana-1.0.10 grafana
+wget https://github.com/Mikesch-mp/icingaweb2-module-grafana/archive/v1.1.0.zip
+unzip v1.1.0.zip
+mv icingaweb2-module-grafana-1.1.0 grafana
 ```
 
 Enable the module in the Icinga Web 2 frontend in `Configuration -> Modules -> grafana -> enable`.
@@ -86,6 +85,7 @@ enableLink         | **Optional.** Enable/disable graph with a rendered URL to t
 datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.
 defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.
 defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.
+accessmode         | **Optional.** Controlls if module proxies all graphs or user loads graphs directly. Direct access speeds up page load, needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
 
 
 Example:
@@ -104,6 +104,7 @@ enableLink = "yes"
 defaultdashboard = "icinga2-default"
 datasource = "influxdb"
 defaultdashboardstore = "db"
+accessmode = "proxy"
 ```
 
 ### Graph Configuration
@@ -137,7 +138,7 @@ width = "150"
 
 ## FAQ
 
-### Search Order
+### Search order
 
 This module prefers the `service name`, then looks for an optional `parametrized service nam` and for the `service check command name`.
 

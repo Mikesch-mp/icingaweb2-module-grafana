@@ -29,6 +29,7 @@ class Grapher extends GrapherHook
     protected $defaultDashboard = "icinga2-default";
     protected $defaultDashboardStore = "db";
     protected $datasource = null;
+    protected $accessmode = "proxy";
     protected $timeranges = [
                           '5m'   => '5 minutes',
                           '15m'  => '15 minutes',
@@ -77,7 +78,7 @@ class Grapher extends GrapherHook
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
         $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
 	$this->datasource = $this->config->get('datasource', $this->datasource);
-        $this->view = Icinga::app()->getViewRenderer()->view;
+        $this->accessmode = $this->config->get('accessmode', $this->accessmode);
         if($this->username != null)
         {
             if($this->password != null)
@@ -127,6 +128,7 @@ class Grapher extends GrapherHook
 
     private function getTimerangeLink($object, $rangeName, $timeRange)
     {
+        $this->view = Icinga::app()->getViewRenderer()->view;
         if ($object instanceof Host)
         {
 	    $array = [
@@ -157,10 +159,10 @@ class Grapher extends GrapherHook
 
     private function getPreviewImage($serviceName, $hostName)
     {
-	$pngUrl = sprintf(
-			'%s://%s%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
+        if ($this->accessmode == "proxy") {
+	    $pngUrl = sprintf(
+			'%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
 			$this->protocol,
-			$this->auth,
 			$this->grafanaHost,
 			$this->dashboardstore,
 			$this->dashboard,
@@ -171,32 +173,54 @@ class Grapher extends GrapherHook
 			$this->width,
 			$this->height,
 			$this->timerange
-	);
+	    );
 
-        // fetch image with curl
-        $curl_handle = curl_init();
-        curl_setopt($curl_handle,CURLOPT_URL,$pngUrl);
-        curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,2);
-        curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,true);
-        curl_setopt($curl_handle,CURLOPT_SSL_VERIFYPEER,false);
-        curl_setopt($curl_handle,CURLOPT_TIMEOUT,5);
-        $imgBinary = curl_exec($curl_handle);
-        if(curl_error($curl_handle))
-        {
-            return 'Graph currently unavailable: :' . curl_error($curl_handle);
+            // fetch image with curl
+            $curl_handle = curl_init();
+            curl_setopt($curl_handle,CURLOPT_URL,$pngUrl);
+            curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,2);
+            curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,true);
+            curl_setopt($curl_handle,CURLOPT_SSL_VERIFYPEER,false);
+            curl_setopt($curl_handle,CURLOPT_TIMEOUT,5);
+            curl_setopt($curl_handle, CURLOPT_USERPWD, "$this->auth");
+	    curl_setopt($curl_handle, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+            $imgBinary = curl_exec($curl_handle);
+            if(curl_error($curl_handle))
+            {
+                return 'Graph currently unavailable: :' . curl_error($curl_handle);
+            }
+            curl_close($curl_handle);
+
+
+            $img = 'data:image/png;base64,'.base64_encode($imgBinary);
+            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" />';
+            return sprintf(
+                $imghtml,
+                $img,
+                rawurlencode($serviceName),
+                $this->width,
+                $this->height
+            );
+        } else {
+            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now" alt="%s" width="%d" height="%d" />';
+            return sprintf(
+			$imghtml,
+                        $this->protocol,
+                        $this->grafanaHost,
+                        $this->dashboardstore,
+                        $this->dashboard,
+                        urlencode($hostName),
+                        rawurlencode($serviceName),
+                        $this->customVars,
+                        $this->panelId,
+                        $this->width,
+                        $this->height,
+                        $this->timerange,
+                        rawurlencode($serviceName),
+                        $this->width,
+                        $this->height
+            );
         }
-        curl_close($curl_handle);
-
-
-        $img = 'data:image/png;base64,'.base64_encode($imgBinary);
-        $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" />';
-        return sprintf(
-            $imghtml,
-            $img,
-            rawurlencode($serviceName),
-            $this->width,
-            $this->height
-      );
     }
 
     public function has(MonitoredObject $object)

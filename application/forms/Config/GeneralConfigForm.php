@@ -151,7 +151,18 @@ class GeneralConfigForm extends ConfigForm
                 'description'           => $this->translate('Grafana Datasource Type.')
             )
         );
-
+        $this->addElement(
+            'select',
+            'grafana_accessmode',
+            array(
+                'label'                 => $this->translate('Grafana access'),
+                'multiOptions' => array(
+                    'direct'                => $this->translate('Direct'),
+                    'proxy'                 => $this->translate('Proxy'),
+                ),
+                'description'           => $this->translate('User access Grafana directly or module proxies graphs.')
+            )
+        );
     }
 }
 
