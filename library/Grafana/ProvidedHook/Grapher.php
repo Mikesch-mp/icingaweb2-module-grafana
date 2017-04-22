@@ -278,10 +278,10 @@ class Grapher extends GrapherHook
 	}
 	$menu = substr($menu, 0, -3);
 	$menu .= '</div>';
-	$html = "";
 
         foreach(explode(',' , $this->panelId) as $panelid) {
 
+            $html = "";
             $this->panelId = $panelid;
 
 	    if ($this->enableLink == "no") 
