@@ -5,12 +5,14 @@ namespace Icinga\Module\Grafana\ProvidedHook;
 use Icinga\Application\Icinga;
 use Icinga\Application\Config;
 use Icinga\Exception\ConfigurationError;
+use Exception;
 use Icinga\Application\Hook\GrapherHook;
 use Icinga\Module\Monitoring\Object\MonitoredObject;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Web\Url;
 use Icinga\Web\View;
+use Icinga\Module\Grafana\Util;
 
 class Grapher extends GrapherHook
 {
@@ -83,12 +85,12 @@ class Grapher extends GrapherHook
         {
             if($this->password != null)
             {
-                $this->auth = $this->username.":".$this->password."@";
+                $this->auth = $this->username.":".$this->password;
             }
             else
-           {
-                $this->auth = $this->username."@";
-           }
+            {
+                $this->auth = $this->username;
+            }
         }
         else
         {
@@ -177,22 +179,35 @@ class Grapher extends GrapherHook
 
             // fetch image with curl
             $curl_handle = curl_init();
-            curl_setopt($curl_handle,CURLOPT_URL,$pngUrl);
-            curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,2);
-            curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,true);
-            curl_setopt($curl_handle,CURLOPT_SSL_VERIFYPEER,false);
-            curl_setopt($curl_handle,CURLOPT_TIMEOUT,5);
-            curl_setopt($curl_handle, CURLOPT_USERPWD, "$this->auth");
-	    curl_setopt($curl_handle, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-            $imgBinary = curl_exec($curl_handle);
-            if(curl_error($curl_handle))
-            {
-                return 'Graph currently unavailable: :' . curl_error($curl_handle);
+            $curl_opts = array(
+                CURLOPT_URL => $pngUrl,
+                CURLOPT_CONNECTTIMEOUT => 2,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false, //TODO: config option
+                CURLOPT_TIMEOUT => 5, //TODO: config option
+                CURLOPT_USERPWD => "$this->auth",
+                CURLOPT_HTTPAUTH, CURLAUTH_ANY
+            );
+
+            curl_setopt_array($curl_handle, $curl_opts);
+
+            $res = curl_exec($curl_handle);
+
+            if ($res === false) {
+                return "<b>Graph currently unavailable: Curl error: ' . curl_error($curl_handle)</b>";
             }
+
+            $statusCode = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
+
+            if ($statusCode > 299) {
+                $error = @json_decode($res);
+		return "<b>Cannot fetch Grafana graph: ". Util::httpStatusCodeToString($statusCode) .
+                       " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
+            }
+
             curl_close($curl_handle);
 
-
-            $img = 'data:image/png;base64,'.base64_encode($imgBinary);
+            $img = 'data:image/png;base64,'.base64_encode($res);
             $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" />';
             return sprintf(
                 $imghtml,

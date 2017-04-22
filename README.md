@@ -85,7 +85,7 @@ enableLink         | **Optional.** Enable/disable graph with a rendered URL to t
 datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.
 defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.
 defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.
-accessmode         | **Optional.** Controlls if module proxies all graphs or user loads graphs directly. Direct access speeds up page load, needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
+accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`) or are embedded (`direct`). Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
 
 
 Example:
