@@ -320,7 +320,7 @@ class Grapher extends GrapherHook
 	    }
             else 
             {
-	        $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&from=now-%s&to=now';
+	        $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s%s&from=now-%s&to=now';
 
                 if ( $this->dashboard != $this->defaultDashboard )
 	        {
@@ -337,6 +337,7 @@ class Grapher extends GrapherHook
 		    $this->dashboard,
 		    urlencode($hostName),
 		    rawurlencode($serviceName),
+		    $this->customVars,
                     $this->timerange,
                     $previewHtml
 	       );
