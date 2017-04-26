@@ -159,7 +159,8 @@ class Grapher extends GrapherHook
         );
     }
 
-    private function getPreviewImage($serviceName, $hostName)
+    //returns false on error, previewHTML is passed as reference
+    private function getPreviewHtml($serviceName, $hostName, &$previewHtml)
     {
         if ($this->accessmode == "proxy") {
 	    $pngUrl = sprintf(
@@ -194,22 +195,29 @@ class Grapher extends GrapherHook
             $res = curl_exec($curl_handle);
 
             if ($res === false) {
-                return "<b>Graph currently unavailable: Curl error: ' . curl_error($curl_handle)</b>";
+                $previewHtml = "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
+
+                //provide a hint for 'Failed to connect to ...: Permission denied'
+                if (curl_errno($curl_handle) == 7) {
+                    $previewHtml .= " Check SELinux/Firewall.";
+                }
+                return false;
             }
 
             $statusCode = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
 
             if ($statusCode > 299) {
                 $error = @json_decode($res);
-		return "<b>Cannot fetch Grafana graph: ". Util::httpStatusCodeToString($statusCode) .
+                $previewHtml = "<b>Cannot fetch Grafana graph: ". Util::httpStatusCodeToString($statusCode) .
                        " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
+                return false;
             }
 
             curl_close($curl_handle);
 
             $img = 'data:image/png;base64,'.base64_encode($res);
             $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" />';
-            return sprintf(
+            $previewHtml = sprintf(
                 $imghtml,
                 $img,
                 rawurlencode($serviceName),
@@ -218,7 +226,7 @@ class Grapher extends GrapherHook
             );
         } else {
             $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now" alt="%s" width="%d" height="%d" />';
-            return sprintf(
+            $previewHtml = sprintf(
 			$imghtml,
                         $this->protocol,
                         $this->grafanaHost,
@@ -236,6 +244,8 @@ class Grapher extends GrapherHook
                         $this->height
             );
         }
+
+        return true;
     }
 
     public function has(MonitoredObject $object)
@@ -299,9 +309,14 @@ class Grapher extends GrapherHook
             $html = "";
             $this->panelId = $panelid;
 
-	    if ($this->enableLink == "no") 
+            //image value will be returned as reference
+            $previewHtml = "";
+            $res = $this->getPreviewHtml($serviceName, $hostName, $previewHtml);
+
+            //do not render URLs on error or if disabled
+	    if (!$res || $this->enableLink == "no") 
             {
-		$html .= $this->getPreviewImage($serviceName, $hostName);
+		$html .= $previewHtml;
 	    }
             else 
             {
@@ -324,7 +339,7 @@ class Grapher extends GrapherHook
 		    rawurlencode($serviceName),
 		    $this->customVars,
                     $this->timerange,
-		    $this->getPreviewImage($serviceName, $hostName)
+                    $previewHtml
 	       );
            }
 	   $return_html .= $html;
