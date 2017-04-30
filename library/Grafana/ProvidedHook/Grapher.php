@@ -32,6 +32,8 @@ class Grapher extends GrapherHook
     protected $defaultDashboardStore = "db";
     protected $datasource = null;
     protected $accessmode = "proxy";
+    protected $timeout = "5";
+    protected $refresh = "no";
     protected $timeranges = [
                           '5m'   => '5 minutes',
                           '15m'  => '15 minutes',
@@ -73,7 +75,7 @@ class Grapher extends GrapherHook
 	} else {
            $this->timerange = $this->config->get('timerange', $this->timerange);
         }
-
+	$this->timeout = $this->config->get('timeout', $this->timeout);
 	$this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
 	$this->enableLink = $this->config->get('enableLink', $this->enableLink);
@@ -81,6 +83,8 @@ class Grapher extends GrapherHook
         $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
 	$this->datasource = $this->config->get('datasource', $this->datasource);
         $this->accessmode = $this->config->get('accessmode', $this->accessmode);
+        $this->refresh = $this->config->get('directrefresh', $this->refresh);
+        $this->refresh = ($this->refresh == "yes" && $this->accessmode == "direct" ? time() : 'now');
         if($this->username != null)
         {
             if($this->password != null)
@@ -160,7 +164,7 @@ class Grapher extends GrapherHook
     }
 
     //returns false on error, previewHTML is passed as reference
-    private function getPreviewHtml($serviceName, $hostName, &$previewHtml)
+    private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
     {
         if ($this->accessmode == "proxy") {
 	    $pngUrl = sprintf(
@@ -185,7 +189,7 @@ class Grapher extends GrapherHook
                 CURLOPT_CONNECTTIMEOUT => 2,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => false, //TODO: config option
-                CURLOPT_TIMEOUT => 5, //TODO: config option
+                CURLOPT_TIMEOUT => $this-timeout, 
                 CURLOPT_USERPWD => "$this->auth",
                 CURLOPT_HTTPAUTH, CURLAUTH_ANY
             );
@@ -225,7 +229,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } else {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now" alt="%s" width="%d" height="%d" />';
+            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" />';
             $previewHtml = sprintf(
 			$imghtml,
                         $this->protocol,
@@ -239,6 +243,7 @@ class Grapher extends GrapherHook
                         $this->width,
                         $this->height,
                         $this->timerange,
+                        $this->refresh,
                         rawurlencode($serviceName),
                         $this->width,
                         $this->height
@@ -311,7 +316,7 @@ class Grapher extends GrapherHook
 
             //image value will be returned as reference
             $previewHtml = "";
-            $res = $this->getPreviewHtml($serviceName, $hostName, $previewHtml);
+            $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml);
 
             //do not render URLs on error or if disabled
 	    if (!$res || $this->enableLink == "no") 

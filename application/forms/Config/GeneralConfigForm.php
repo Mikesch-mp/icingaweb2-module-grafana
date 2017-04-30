@@ -57,7 +57,6 @@ class GeneralConfigForm extends ConfigForm
                     'https'             => $this->translate('Secure: https'),
             	),
                 'description'   	=> $this->translate('Protocol used to access Grafana.'),
-            'class' => 'autosubmit',
             )
         );
         $this->addElement(
@@ -160,9 +159,39 @@ class GeneralConfigForm extends ConfigForm
                     'direct'                => $this->translate('Direct'),
                     'proxy'                 => $this->translate('Proxy'),
                 ),
-                'description'           => $this->translate('User access Grafana directly or module proxies graphs.')
+                'description'           => $this->translate('User access Grafana directly or module proxies graphs.'),
+                'class'                 => 'autosubmit', 
+                'required'              => true
             )
         );
+
+        if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'proxy') {
+            $this->addElement(
+                'number',
+                'grafana_proxytimeout',
+                array(
+                    'label'                 => $this->translate('Proxy Timeout'),
+                    'placeholder'		=> '5',
+                    'description'           => $this->translate('Timeout in seconds for proxy mode to fetch images.')
+                )
+            );
+        }
+	
+        if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'direct') {
+            $this->addElement(
+                'select',
+                'grafana_directrefresh',
+                array(
+                    'label'                 => $this->translate('Refresh on direct'),
+                    'multiOptions' => array(
+                        'yes'                => $this->translate('Yes'),
+                        'no'                 => $this->translate('No'),
+                    ),
+                'description'           => $this->translate('Refresh fraphs on direct access.')
+                )
+            );
+        }
+
     }
 }
 
