@@ -86,6 +86,8 @@ datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `
 defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.
 defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.
 accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`) or are embedded (`direct`). Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
+timeout            | **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.
+directrefresh      | **Optional.** Refresh graphs on direct access. Defaults to `no`.
 
 
 Example:
@@ -105,6 +107,8 @@ defaultdashboard = "icinga2-default"
 datasource = "influxdb"
 defaultdashboardstore = "db"
 accessmode = "proxy"
+timeout = "5"
+directrefresh = "no"
 ```
 
 ### Graph Configuration
