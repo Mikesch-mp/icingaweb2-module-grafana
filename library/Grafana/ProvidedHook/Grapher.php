@@ -27,7 +27,7 @@ class Grapher extends GrapherHook
     protected $timerange = "6h";
     protected $username = null;
     protected $width = 640;
-    protected $enableLink = true;
+    protected $enableLink = "yes";
     protected $defaultDashboard = "icinga2-default";
     protected $defaultDashboardStore = "db";
     protected $datasource = null;
@@ -229,24 +229,21 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } else {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" />';
+            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&theme=light&from=now-%s&to=now&trickrefresh=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
             $previewHtml = sprintf(
-			$imghtml,
-                        $this->protocol,
-                        $this->grafanaHost,
-                        $this->dashboardstore,
-                        $this->dashboard,
-                        urlencode($hostName),
-                        rawurlencode($serviceName),
-                        $this->customVars,
-                        $this->panelId,
-                        $this->width,
-                        $this->height,
-                        $this->timerange,
-                        $this->refresh,
-                        rawurlencode($serviceName),
-                        $this->width,
-                        $this->height
+                $iframehtml,
+                $this->protocol,
+                $this->grafanaHost,
+                $this->dashboardstore,
+                $this->dashboard,
+                urlencode($hostName),
+                rawurlencode($serviceName),
+                $this->customVars,
+                $this->panelId,
+                $this->timerange,
+                $this->refresh,
+                rawurlencode($serviceName),
+                $this->height
             );
         }
 
@@ -322,6 +319,24 @@ class Grapher extends GrapherHook
 	    if (!$res || $this->enableLink == "no") 
             {
 		$html .= $previewHtml;
+            } else if ($this->accessmode == "direct") {
+            $extra = "";
+            if ($this->dashboard != $this->defaultDashboard) {
+                $extra = '&panelId=' . $this->panelId . '&fullscreen';
+            }
+            $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s%s&from=now-%s&to=now%s" target="_blank">' . $this->getView()->translate('View in Grafana') . '</a>';
+            $html = sprintf(
+                    $html,
+                    $this->protocol,
+                    $this->grafanaHost,
+                    $this->dashboardstore,
+                    $this->dashboard,
+                    urlencode($hostName),
+                    rawurlencode($serviceName),
+                    $this->customVars,
+                    $this->timerange,
+                    $extra
+                ) . $previewHtml;
 	    }
             else 
             {
