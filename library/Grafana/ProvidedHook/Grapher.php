@@ -102,21 +102,27 @@ class Grapher extends GrapherHook
         }
     }
 
-    private function getGraphConf($serviceName, $serviceCommand)
+    private function getGraphConf($serviceName, $serviceCommand,$hostgroups)
     {
-
         $graphconfig = Config::module('grafana', 'graphs');
         $this->graphconfig = $graphconfig;
-        if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) && ($this->graphconfig->hasSection($serviceName) == False )) 
+
+        foreach($hostgroups as $key => $value) {
+            if ($this->graphconfig->hasSection('hostgroup='.$key.'&service='.$serviceName))  {
+                $serviceName='hostgroup='.$key.'&service='.$serviceName;
+            }
+        }
+
+        if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) && ($this->graphconfig->hasSection($serviceName) == False ))
         {
            $serviceName = strtok($serviceName, ' ');
         }
-	if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphconfig->hasSection($serviceName) == False )) 
+       if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphconfig->hasSection($serviceName) == False ))
         {
            $serviceName = $serviceCommand;
         }
 
-	
+
       $this->dashboard = $this->graphconfig->get($serviceName, 'dashboard', $this->defaultDashboard);
       $this->dashboardstore = $this->graphconfig->get($serviceName, 'dashboardstore', $this->defaultDashboardStore);
       $this->panelId = $this->graphconfig->get($serviceName, 'panelId', '1');
@@ -286,7 +292,7 @@ class Grapher extends GrapherHook
         }
         $customVars = $object->fetchCustomvars()->customvars;
 
-	$this->getGraphConf($serviceName, $object->check_command);
+	$this->getGraphConf($serviceName, $object->check_command,$object->hostgroups);
 
         if ($this->datasource == "graphite")
         {
