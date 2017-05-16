@@ -102,21 +102,31 @@ class Grapher extends GrapherHook
         }
     }
 
-    private function getGraphConf($serviceName, $serviceCommand)
+    private function getGraphConf($serviceName, $serviceCommand,$hostgroups)
     {
-
         $graphconfig = Config::module('grafana', 'graphs');
         $this->graphconfig = $graphconfig;
-        if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) && ($this->graphconfig->hasSection($serviceName) == False )) 
+
+        foreach($hostgroups as $key => $value) {
+            if ($this->graphconfig->hasSection('hostgroup='.$key.'&service='.$serviceName))  {
+                $serviceName='hostgroup='.$key.'&service='.$serviceName;
+            }
+        }
+
+        if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) && ($this->graphconfig->hasSection($serviceName) == False ))
         {
            $serviceName = strtok($serviceName, ' ');
         }
-	if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphconfig->hasSection($serviceName) == False )) 
+
+       if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphconfig->hasSection($serviceName) == False ))
         {
-           $serviceName = $serviceCommand;
+            $serviceName = $serviceCommand;
+            if($this->graphconfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
+                return NULL;
+            }
         }
 
-	
+
       $this->dashboard = $this->graphconfig->get($serviceName, 'dashboard', $this->defaultDashboard);
       $this->dashboardstore = $this->graphconfig->get($serviceName, 'dashboardstore', $this->defaultDashboardStore);
       $this->panelId = $this->graphconfig->get($serviceName, 'panelId', '1');
@@ -189,6 +199,7 @@ class Grapher extends GrapherHook
                 CURLOPT_CONNECTTIMEOUT => 2,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => false, //TODO: config option
+                CURLOPT_SSL_VERIFYHOST => 0, //TODO: config option
                 CURLOPT_TIMEOUT => $this->timeout, 
                 CURLOPT_USERPWD => "$this->auth",
                 CURLOPT_HTTPAUTH, CURLAUTH_ANY
@@ -285,7 +296,9 @@ class Grapher extends GrapherHook
         }
         $customVars = $object->fetchCustomvars()->customvars;
 
-	$this->getGraphConf($serviceName, $object->check_command);
+        if($this->getGraphConf($serviceName, $object->check_command,$object->hostgroups) == NULL) {
+            return;
+        }
 
         if ($this->datasource == "graphite")
         {
