@@ -36,11 +36,8 @@ class Grapher extends GrapherHook
     protected $refresh = "no";
     protected $timeranges = [
                           '5m'   => '5 minutes',
-                          '15m'  => '15 minutes',
                           '30m'  => '30 minutes',
-                          '1h'   => '1 hour',
                           '3h'   => '3 hours',
-                          '6h'   => '6 hours',
                           '8h'   => '8 hours',
                           '12h'  => '12 hours',
                           '24h'  => '24 hours',
@@ -48,9 +45,6 @@ class Grapher extends GrapherHook
                           '7d'   => '7 days',
                           '30d'  => '30 days',
                           '60d'  => '60 days',
-                          '6M'   => '6 months',
-                          '1y'   => '1 year',
-                          '2y'   => '2 years',
     ];
 
 
