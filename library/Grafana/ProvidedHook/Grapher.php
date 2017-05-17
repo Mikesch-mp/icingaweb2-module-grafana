@@ -34,6 +34,7 @@ class Grapher extends GrapherHook
     protected $accessmode = "proxy";
     protected $timeout = "5";
     protected $refresh = "no";
+    protected $title = "<h2>Performance Graph</h2>";
     protected $timeranges = [
                           '5m'   => '5 minutes',
                           '30m'  => '30 minutes',
@@ -373,6 +374,6 @@ class Grapher extends GrapherHook
            }
 	   $return_html .= $html;
         }
-        return $menu.$return_html;
+        return $this->title.$menu.$return_html;
     }
 }
