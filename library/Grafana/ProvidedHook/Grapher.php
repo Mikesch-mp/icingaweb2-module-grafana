@@ -22,6 +22,7 @@ class Grapher extends GrapherHook
     protected $grafana = array();
     protected $height = 280;
     protected $grafanaHost = null;
+    protected $grafanaHostLink = null;
     protected $password = null;
     protected $protocol = "http";
     protected $timerange = "6h";
@@ -60,17 +61,21 @@ class Grapher extends GrapherHook
 	$this->config = Config::module('grafana')->getSection('grafana');
         $this->username = $this->config->get('username', $this->username);
         $this->grafanaHost = $this->config->get('host', $this->grafanaHost);
+        $this->grafanaHostLink = $this->config->get('hostlink', $this->grafanaHostLink);
 	if ( $this->grafanaHost == null)
         {
             throw new ConfigurationError(
                 'No Grafana host configured!'
             );
 	}
+        if ( $this->grafanaHostLink == null) {
+            $this->grafanaHostLink = $this->grafanaHost;
+        }
         $this->password = $this->config->get('password', $this->password);
         $this->protocol = $this->config->get('protocol', $this->protocol);
 
 	// Check if there is a timerange in url params
-	if ( Url::fromRequest()->hasParam('timerange') ) {
+       if ( Url::fromRequest()->hasParam('timerange') ) {
            $this->timerange = Url::fromRequest()->getParam('timerange');
 	} else {
            $this->timerange = $this->config->get('timerange', $this->timerange);
@@ -365,7 +370,7 @@ class Grapher extends GrapherHook
                 $html = sprintf(
 		    $html,
 		    $this->protocol,
-		    $this->grafanaHost,
+		    $this->grafanaHostLink,
 		    $this->dashboardstore,
 		    $this->dashboard,
 		    urlencode($hostName),

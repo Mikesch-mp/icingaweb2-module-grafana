@@ -75,6 +75,7 @@ You can edit global configuration settings in Icinga Web 2 in `Configuration -> 
 Setting            | Description
 -------------------|-------------------
 host               | **Required.** Grafana server host name (and port).
+hostlink           | **Optional.** Grafana server host name (and port) to be used in the graph link, the parameter host will be used if hostlink is not specified.
 username           | **Optional.** HTTP Basic Auth user name to access Grafana.
 password           | **Optional.** HTTP Basic Auth password to access Grafana. Requires the username setting.
 protocol           | **Optional.** Protocol used to access the Grafana server. Defaults to `http`.
