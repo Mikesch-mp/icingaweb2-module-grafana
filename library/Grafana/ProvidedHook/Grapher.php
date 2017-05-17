@@ -1,5 +1,4 @@
 <?php
-
 namespace Icinga\Module\Grafana\ProvidedHook;
 
 use Icinga\Application\Icinga;
@@ -105,6 +104,10 @@ class Grapher extends GrapherHook
         {
             $this->auth = "";
         }
+        if ( Url::fromRequest()->hasParam('grafanaimage') ) {
+            $imageurl = base64_decode(Url::fromRequest()->getParam('grafanaimage'));
+            $this->getGrafanaImage($imageurl);
+        }
     }
 
     private function getGraphConf($serviceName, $serviceCommand,$hostgroups)
@@ -178,72 +181,66 @@ class Grapher extends GrapherHook
         );
     }
 
+    private function getGrafanaImage($url) {
+        $curl_handle = curl_init();
+        $curl_opts = array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_TIMEOUT => $this->timeout,
+            CURLOPT_USERPWD => "$this->auth",
+            CURLOPT_HTTPAUTH, CURLAUTH_ANY
+        );
+
+        curl_setopt_array($curl_handle, $curl_opts);
+        $res = curl_exec($curl_handle);
+
+        $info = curl_getinfo($curl_handle);
+
+        curl_close($curl_handle);
+        header('Content-Type: '.$info['content_type']);
+        header('Content-Length: '.$info['download_content_length']);
+        echo $res;
+        exit;
+    }
+
     //returns false on error, previewHTML is passed as reference
-    private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
+    private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml,$object)
     {
         if ($this->accessmode == "proxy") {
-	    $pngUrl = sprintf(
-			'%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
-			$this->protocol,
-			$this->grafanaHost,
-			$this->dashboardstore,
-			$this->dashboard,
-			urlencode($hostName),
-			rawurlencode($serviceName),
-			$this->customVars,
-			$this->panelId,
-			$this->width,
-			$this->height,
-			$this->timerange
-	    );
-
-            // fetch image with curl
-            $curl_handle = curl_init();
-            $curl_opts = array(
-                CURLOPT_URL => $pngUrl,
-                CURLOPT_CONNECTTIMEOUT => 2,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_SSL_VERIFYPEER => false, //TODO: config option
-                CURLOPT_SSL_VERIFYHOST => 0, //TODO: config option
-                CURLOPT_TIMEOUT => $this->timeout, 
-                CURLOPT_USERPWD => "$this->auth",
-                CURLOPT_HTTPAUTH, CURLAUTH_ANY
-            );
-
-            curl_setopt_array($curl_handle, $curl_opts);
-
-            $res = curl_exec($curl_handle);
-
-            if ($res === false) {
-                $previewHtml = "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
-
-                //provide a hint for 'Failed to connect to ...: Permission denied'
-                if (curl_errno($curl_handle) == 7) {
-                    $previewHtml .= " Check SELinux/Firewall.";
-                }
-                return false;
-            }
-
-            $statusCode = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-
-            if ($statusCode > 299) {
-                $error = @json_decode($res);
-                $previewHtml = "<b>Cannot fetch Grafana graph: ". Util::httpStatusCodeToString($statusCode) .
-                       " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
-                return false;
-            }
-
-            curl_close($curl_handle);
-
-            $img = 'data:image/png;base64,'.base64_encode($res);
-            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" />';
-            $previewHtml = sprintf(
-                $imghtml,
-                $img,
+            $pngUrl = sprintf(
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
+                $this->protocol,
+                $this->grafanaHost,
+                $this->dashboardstore,
+                $this->dashboard,
+                urlencode($hostName),
                 rawurlencode($serviceName),
+                $this->customVars,
+                $this->panelId,
                 $this->width,
-                $this->height
+                $this->height,
+                $this->timerange
             );
+
+            $this->view = Icinga::app()->getViewRenderer()->view;
+            if ($object instanceof Host)
+            {
+                $array = [
+                      'host'       => $object->host_name,
+                      'grafanaimage' => base64_encode($pngUrl),
+                ];
+                $link = 'monitoring/host/show';
+            } else {
+                $array = [
+                      'host'       => $object->host->getName(),
+                      'service'    => $object->service_description,
+                      'grafanaimage' => base64_encode($pngUrl),
+                ];
+                $link = 'monitoring/service/show';
+            }
+            $previewHtml = sprintf('<img src="%s" style="width: auto; height: auto; max-width: 100%%; max-height: 100%%;">',$this->view->url($link, $array));
         } else {
             $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&theme=light&from=now-%s&to=now&trickrefresh=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
             $previewHtml = sprintf(
@@ -331,10 +328,10 @@ class Grapher extends GrapherHook
 
             //image value will be returned as reference
             $previewHtml = "";
-            $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml);
+            $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml,$object);
 
             //do not render URLs on error or if disabled
-	    if (!$res || $this->enableLink == "no") 
+	    if ($this->enableLink == "no") 
             {
 		$html .= $previewHtml;
             } else if ($this->accessmode == "direct") {
