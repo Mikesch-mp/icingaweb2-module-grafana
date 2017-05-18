@@ -105,7 +105,7 @@ class Grapher extends GrapherHook
         }
     }
 
-    private function getGraphConf($serviceName, $serviceCommand,$hostgroups)
+    private function getGraphConf($serviceName, $serviceCommand,$hostgroups,$hostname)
     {
         $graphconfig = Config::module('grafana', 'graphs');
         $this->graphconfig = $graphconfig;
@@ -114,6 +114,10 @@ class Grapher extends GrapherHook
             if ($this->graphconfig->hasSection('hostgroup='.$key.'&service='.$serviceName))  {
                 $serviceName='hostgroup='.$key.'&service='.$serviceName;
             }
+        }
+
+        if ($this->graphconfig->hasSection('hostname='.$hostname.'&service='.$serviceName))  {
+                $serviceName='hostname='.$hostname.'&service='.$serviceName;
         }
 
         if ($this->graphconfig->hasSection(strtok($serviceName, ' ')) && ($this->graphconfig->hasSection($serviceName) == False ))
@@ -290,7 +294,7 @@ class Grapher extends GrapherHook
         }
         $customVars = $object->fetchCustomvars()->customvars;
 
-        if($this->getGraphConf($serviceName, $object->check_command,$object->hostgroups) == NULL) {
+        if($this->getGraphConf($serviceName, $object->check_command,$object->hostgroups,$hostName) == NULL) {
             return;
         }
 
