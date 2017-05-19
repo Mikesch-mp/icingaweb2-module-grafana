@@ -89,6 +89,7 @@ defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaul
 accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`) or are embedded (`direct`). Direct access is faster (displays Graph in an iframe) and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
 timeout            | **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.
 directrefresh      | **Optional.** Refresh graphs on direct access. Defaults to `no`.
+theme              | **Optional.** Select grafana theme for the graph (light or dark). Defaults to `light`.
 
 
 Example:

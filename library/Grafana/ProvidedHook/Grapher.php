@@ -22,6 +22,7 @@ class Grapher extends GrapherHook
     protected $height = 280;
     protected $grafanaHost = null;
     protected $grafanaHostLink = null;
+    protected $grafanaTheme = 'light';
     protected $password = null;
     protected $protocol = "http";
     protected $timerange = "6h";
@@ -56,6 +57,7 @@ class Grapher extends GrapherHook
         $this->username = $this->config->get('username', $this->username);
         $this->grafanaHost = $this->config->get('host', $this->grafanaHost);
         $this->grafanaHostLink = $this->config->get('hostlink', $this->grafanaHostLink);
+        $this->grafanaTheme = $this->config->get('theme', $this->grafanaTheme);
 	if ( $this->grafanaHost == null)
         {
             throw new ConfigurationError(
@@ -209,7 +211,7 @@ class Grapher extends GrapherHook
     {
         if ($this->accessmode == "proxy") {
             $pngUrl = sprintf(
-                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
@@ -220,6 +222,7 @@ class Grapher extends GrapherHook
                 $this->panelId,
                 $this->width,
                 $this->height,
+                $this->grafanaTheme,
                 $this->timerange
             );
 
@@ -241,7 +244,7 @@ class Grapher extends GrapherHook
             }
             $previewHtml = sprintf('<img src="%s" style="width: auto; height: auto; max-width: 100%%; max-height: 100%%;">',$this->view->url($link, $array));
         } else {
-            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&theme=light&from=now-%s&to=now&trickrefresh=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
             $previewHtml = sprintf(
                 $iframehtml,
                 $this->protocol,
@@ -252,6 +255,7 @@ class Grapher extends GrapherHook
                 rawurlencode($serviceName),
                 $this->customVars,
                 $this->panelId,
+                $this->grafanaTheme,
                 $this->timerange,
                 $this->refresh,
                 rawurlencode($serviceName),
