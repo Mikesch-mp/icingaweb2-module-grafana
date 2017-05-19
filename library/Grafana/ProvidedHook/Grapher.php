@@ -317,7 +317,7 @@ class Grapher extends GrapherHook
 		$this->customVars = str_replace($search, $replace, $this->customVars);
 	}
 
-        $menu = '<div class="scrollmenu" style="overflow: auto; white-space: nowrap; padding: 8px">';
+        $menu = '<div class="scrollmenu" style="overflow: hidden; white-space: nowrap; padding: 8px">';
         foreach ($this->timeranges as $key => $value) {
              $menu .=  $this->getTimerangeLink($object, $value, $key) .'  :  ';
 	}
