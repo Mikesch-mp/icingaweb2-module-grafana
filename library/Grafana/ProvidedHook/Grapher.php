@@ -242,7 +242,7 @@ class Grapher extends GrapherHook
                 ];
                 $link = 'monitoring/service/show';
             }
-            $previewHtml = sprintf('<img src="%s" style="width: auto; height: auto; max-width: 100%%; max-height: 100%%;">',$this->view->url($link, $array));
+            $previewHtml = sprintf('<img src="%s" style="display:block; width: auto; height: auto; max-width: 100%%; max-height: 100%%;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4) !important; border-radius: 5px; ">',$this->view->url($link, $array));
         } else {
             $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
             $previewHtml = sprintf(
