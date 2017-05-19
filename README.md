@@ -75,6 +75,7 @@ You can edit global configuration settings in Icinga Web 2 in `Configuration -> 
 Setting            | Description
 -------------------|-------------------
 host               | **Required.** Grafana server host name (and port).
+hostlink           | **Optional.** Grafana server host name (and port) to be used in the graph link, the parameter host will be used if hostlink is not specified.
 username           | **Optional.** HTTP Basic Auth user name to access Grafana.
 password           | **Optional.** HTTP Basic Auth password to access Grafana. Requires the username setting.
 protocol           | **Optional.** Protocol used to access the Grafana server. Defaults to `http`.
@@ -85,9 +86,10 @@ enableLink         | **Optional.** Enable/disable graph with a rendered URL to t
 datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.
 defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.
 defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.
-accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`) or are embedded (`direct`). Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
+accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`) or are embedded (`direct`). Direct access is faster (displays Graph in an iframe) and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
 timeout            | **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.
 directrefresh      | **Optional.** Refresh graphs on direct access. Defaults to `no`.
+theme              | **Optional.** Select grafana theme for the graph (light or dark). Defaults to `light`.
 
 
 Example:
@@ -144,7 +146,7 @@ width = "150"
 
 ### Search order
 
-This module prefers the `service name`, then looks for an optional `parametrized service nam` and for the `service check command name`.
+This module prefers the `service name`, then looks for an optional `parametrized service name` and for the `service check command name`.
 
 If there is no match, it will use the default dashboard as fallback.
 
