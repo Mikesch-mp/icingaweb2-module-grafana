@@ -21,6 +21,7 @@ class Grapher extends GrapherHook
     protected $auth;
     protected $grafana = array();
     protected $grafanaHost = null;
+    protected $grafanaTheme = 'light';
     protected $protocol = "http";
     protected $usePublic = "no";
     protected $publicHost = null;
@@ -77,6 +78,7 @@ class Grapher extends GrapherHook
         $this->config = Config::module('grafana')->getSection('grafana');
         $this->username = $this->config->get('username', $this->username);
         $this->grafanaHost = $this->config->get('host', $this->grafanaHost);
+        $this->grafanaTheme = $this->config->get('theme', $this->grafanaTheme);
         if ($this->grafanaHost == null) {
             throw new ConfigurationError(
                 'No Grafana host configured!'
@@ -184,7 +186,7 @@ class Grapher extends GrapherHook
     {
         if ($this->accessMode == "proxy") {
             $pngUrl = sprintf(
-                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now',
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
@@ -195,6 +197,7 @@ class Grapher extends GrapherHook
                 $this->panelId,
                 $this->width,
                 $this->height,
+                $this->grafanaTheme,
                 $this->timerange
             );
 
@@ -245,7 +248,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "direct") {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" />';
+            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" />';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->protocol,
@@ -258,6 +261,7 @@ class Grapher extends GrapherHook
                 $this->panelId,
                 $this->width,
                 $this->height,
+                $this->grafanaTheme,
                 $this->timerange,
                 $this->refresh,
                 rawurlencode($serviceName),
@@ -265,7 +269,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "iframe") {
-            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&theme=light&from=now-%s&to=now" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&theme=%s&from=now-%s&to=now" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
             $previewHtml = sprintf(
                 $iframehtml,
                 $this->protocol,
@@ -276,6 +280,7 @@ class Grapher extends GrapherHook
                 rawurlencode($serviceName),
                 $this->customVars,
                 $this->panelId,
+                $this->grafanaTheme,
                 $this->timerange,
                 rawurlencode($serviceName),
                 $this->height
