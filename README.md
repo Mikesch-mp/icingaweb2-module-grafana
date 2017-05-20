@@ -75,8 +75,6 @@ You can edit global configuration settings in Icinga Web 2 in `Configuration -> 
 Setting            | Description
 -------------------|-------------------
 host               | **Required.** Grafana server host name (and port).
-username           | **Optional.** HTTP Basic Auth user name to access Grafana.
-password           | **Optional.** HTTP Basic Auth password to access Grafana. Requires the username setting.
 protocol           | **Optional.** Protocol used to access the Grafana server. Defaults to `http`.
 graph height       | **Optional.** Graph height in pixel. Defaults to `280`.
 graph width        | **Optional.** Graph width in pixel. Defaults to `640`.
@@ -85,8 +83,10 @@ enableLink         | **Optional.** Enable/disable graph with a rendered URL to t
 datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.
 defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.
 defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.
-accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`) or are embedded (`direct`). Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
-timeout            | **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.
+accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`), are embedded (`direct`) or in iframe ('iframe'. Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
+timeout            | **Proxy only** **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.
+username           | **Proxy non anonymous only** **Required** HTTP Basic Auth user name to access Grafana.
+password           | **Proxy non anonymous only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.
 directrefresh      | **Optional.** Refresh graphs on direct access. Defaults to `no`.
 
 
