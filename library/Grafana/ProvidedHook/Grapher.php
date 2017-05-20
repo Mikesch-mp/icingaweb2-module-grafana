@@ -205,7 +205,7 @@ class Grapher extends GrapherHook
                 $this->width,
                 $this->height
             );
-        } else {
+        } elseif ($this->accessMode == "direct") {
             $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" />';
             $previewHtml = sprintf(
                 $imghtml,
@@ -225,8 +225,23 @@ class Grapher extends GrapherHook
                 $this->width,
                 $this->height
             );
+        } elseif ($this->accessMode == "iframe") {
+            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&theme=light&from=now-%s&to=now" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+            $previewHtml = sprintf(
+                $iframehtml,
+                $this->protocol,
+                $this->grafanaHost,
+                $this->dashboardstore,
+                $this->dashboard,
+                urlencode($hostName),
+                rawurlencode($serviceName),
+                $this->customVars,
+                $this->panelId,
+                $this->timerange,
+                rawurlencode($serviceName),
+                $this->height
+            );
         }
-
         return true;
     }
 

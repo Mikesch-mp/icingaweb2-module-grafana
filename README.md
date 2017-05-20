@@ -89,6 +89,8 @@ username           | **Proxy non anonymous only** **Required** HTTP Basic Auth u
 password           | **Proxy non anonymous only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.
 directrefresh      | **Optional.** Refresh graphs on direct access. Defaults to `no`.
 
+**IMPORTANT**
+Be warned on 'iframe' access mode the auto refresh will hit you!
 
 Example:
 ```
