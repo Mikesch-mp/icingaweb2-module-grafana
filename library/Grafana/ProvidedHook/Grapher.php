@@ -185,6 +185,7 @@ class Grapher extends GrapherHook
                 CURLOPT_CONNECTTIMEOUT => 2,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => false, //TODO: config option
+                CURLOPT_SSL_VERIFYHOST => 0, //TODO: config option
                 CURLOPT_TIMEOUT => $this->timeout,
                 CURLOPT_USERPWD => "$this->auth",
                 CURLOPT_HTTPAUTH, CURLAUTH_ANY
