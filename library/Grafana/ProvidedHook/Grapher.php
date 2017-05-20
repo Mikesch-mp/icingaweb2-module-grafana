@@ -301,7 +301,7 @@ class Grapher extends GrapherHook
         // replace template to customVars from Icinga2
         foreach ($customVars as $k => $v) {
             $search[] = "\$$k\$";
-            $replace[] = is_string($v) ? $v : null;
+            $replace[] = is_string($v) ? rawurlencode($v)  : null;
             $this->customVars = str_replace($search, $replace, $this->customVars);
         }
 
