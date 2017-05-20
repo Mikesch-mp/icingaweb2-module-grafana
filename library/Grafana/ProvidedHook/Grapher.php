@@ -118,6 +118,9 @@ class Grapher extends GrapherHook
         }
         if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphConfig->hasSection($serviceName) == False)) {
             $serviceName = $serviceCommand;
+            if($this->graphConfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
+                return NULL;
+            }
         }
         $this->dashboard = $this->graphConfig->get($serviceName, 'dashboard', $this->defaultDashboard);
         $this->dashboardstore = $this->graphConfig->get($serviceName, 'dashboardstore', $this->defaultDashboardStore);
@@ -290,7 +293,9 @@ class Grapher extends GrapherHook
         }
         $customVars = $object->fetchCustomvars()->customvars;
 
-        $this->getGraphConf($serviceName, $object->check_command);
+        if($this->getGraphConf($serviceName, $object->check_command) == NULL) {
+            return;
+        }
 
         if ($this->dataSource == "graphite") {
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
