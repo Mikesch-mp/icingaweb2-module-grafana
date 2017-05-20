@@ -220,7 +220,7 @@ class Grapher extends GrapherHook
             curl_close($curl_handle);
 
             $img = 'data:image/png;base64,' . base64_encode($res);
-            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" />';
+            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" style="display:block; width: auto; height: auto; max-width: 100%%; max-height: 100%%;box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.55) !important; border-radius: 5px;"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $img,
@@ -229,7 +229,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "direct") {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" />';
+            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" style="display:block; width: auto; height: auto; max-width: 100%%; max-height: 100%%;box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.55) !important; border-radius: 5px;"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->protocol,
