@@ -87,7 +87,10 @@ accessmode         | **Optional.** Controls whether graphs are fetched with curl
 timeout            | **Proxy only** **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.
 username           | **Proxy non anonymous only** **Required** HTTP Basic Auth user name to access Grafana.
 password           | **Proxy non anonymous only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.
-directrefresh      | **Optional.** Refresh graphs on direct access. Defaults to `no`.
+directrefresh      | **Direct Only** **Optional.** Refresh graphs on direct access. Defaults to `no`.
+usepublic          | **Optional** Enable usage of publichost/protocol. Defaults to `no`.
+publichost         | **Optional** Use a diffrent host for the graph links.
+publicprotocol     | **Optional** Use a diffrent protocol for the graph links.
 
 **IMPORTANT**
 Be warned on 'iframe' access mode the auto refresh will hit you!
@@ -111,6 +114,9 @@ defaultdashboardstore = "db"
 accessmode = "proxy"
 timeout = "5"
 directrefresh = "no"
+usepublic = "no"
+publichost = "otherhost:3000"
+publicprotocol = "http"
 ```
 
 ### Graph Configuration
