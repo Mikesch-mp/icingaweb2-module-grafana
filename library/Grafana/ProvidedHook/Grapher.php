@@ -20,13 +20,16 @@ class Grapher extends GrapherHook
     protected $graphConfig;
     protected $auth;
     protected $grafana = array();
-    protected $height = 280;
     protected $grafanaHost = null;
-    protected $password = null;
     protected $protocol = "http";
+    protected $usePublic = "no";
+    protected $publicHost = null;
+    protected $publicProtocol = "http";
     protected $timerange = "6h";
     protected $username = null;
+    protected $password = null;
     protected $width = 640;
+    protected $height = 280;
     protected $enableLink = true;
     protected $defaultDashboard = "icinga2-default";
     protected $defaultDashboardStore = "db";
@@ -72,6 +75,21 @@ class Grapher extends GrapherHook
         $this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
         $this->enableLink = $this->config->get('enableLink', $this->enableLink);
+        if ( $this->enableLink == "yes" ) {
+            $this->usePublic = $this->config->get('usepublic', $this->usePublic);
+            if ( $this->usePublic == "yes" ) {
+                $this->publicHost = $this->config->get('publichost', $this->publicHost);
+                if ($this->publicHost == null) {
+                    throw new ConfigurationError(
+                        'No Grafana public host configured!'
+                    );
+                }
+                $this->publicProtocol = $this->config->get('publicprotocol', $this->publicProtocol);
+            } else {
+                $this->publicHost = $this->grafanaHost;
+                $this->publicProtocol = $this->protocol;
+            }
+        }
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
         $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
         $this->dataSource = $this->config->get('datasource', $this->dataSource);
@@ -316,8 +334,8 @@ class Grapher extends GrapherHook
 
                 $html = sprintf(
                     $html,
-                    $this->protocol,
-                    $this->grafanaHost,
+                    $this->publicProtocol,
+                    $this->publicHost,
                     $this->dashboardstore,
                     $this->dashboard,
                     urlencode($hostName),

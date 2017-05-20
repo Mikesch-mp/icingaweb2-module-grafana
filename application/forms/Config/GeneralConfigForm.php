@@ -41,25 +41,7 @@ class GeneralConfigForm extends ConfigForm
                     'https' => $this->translate('Secure: https'),
                 ),
                 'description' => $this->translate('Protocol used to access Grafana.'),
-            )
-        );
-        $this->addElement(
-            'text',
-            'grafana_height',
-            array(
-                'value' => '280',
-                'label' => $this->translate('Graph height'),
-                'description' => $this->translate('The default graph height in pixels.')
-            )
-        );
-        $this->addElement(
-            'text',
-            'grafana_width',
-            array(
-                'value' => '640',
-                'label' => $this->translate('Graph width'),
-                'description' => $this->translate('The default graph width in pixels.')
-            )
+             )
         );
         $this->addElement(
             'select',
@@ -153,6 +135,7 @@ class GeneralConfigForm extends ConfigForm
                 'grafana_authanon',
                 array(
                     'label' => $this->translate('Anonymous Access'),
+                    'value' => 'yes',
                     'multiOptions' => array(
                         'yes' => $this->translate('Yes'),
                         'no' => $this->translate('No'),
@@ -190,6 +173,7 @@ class GeneralConfigForm extends ConfigForm
                 'grafana_directrefresh',
                 array(
                     'label' => $this->translate('Refresh on direct'),
+                    'value' => 'no',
                     'multiOptions' => array(
                         'yes' => $this->translate('Yes'),
                         'no' => $this->translate('No'),
@@ -199,18 +183,77 @@ class GeneralConfigForm extends ConfigForm
             );
         }
 
-        if (isset($formData['grafana_accessmode']) && ( $formData['grafana_accessmode'] === 'direct' || $formData['grafana_accessmode'] === 'proxy' )) {
+        if (isset($formData['grafana_accessmode']) && ( $formData['grafana_accessmode'] != 'iframe' )) {
+            $this->addElement(
+                'text',
+                'grafana_height',
+                array(
+                    'value' => '280',
+                    'label' => $this->translate('Graph height'),
+                    'description' => $this->translate('The default graph height in pixels.')
+                )
+            );
+            $this->addElement(
+                'text',
+                'grafana_width',
+                array(
+                    'value' => '640',
+                    'label' => $this->translate('Graph width'),
+                    'description' => $this->translate('The default graph width in pixels.')
+                )
+            );
             $this->addElement(
                 'select',
                 'grafana_enableLink',
                 array(
                     'label' => $this->translate('Enable link'),
+                    'value' => 'no',
                     'multiOptions' => array(
                         'yes' => $this->translate('Yes'),
                         'no' => $this->translate('No'),
                     ),
                     'description' => $this->translate('Image is an link to the dashboard on the Grafana server.'),
                     'class' => 'autosubmit'
+                )
+            );
+        }
+        if (isset($formData['grafana_enableLink']) && ( $formData['grafana_enableLink'] === 'yes') && ( $formData['grafana_accessmode'] != 'iframe' )) {
+            $this->addElement(
+                'select',
+                'grafana_usepublic',
+                array(
+                    'label' => $this->translate('Use public links'),
+                    'value' => 'no',
+                    'multiOptions' => array(
+                        'yes' => $this->translate('Yes'),
+                        'no' => $this->translate('No'),
+                    ),
+                    'description' => $this->translate('Use public url that is different from host above.'),
+                    'class' => 'autosubmit'
+                )
+            );
+        }
+        if (isset($formData['grafana_usepublic']) && ( $formData['grafana_usepublic'] === 'yes' ) && ( $formData['grafana_accessmode'] != 'iframe' )) {
+            $this->addElement(
+                'text',
+                'grafana_publichost',
+                array(
+                    'placeholder' => 'example server.name:3000',
+                    'label' => $this->translate('Public host'),
+                    'description' => $this->translate('Public host name of the Grafana server.'),
+                    'required' => true
+                )
+            );
+            $this->addElement(
+                'select',
+                'grafana_publicprotocol',
+                array(
+                    'label' => 'Public protocol',
+                    'multiOptions' => array(
+                        'http' => $this->translate('Unsecure: http'),
+                        'https' => $this->translate('Secure: https'),
+                    ),
+                    'description' => $this->translate('Public protocol used to access Grafana.'),
                 )
             );
         }
