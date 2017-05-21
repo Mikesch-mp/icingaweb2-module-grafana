@@ -72,6 +72,14 @@ class GeneralConfigForm extends ConfigForm
         );
         $this->addElement(
             'text',
+            'grafana_custvardisable',
+            array(
+                'label' => $this->translate('Disable customvar'),
+                'description' => $this->translate('Name of the custom variable that, if set, will disable the graph.'),
+            )
+        );
+        $this->addElement(
+            'text',
             'grafana_defaultdashboard',
             array(
                 'value' => 'icinga2-default',

@@ -38,6 +38,7 @@ class Grapher extends GrapherHook
     protected $timeout = "5";
     protected $refresh = "no";
     protected $title = "<h2>Performance Graph</h2>";
+    protected $custvardisable = "grafana_graph_disable";
     protected $timeRanges = [
         '5m' => '5 minutes',
         '15m' => '15 minutes',
@@ -97,6 +98,7 @@ class Grapher extends GrapherHook
         $this->accessMode = $this->config->get('accessmode', $this->accessMode);
         $this->refresh = $this->config->get('directrefresh', $this->refresh);
         $this->refresh = ($this->refresh == "yes" && $this->accessMode == "direct" ? time() : 'now');
+        $this->custvardisable = ($this->config->get('custvardisable', $this->custvardisable));
         if ($this->username != null) {
             if ($this->password != null) {
                 $this->auth = $this->username . ":" . $this->password;
@@ -279,8 +281,8 @@ class Grapher extends GrapherHook
 
     public function getPreviewHtml(MonitoredObject $object)
     {
-        // enable_perfdata = true ?  || no perfdata into service
-        if (!$object->process_perfdata || !$object->perfdata) {
+        // enable_perfdata = true ?  || no perfdata into service || disablevar == true
+        if (!$object->process_perfdata || !$object->perfdata || isset($object->customvars[$this->custvardisable])) {
             return '';
         }
 
@@ -291,7 +293,6 @@ class Grapher extends GrapherHook
             $serviceName = $object->service_description;
             $hostName = $object->host->getName();
         }
-        $customVars = $object->fetchCustomvars()->customvars;
 
         if($this->getGraphConf($serviceName, $object->check_command) == NULL) {
             return;
@@ -302,8 +303,7 @@ class Grapher extends GrapherHook
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
 
-        $return_html = "";
-
+        $customVars = $object->fetchCustomvars()->customvars;
         // replace template to customVars from Icinga2
         foreach ($customVars as $k => $v) {
             $search[] = "\$$k\$";
@@ -311,6 +311,7 @@ class Grapher extends GrapherHook
             $this->customVars = str_replace($search, $replace, $this->customVars);
         }
 
+        $return_html = "";
         $menu = '<div class="scrollmenu" style="overflow: auto; white-space: nowrap; padding: 8px">';
         foreach ($this->timeRanges as $key => $value) {
             $menu .= $this->getTimerangeLink($object, $value, $key) . '  :  ';
