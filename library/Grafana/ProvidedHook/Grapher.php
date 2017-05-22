@@ -222,7 +222,7 @@ class Grapher extends GrapherHook
             curl_close($curl_handle);
 
             $img = 'data:image/png;base64,' . base64_encode($res);
-            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" />';
+            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" class="grafana-img"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $img,
@@ -312,7 +312,7 @@ class Grapher extends GrapherHook
         }
 
         $return_html = "";
-        $menu = '<div class="scrollmenu" style="overflow: auto; white-space: nowrap; padding: 8px">';
+        $menu = '<div class="scrollmenu grafana-scrollmenu">';
         foreach ($this->timeRanges as $key => $value) {
             $menu .= $this->getTimerangeLink($object, $value, $key) . '  :  ';
         }
@@ -355,6 +355,6 @@ class Grapher extends GrapherHook
             }
             $return_html .= $html;
         }
-        return $this->title. $menu . $return_html;
+        return '<div class="icinga-module module-grafana">'.$this->title.$menu.$return_html.'</div>';
     }
 }
