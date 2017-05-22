@@ -91,6 +91,7 @@ directrefresh      | **Direct Only** **Optional.** Refresh graphs on direct acce
 usepublic          | **Optional** Enable usage of publichost/protocol. Defaults to `no`.
 publichost         | **Optional** Use a diffrent host for the graph links.
 publicprotocol     | **Optional** Use a diffrent protocol for the graph links.
+custvardisable     | **Optional** Custom variable (vars.idontwanttoseeagraph for example) that will disable graphs. Defaults to `grafana_graph_disable`. 
 
 **IMPORTANT**
 Be warned on 'iframe' access mode the auto refresh will hit you!
@@ -117,6 +118,7 @@ directrefresh = "no"
 usepublic = "no"
 publichost = "otherhost:3000"
 publicprotocol = "http"
+custvardisable = "idontwanttoseeagraph"
 ```
 
 ### Graph Configuration
