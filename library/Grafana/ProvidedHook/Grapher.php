@@ -43,7 +43,8 @@ class Grapher extends GrapherHook
         'Minutes' => array(
             '5m' => '5 minutes',
             '15m' => '15 minutes',
-            '30m' => '30 minutes'
+            '30m' => '30 minutes',
+            '45m' => '45 minutes'
         ),
         'Hours' => array(
             '1h' => '1 hour',
@@ -56,15 +57,18 @@ class Grapher extends GrapherHook
         'Days' => array (
             '2d' => '2 days',
             '7d' => '7 days',
+            '14d' => '14 days',
             '30d' => '30 days',
         ),
         'Months' => array (
             '2M' => '2 Month',
-            '6M' => '6 months'
+            '6M' => '6 months',
+            '9M' => '9 months'
         ),
         'Years' => array(
             '1y' => '1 year',
-            '2y' => '2 years'
+            '2y' => '2 years',
+            '3y' => '3 years'
         )
     );
 
