@@ -39,24 +39,34 @@ class Grapher extends GrapherHook
     protected $refresh = "no";
     protected $title = "<h2>Performance Graph</h2>";
     protected $custvardisable = "grafana_graph_disable";
-    protected $timeRanges = [
-        '5m' => '5 minutes',
-        '15m' => '15 minutes',
-        '30m' => '30 minutes',
-        '1h' => '1 hour',
-        '3h' => '3 hours',
-        '6h' => '6 hours',
-        '8h' => '8 hours',
-        '12h' => '12 hours',
-        '24h' => '24 hours',
-        '2d' => '2 days',
-        '7d' => '7 days',
-        '30d' => '30 days',
-        '60d' => '60 days',
-        '6M' => '6 months',
-        '1y' => '1 year',
-        '2y' => '2 years',
-    ];
+    protected $timeRanges = array(
+        'Minutes' => array(
+            '5m' => '5 minutes',
+            '15m' => '15 minutes',
+            '30m' => '30 minutes'
+        ),
+        'Hours' => array(
+            '1h' => '1 hour',
+            '3h' => '3 hours',
+            '6h' => '6 hours',
+            '8h' => '8 hours',
+            '12h' => '12 hours',
+            '24h' => '24 hours'
+        ),
+        'Days' => array (
+            '2d' => '2 days',
+            '7d' => '7 days',
+            '30d' => '30 days',
+        ),
+        'Months' => array (
+            '2M' => '2 Month',
+            '6M' => '6 months'
+        ),
+        'Years' => array(
+            '1y' => '1 year',
+            '2y' => '2 years'
+        )
+    );
 
     protected function init()
     {
@@ -312,12 +322,17 @@ class Grapher extends GrapherHook
         }
 
         $return_html = "";
-        $menu = '<div class="scrollmenu grafana-scrollmenu">';
-        foreach ($this->timeRanges as $key => $value) {
-            $menu .= $this->getTimerangeLink($object, $value, $key) . '  :  ';
+        $menu = '<table class="grafana-table"><tr>';
+        foreach ($this->timeRanges as $key => $mainValue) {
+            $menu .= '<td><ul class="grafana-menu-navigation"><a class="main" href="#">' . $key . '</a>';
+            $counter = 1;
+            foreach ($mainValue as $subkey => $value) {
+                $menu .= '<li class="grafana-menu-n'. $counter .'">' . $this->getTimerangeLink($object, $value, $subkey) . '</li>';
+                $counter++;
+            }
+            $menu .= '</ul></td>';
         }
-        $menu = substr($menu, 0, -3);
-        $menu .= '</div>';
+        $menu .= '</tr></table>';
 
         foreach (explode(',', $this->panelId) as $panelid) {
 
