@@ -122,6 +122,14 @@ class Grapher extends GrapherHook
         } else {
             $this->auth = "";
         }
+        if ( Url::fromRequest()->hasParam('grafanaimage') ) {
+            $imageUrl = base64_decode(Url::fromRequest()->getParam('grafanaimage'));
+            list($imageContent,$imageType,$imageSize) = $this->getGrafanaImage($imageUrl);
+            header('Content-Type: '.$imageType);
+            header('Content-Length: '.$imageSize);
+            echo $imageContent;
+            exit;
+        }
     }
 
     private function getGraphConf($serviceName, $serviceCommand)
@@ -179,8 +187,52 @@ class Grapher extends GrapherHook
         );
     }
 
+
+    private function getGrafanaImage($url) {
+        $curl_handle = curl_init();
+        $curl_opts = array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_TIMEOUT => $this->timeout,
+            CURLOPT_USERPWD => "$this->auth",
+            CURLOPT_HTTPAUTH, CURLAUTH_ANY
+        );
+        curl_setopt_array($curl_handle, $curl_opts);
+        $res = curl_exec($curl_handle);
+        $info = curl_getinfo($curl_handle);
+
+        $errorcount=0;
+
+        if ($res === false) {
+            $logmessage = "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
+            //provide a hint for 'Failed to connect to ...: Permission denied'
+            if (curl_errno($curl_handle) == 7) {
+                $logmessage .= " Check SELinux/Firewall.";
+            }
+            error_log($logmessage);
+            $errorcount++;
+        }
+
+        if ($info['http_code'] > 299) {
+            $error = @json_decode($res);
+            $logmessage = "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
+                " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
+            error_log($logmessage);
+            $errorcount++;
+        }
+        curl_close($curl_handle);
+
+        if($errorcount == 0) {
+            return array($res,$info['content_type'],$info['download_content_length']);
+        }
+        return NULL;
+    }
+
+
     //returns false on error, previewHTML is passed as reference
-    private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
+    private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml, $object)
     {
         if ($this->accessMode == "proxy") {
             $pngUrl = sprintf(
@@ -198,52 +250,24 @@ class Grapher extends GrapherHook
                 $this->timerange
             );
 
-            // fetch image with curl
-            $curl_handle = curl_init();
-            $curl_opts = array(
-                CURLOPT_URL => $pngUrl,
-                CURLOPT_CONNECTTIMEOUT => 2,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_SSL_VERIFYPEER => false, //TODO: config option
-                CURLOPT_SSL_VERIFYHOST => 0, //TODO: config option
-                CURLOPT_TIMEOUT => $this->timeout,
-                CURLOPT_USERPWD => "$this->auth",
-                CURLOPT_HTTPAUTH, CURLAUTH_ANY
-            );
 
-            curl_setopt_array($curl_handle, $curl_opts);
-            $res = curl_exec($curl_handle);
-
-            if ($res === false) {
-                $previewHtml = "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
-
-                //provide a hint for 'Failed to connect to ...: Permission denied'
-                if (curl_errno($curl_handle) == 7) {
-                    $previewHtml .= " Check SELinux/Firewall.";
-                }
-                return false;
+            $this->view = Icinga::app()->getViewRenderer()->view;
+            if ($object instanceof Host)
+            {
+                $array = [
+                      'host'       => $object->host_name,
+                      'grafanaimage' => base64_encode($pngUrl),
+                ];
+                $link = 'monitoring/host/show';
+            } else {
+                $array = [
+                      'host'       => $object->host->getName(),
+                      'service'    => $object->service_description,
+                      'grafanaimage' => base64_encode($pngUrl),
+                ];
+                $link = 'monitoring/service/show';
             }
-
-            $statusCode = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-
-            if ($statusCode > 299) {
-                $error = @json_decode($res);
-                $previewHtml = "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
-                    " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
-                return false;
-            }
-
-            curl_close($curl_handle);
-
-            $img = 'data:image/png;base64,' . base64_encode($res);
-            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" class="grafana-img"/>';
-            $previewHtml = sprintf(
-                $imghtml,
-                $img,
-                rawurlencode($serviceName),
-                $this->width,
-                $this->height
-            );
+            $previewHtml = sprintf('<img src="%s" class="grafana-img">',$this->view->url($link, $array));
         } elseif ($this->accessMode == "direct") {
             $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=light&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" />';
             $previewHtml = sprintf(
@@ -345,10 +369,10 @@ class Grapher extends GrapherHook
 
             //image value will be returned as reference
             $previewHtml = "";
-            $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml);
+            $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml,$object);
 
             //do not render URLs on error or if disabled
-            if (!$res || $this->enableLink == "no") {
+            if ($this->enableLink == "no") {
                 $html .= $previewHtml;
             } else {
                 $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s%s&from=now-%s&to=now';
