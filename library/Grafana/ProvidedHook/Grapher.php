@@ -153,17 +153,17 @@ class Grapher extends GrapherHook
     {
         $this->view = Icinga::app()->getViewRenderer()->view;
         if ($object instanceof Host) {
-            $array = [
+            $array = array(
                 'host' => $object->host_name,
                 'timerange' => $timeRange
-            ];
+            );
             $link = 'monitoring/host/show';
         } else {
-            $array = [
+            $array = array(
                 'host' => $object->host->getName(),
                 'service' => $object->service_description,
                 'timerange' => $timeRange
-            ];
+            );
             $link = 'monitoring/service/show';
         }
 
