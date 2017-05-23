@@ -19,6 +19,7 @@ class Grapher extends GrapherHook
     protected $config;
     protected $graphConfig;
     protected $auth;
+    protected $cryptAlgo='aes-256-cbc';
     protected $grafana = array();
     protected $grafanaHost = null;
     protected $grafanaTheme = 'light';
@@ -126,6 +127,14 @@ class Grapher extends GrapherHook
         } else {
             $this->auth = "";
         }
+        if ( Url::fromRequest()->hasParam('grafanaimage') ) {
+            $imageUrl = Url::fromRequest()->getParam('grafanaimage');
+            list($imageContent, $imageType, $imageSize) = $this->getGrafanaImage(rawurldecode($imageUrl));
+            header('Content-Type: '.$imageType);
+            header('Content-Length: '.$imageSize);
+            echo $imageContent;
+            exit;
+        }
     }
 
     private function getGraphConf($serviceName, $serviceCommand)
@@ -183,15 +192,62 @@ class Grapher extends GrapherHook
         );
     }
 
+
+    private function getGrafanaImage($q) {
+        $url=sprintf("%s://%s/render/dashboard-solo/%s",
+            $this->protocol,
+            $this->grafanaHost,
+            $this->decryptString($q)
+        );
+        $curl_handle = curl_init();
+        $curl_opts = array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_TIMEOUT => $this->timeout,
+            CURLOPT_USERPWD => "$this->auth",
+            CURLOPT_HTTPAUTH, CURLAUTH_ANY
+        );
+        curl_setopt_array($curl_handle, $curl_opts);
+        $res = curl_exec($curl_handle);
+        $info = curl_getinfo($curl_handle);
+
+        $errorcount=0;
+
+        if ($res === false) {
+            $logmessage = "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
+            //provide a hint for 'Failed to connect to ...: Permission denied'
+            if (curl_errno($curl_handle) == 7) {
+                $logmessage .= " Check SELinux/Firewall.";
+            }
+            error_log($logmessage);
+            $errorcount++;
+        }
+
+        if ($info['http_code'] > 299) {
+            $error = @json_decode($res);
+            $logmessage = "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
+                " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
+            error_log($logmessage);
+            $errorcount++;
+        }
+        curl_close($curl_handle);
+
+        if($errorcount == 0) {
+            return array($res, $info['content_type'], $info['download_content_length']);
+        }
+        return NULL;
+    }
+
+
     //returns false on error, previewHTML is passed as reference
-    private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
+    private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml, $object)
     {
         $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
         if ($this->accessMode == "proxy") {
             $pngUrl = sprintf(
-                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now',
-                $this->protocol,
-                $this->grafanaHost,
+                '%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now',
                 $this->dashboardstore,
                 $this->dashboard,
                 urlencode($hostName),
@@ -204,52 +260,23 @@ class Grapher extends GrapherHook
                 $this->timerange
             );
 
-            // fetch image with curl
-            $curl_handle = curl_init();
-            $curl_opts = array(
-                CURLOPT_URL => $pngUrl,
-                CURLOPT_CONNECTTIMEOUT => 2,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_SSL_VERIFYPEER => false, //TODO: config option
-                CURLOPT_SSL_VERIFYHOST => 0, //TODO: config option
-                CURLOPT_TIMEOUT => $this->timeout,
-                CURLOPT_USERPWD => "$this->auth",
-                CURLOPT_HTTPAUTH, CURLAUTH_ANY
-            );
-
-            curl_setopt_array($curl_handle, $curl_opts);
-            $res = curl_exec($curl_handle);
-
-            if ($res === false) {
-                $previewHtml = "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
-
-                //provide a hint for 'Failed to connect to ...: Permission denied'
-                if (curl_errno($curl_handle) == 7) {
-                    $previewHtml .= " Check SELinux/Firewall.";
-                }
-                return false;
+            $this->view = Icinga::app()->getViewRenderer()->view;
+            if ($object instanceof Host)
+            {
+                $array = array(
+                      'host'       => $object->host_name,
+                      'grafanaimage' => rawurlencode($this->encryptString($pngUrl)),
+                );
+                $link = 'monitoring/host/show';
+            } else {
+                $array = array(
+                      'host'       => $object->host->getName(),
+                      'service'    => $object->service_description,
+                      'grafanaimage' => rawurlencode($this->encryptString($pngUrl)),
+                );
+                $link = 'monitoring/service/show';
             }
-
-            $statusCode = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-
-            if ($statusCode > 299) {
-                $error = @json_decode($res);
-                $previewHtml = "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
-                    " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
-                return false;
-            }
-
-            curl_close($curl_handle);
-
-            $img = 'data:image/png;base64,' . base64_encode($res);
-            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
-            $previewHtml = sprintf(
-                $imghtml,
-                $img,
-                rawurlencode($serviceName),
-                $this->width,
-                $this->height
-            );
+            $previewHtml = sprintf('<img src="%s" class="'. $imgClass .'">', $this->view->url($link, $array));
         } elseif ($this->accessMode == "direct") {
             $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
             $previewHtml = sprintf(
@@ -354,10 +381,10 @@ class Grapher extends GrapherHook
 
             //image value will be returned as reference
             $previewHtml = "";
-            $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml);
+            $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml, $object);
 
             //do not render URLs on error or if disabled
-            if (!$res || $this->enableLink == "no") {
+            if ($this->enableLink == "no") {
                 $html .= $previewHtml;
             } else {
                 $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s%s&from=now-%s&to=now';
@@ -384,5 +411,44 @@ class Grapher extends GrapherHook
             $return_html .= $html;
         }
         return '<div class="icinga-module module-grafana">'.$this->title.$menu.$return_html.'</div>';
+    }
+
+    private function genKey() {
+        if(openssl_cipher_iv_length($this->cryptAlgo)==16) {
+            $hash = hash('md5',$this->grafanaHost.$this->username.$this->password.$this->protocol.$this->dataSource);
+        } else {
+            $hash = hash('sha256',$this->grafanaHost.$this->username.$this->password.$this->protocol.$this->dataSource);
+        }
+        return pack("H*",$hash);
+    }
+
+    private function encryptString($string) {
+        if (function_exists('openssl_encrypt')) {
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->cryptAlgo));
+            try {
+                $encrypted = openssl_encrypt($string,$this->cryptAlgo,$this->genKey(),NULL,$iv);
+            } catch(Exception $e) {
+                error_log("openssl_encrypt failed: ".$e->getMessage());
+            }
+            return base64_encode(base64_encode($iv).':'.$encrypted);
+        } else {
+            error_log('WARNING: PHP-OPENSSL EXTENSION NOT AVAILABLE! (missing openssl_encrypt)');
+            return base64_encode($string);
+        }
+    }
+
+    private function decryptString($string) {
+        if (function_exists('openssl_encrypt')) {
+            $data = explode(':',base64_decode($string));
+            $iv = base64_decode($data[0]);
+            try {
+                $decrypted = openssl_decrypt($data[1],$this->cryptAlgo,$this->genKey(),NULL,$iv);
+            } catch(Exception $e) {
+                error_log("openssl_decrypt failed: ".$e->getMessage());
+            }
+            return rtrim($decrypted,"\0");
+        } else {
+            return base64_decode($string);
+        }
     }
 }
