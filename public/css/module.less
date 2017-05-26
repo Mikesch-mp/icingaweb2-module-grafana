@@ -151,3 +151,64 @@ a:hover { color: #777; }
   -o-transition-delay: 0.8s;
   transition-delay: 0.8s;
 }
+
+div.grafana-icon {
+  height: 32px;
+  width: 32px;
+  position: relative;
+  margin: 0px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+/* Clock */
+div.grafana-icon div.grafana-clock {
+  width: 4px;
+  height: 6px;
+  border: solid #333;
+  border-width: 0 0 2px 2px;
+  margin: 12px 0 0 11px
+}
+
+div.grafana-icon div.grafana-clock:after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #333;
+  border-radius: 50px;
+  top: 7px;
+  left: 3px;
+}
+
+/* Clock Alt */
+div.grafana-icon div.grafana-clockAlt {
+  width: 18px;
+  height: 18px;
+  border: 4px solid #333;
+  border-radius: 50px;
+  margin-top: 7px;
+  margin-left: 3px;
+}
+
+div.grafana-icon div.grafana-clockAlt:after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 5px;
+  border: solid #ddd;
+  border-width: 0 0 2px 2px;
+  top: 11px;
+  left: 15px;
+}
+
+div.grafana-icon div.grafana-clockAlt:before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: #333;
+  border-radius: 50px;
+  left: 8px;
+  top: 8px;
+}

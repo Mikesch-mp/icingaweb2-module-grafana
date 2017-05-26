@@ -62,7 +62,7 @@ class Grapher extends GrapherHook
             '30d' => '30 days',
         ),
         'Months' => array (
-            '2M' => '2 Month',
+            '2M' => '2 month',
             '6M' => '6 months',
             '9M' => '9 months'
         ),
@@ -332,6 +332,7 @@ class Grapher extends GrapherHook
 
         $return_html = "";
         $menu = '<table class="grafana-table"><tr>';
+        $menu .= '<td><div class="grafana-icon"><div class="grafana-clock"></div></div></td>';
         foreach ($this->timeRanges as $key => $mainValue) {
             $menu .= '<td><ul class="grafana-menu-navigation"><a class="main" href="#">' . $key . '</a>';
             $counter = 1;
