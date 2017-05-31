@@ -33,6 +33,7 @@ class Grapher extends GrapherHook
     protected $height = 280;
     protected $enableLink = true;
     protected $defaultDashboard = "icinga2-default";
+    protected $shadows = false;
     protected $defaultDashboardStore = "db";
     protected $dataSource = null;
     protected $accessMode = "proxy";
@@ -109,6 +110,7 @@ class Grapher extends GrapherHook
             }
         }
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
+        $this->shadows = $this->config->get('shadows', $this->shadows);
         $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
         $this->dataSource = $this->config->get('datasource', $this->dataSource);
         $this->accessMode = $this->config->get('accessmode', $this->accessMode);
@@ -237,9 +239,10 @@ class Grapher extends GrapherHook
             }
 
             curl_close($curl_handle);
-
+            echo $this->shadows;
+            $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
             $img = 'data:image/png;base64,' . base64_encode($res);
-            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" class="grafana-img"/>';
+            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $img,
@@ -248,7 +251,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "direct") {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" />';
+            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->protocol,

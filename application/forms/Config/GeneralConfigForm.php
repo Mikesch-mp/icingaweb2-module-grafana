@@ -88,6 +88,15 @@ class GeneralConfigForm extends ConfigForm
             )
         );
         $this->addElement(
+            'checkbox',
+            'grafana_shadows',
+            array(
+                'value'=> false,
+                'label' => $this->translate('Show shadows'),
+                'description' => $this->translate('Show shadows around the graph.'),
+            )
+        );
+        $this->addElement(
             'select',
             'grafana_defaultdashboardstore',
             array(
