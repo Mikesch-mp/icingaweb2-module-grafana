@@ -239,7 +239,7 @@ class Grapher extends GrapherHook
             }
 
             curl_close($curl_handle);
-            echo $this->shadows;
+
             $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
             $img = 'data:image/png;base64,' . base64_encode($res);
             $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
@@ -303,8 +303,8 @@ class Grapher extends GrapherHook
 
     public function getPreviewHtml(MonitoredObject $object)
     {
-        // enable_perfdata = true ?  || no perfdata into service || disablevar == true
-        if (!$object->process_perfdata || !$object->perfdata || isset($object->customvars[$this->custvardisable])) {
+        // enable_perfdata = true ?  || disablevar == true
+        if (!$object->process_perfdata || isset($object->customvars[$this->custvardisable])) {
             return '';
         }
 
