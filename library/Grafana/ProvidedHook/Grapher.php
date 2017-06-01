@@ -186,6 +186,7 @@ class Grapher extends GrapherHook
     //returns false on error, previewHTML is passed as reference
     private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
     {
+        $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
         if ($this->accessMode == "proxy") {
             $pngUrl = sprintf(
                 '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now',
@@ -240,7 +241,6 @@ class Grapher extends GrapherHook
 
             curl_close($curl_handle);
 
-            $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
             $img = 'data:image/png;base64,' . base64_encode($res);
             $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
             $previewHtml = sprintf(
