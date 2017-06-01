@@ -192,7 +192,6 @@ class Grapher extends GrapherHook
         );
     }
 
-
     private function getGrafanaImage($q) {
         $url=sprintf("%s://%s/render/dashboard-solo/%s",
             $this->protocol,
@@ -212,34 +211,63 @@ class Grapher extends GrapherHook
         curl_setopt_array($curl_handle, $curl_opts);
         $res = curl_exec($curl_handle);
         $info = curl_getinfo($curl_handle);
+        $imagetype=$info['content_type'];
+        $imagesize=$info['download_content_length'];
 
-        $errorcount=0;
-
-        if ($res === false) {
-            $logmessage = "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
-            //provide a hint for 'Failed to connect to ...: Permission denied'
-            if (curl_errno($curl_handle) == 7) {
-                $logmessage .= " Check SELinux/Firewall.";
+        if ($res === false || $info['http_code'] > 299) {
+            $logmessage = array("Cannot fetch graph from server.");
+            if ($res === false) {
+                if(curl_errno($curl_handle) == 7) {
+                    $logmessage[] = 'Failed to connect to host/port, Server unavailable.';
+                } else {
+                    $logmessage[] = curl_error($curl_handle);
+                }
+                error_log(sprintf("%s: %s",$logmessage[0],curl_error($curl_handle)));
             }
-            error_log($logmessage);
-            $errorcount++;
-        }
+            if ($info['http_code'] > 299) {
+                $logmessage[] = sprintf("Error: %s %s", $info['http_code'], Util::httpStatusCodeToString($info['http_code']));
+                try {
+                    $error = @json_decode($res);
+                    $logmessage[] = (property_exists($error, 'message') ? $error->message : "");
+                } catch(Exception $e) {
+                    error_log("An exception occured while generating error message: ".$e->getMessage());
+                }
+                error_log(sprintf("'%s' %s (%s)",$logmessage[0],$logmessage[1],count($logmessage) >2?$logmessage[2]:''));
+            }
+            try {
+                if (function_exists('gd_info')) {
+                    $imagefont=3;
+                    $marginx=20;
+                    $imagefontwidth=imagefontwidth($imagefont);
+                    $imagefontheight=imagefontheight($imagefont)+3;
+                    $maxerrstr=max(array_map('strlen', $logmessage))*$imagefontwidth;
+                    $im = imagecreatetruecolor($maxerrstr + (2*($imagefontwidth))+$marginx, ($imagefontheight)*(count($logmessage)+2));
+                    $text_color = imagecolorallocate($im, 0, 0, 0);
+                    imagefill($im, 0, 0, imagecolorallocate($im, 255, 255, 255));
 
-        if ($info['http_code'] > 299) {
-            $error = @json_decode($res);
-            $logmessage = "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
-                " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
-            error_log($logmessage);
-            $errorcount++;
+                    ob_start();
+                    for($i=0;$i<count($logmessage);$i++) {
+                        imagestring($im, $imagefont, $marginx, $imagefontheight+($imagefontheight*$i),  $logmessage[$i], $text_color);
+                    }
+                    imagepng($im,NULL,8);
+                    $res = ob_get_contents();
+                    ob_end_clean();
+
+                    imagedestroy($im);
+                    $imagetype='image/png';
+                    $imagesize=strlen($res);
+                } else {
+                    error_log('WARNING: PHP-GD EXTENSION NOT AVAILABLE! (error messages wont be sent to browser)');
+                }
+            } catch(Exception $e) {
+                error_log("An exception occured while generating error message: ".$e->getMessage());
+            }
+
         }
         curl_close($curl_handle);
 
-        if($errorcount == 0) {
-            return array($res, $info['content_type'], $info['download_content_length']);
-        }
-        return NULL;
+        return array($res, $imagetype, $imagesize);
     }
-
 
     //returns false on error, previewHTML is passed as reference
     private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml, $object)
