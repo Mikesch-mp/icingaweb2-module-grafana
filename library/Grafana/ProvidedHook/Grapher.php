@@ -128,11 +128,11 @@ class Grapher extends GrapherHook
         }
     }
 
-    private function getGraphConf($serviceName, $serviceCommand)
+    private function getGraphConf($serviceName, $serviceCommand, $hostgroups, $hostName)
     {
-
         $graphconfig = Config::module('grafana', 'graphs');
         $this->graphConfig = $graphconfig;
+
         if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) && ($this->graphConfig->hasSection($serviceName) == False)) {
             $serviceName = strtok($serviceName, ' ');
         }
@@ -142,6 +142,7 @@ class Grapher extends GrapherHook
                 return NULL;
             }
         }
+
         $this->dashboard = $this->graphConfig->get($serviceName, 'dashboard', $this->defaultDashboard);
         $this->dashboardstore = $this->graphConfig->get($serviceName, 'dashboardstore', $this->defaultDashboardStore);
         $this->panelId = $this->graphConfig->get($serviceName, 'panelId', '1');
@@ -150,7 +151,29 @@ class Grapher extends GrapherHook
         $this->height = $this->graphConfig->get($serviceName, 'height', $this->height);
         $this->width = $this->graphConfig->get($serviceName, 'width', $this->width);
 
+        foreach($hostgroups as $key => $value) {
+            $this->dashboard=$this->getFilterProperty($serviceName,'dashboard','hostgroup',$key,$this->dashboard);
+            $this->dashboardstore=$this->getFilterProperty($serviceName,'dashboardstore','hostgroup',$key,$this->dashboardstore);
+            $this->panelId=$this->getFilterProperty($serviceName,'panelId','hostgroup',$key,$this->panelId);
+            $this->customVars=$this->getFilterProperty($serviceName,'customVars','hostgroup',$key,$this->customVars);
+            $this->timerange=$this->getFilterProperty($serviceName,'timerange','hostgroup',$key,$this->timerange);
+            $this->height=$this->getFilterProperty($serviceName,'height','hostgroup',$key,$this->height);
+            $this->width=$this->getFilterProperty($serviceName,'width','hostgroup',$key,$this->width);
+        }
+        $this->dashboard=$this->getFilterProperty($serviceName,'dashboard','hostname',$hostName,$this->dashboard);
+        $this->dashboardstore=$this->getFilterProperty($serviceName,'dashboardstore','hostname',$hostName,$this->dashboardstore);
+        $this->panelId=$this->getFilterProperty($serviceName,'panelId','hostname',$hostName,$this->panelId);
+        $this->customVars=$this->getFilterProperty($serviceName,'customVars','hostname',$hostName,$this->customVars);
+        $this->timerange=$this->getFilterProperty($serviceName,'timerange','hostname',$hostName,$this->timerange);
+        $this->height=$this->getFilterProperty($serviceName,'height','hostname',$hostName,$this->height);
+        $this->width=$this->getFilterProperty($serviceName,'width','hostname',$hostName,$this->width);
+
         return $this;
+    }
+
+    private function getFilterProperty($serviceName,$property,$filter,$key,$default) {
+            $property=sprintf("%s.%s.%s",$property,$filter,$key);
+            return $this->graphConfig->get($serviceName,$property,$default);
     }
 
     private function getTimerangeLink($object, $rangeName, $timeRange)
@@ -316,7 +339,7 @@ class Grapher extends GrapherHook
             $hostName = $object->host->getName();
         }
 
-        if($this->getGraphConf($serviceName, $object->check_command) == NULL) {
+        if($this->getGraphConf($serviceName, $object->check_command, $object->hostgroups, $hostName) == NULL) {
             return;
         }
 

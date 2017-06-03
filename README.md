@@ -169,6 +169,22 @@ Service = "MySQL Users", check_command = mysql_health
 At first glance `Name = "MySQL Usage"` must provide a match. Then `MySQL` and last but not least any service
 `check_command` attribute which is set to `mysql_health`.
 
+After the config section named with service or command is found, the module looks for special properties to show graphs based on hostgroup and hostname, example:
+```
+[service]
+dashboard = "Servers"
+panelId = "4"
+dashboard.hostgroup.linux-servers = "Linux"
+panelId.hostgroup.linux-servers = "7"
+dashboard.hostgroup.windows-servers = "windows"
+panelId.hostgroup.windows-servers = "6"
+dashboard.hostname.server1 = "dashboard-for-server1"
+panelId.hostgroup.server1 = "2"
+```
+First, the panelId "4" and dashboard "Servers" will be used. If the hostgroup matches "linux-servers", panelId "7" and dashboard "Linux" will be used. If the hostgroup matches "windows-servers", panelId "6" and dashboard "windows" will be used. And if the hostname matches "server1", the dashboard "dashboard-for-server1" and panelId "2" will be used. If no matches are found for hostgroup or hostname, the dashboard = "Servers" and panelId="4" will be used.
+
+
+
 ## Thanks
 
 This module borrows a lot from https://github.com/Icinga/icingaweb2-module-generictts & https://github.com/Icinga/icingaweb2-module-pnp.
