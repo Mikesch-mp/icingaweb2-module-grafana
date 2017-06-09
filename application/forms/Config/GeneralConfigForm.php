@@ -88,6 +88,15 @@ class GeneralConfigForm extends ConfigForm
             )
         );
         $this->addElement(
+            'text',
+            'grafana_defaultorgid',
+            array(
+                'value' => '1',
+                'label' => $this->translate('Default Organization Id'),
+                'description' => $this->translate('Id of the default organization.'),
+            )
+        );
+        $this->addElement(
             'checkbox',
             'grafana_shadows',
             array(
