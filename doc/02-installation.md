@@ -98,14 +98,21 @@ org_role = Viewer
 ```
 ### Create Grafana datasource
 
-Create a datasource depending on the metric backend you want to use. See screenshot for examples.
+Create a datasource depending on the metric backend you want to use.
 
+#### InfluxDB example
 ![Grafana Datasource InfluxDB](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/grafana-datasource-influxdb.png "Grafana Datasource InfluxDB")
-![Grafana Datasource InfluxDB](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/grafana-datasource-influxdb.png "Grafana Datasource Graphite")
+
+#### Graphite example
+![Grafana Datasource Graphite](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/grafana-datasource-graphite.png "Grafana Datasource Graphite")
 
 ### Import dashboards
 
 Depending which metric backend (influxdb/grpahite) you use, import the 2 provided dashboards.
+
+#### icinga2-default dashboard
 ![Grafana import icinga2-default dashboard](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/grafana-import-icinga2-default-dashboard.png "Grafana import icinga2-default dashboard")
+
+#### base-metrics dashboard
 ![Grafana import base-metric dashboard](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/grafana-import-base-metrics-dashboard.png "Grafana import base-metric dashboard")
 
