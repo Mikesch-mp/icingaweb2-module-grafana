@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "4.1.2"
+      "version": "4.3.2"
     },
     {
       "type": "panel",
@@ -35,7 +35,7 @@
   "editable": false,
   "gnetId": null,
   "graphTooltip": 0,
-  "hideControls": false,
+  "hideControls": true,
   "id": null,
   "links": [],
   "rows": [
@@ -46,8 +46,10 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_ICINGA2-GRAPHITE}",
-          "fill": 0,
+          "fill": 1,
           "id": 1,
           "legend": {
             "alignAsTable": true,
@@ -55,7 +57,6 @@
             "current": true,
             "max": true,
             "min": true,
-            "rightSide": false,
             "show": true,
             "total": false,
             "values": true
@@ -63,39 +64,35 @@
           "lines": true,
           "linewidth": 1,
           "links": [],
-          "minSpan": null,
           "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "repeat": null,
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$perf",
               "dsType": "influxdb",
               "groupBy": [
                 {
                   "params": [
-                    "$interval"
+                    "$__interval"
                   ],
                   "type": "time"
                 },
                 {
                   "params": [
-                    "none"
+                    "null"
                   ],
                   "type": "fill"
                 }
               ],
-              "measurement": "hostalive",
+              "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM \"hostalive\" WHERE \"hostname\" = 'Fritz.Box' AND $timeFilter GROUP BY time($interval) fill(none)",
-              "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -112,13 +109,7 @@
                   }
                 ]
               ],
-              "tags": [
-                {
-                  "key": "hostname",
-                  "operator": "=",
-                  "value": "Fritz.Box"
-                }
-              ],
+              "tags": [],
               "target": "aliasByNode(icinga2.$hostname.services.$service.*.perfdata.*.value, 6)",
               "textEditor": false
             }
@@ -134,6 +125,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -141,15 +133,15 @@
           },
           "yaxes": [
             {
-              "format": "none",
-              "label": "",
+              "format": "short",
+              "label": null,
               "logBase": 1,
               "max": null,
               "min": null,
               "show": true
             },
             {
-              "format": "percent",
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -159,7 +151,7 @@
           ]
         }
       ],
-      "repeat": "perf",
+      "repeat": null,
       "repeatIteration": null,
       "repeatRowId": null,
       "showTitle": false,
@@ -215,7 +207,7 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -244,6 +236,6 @@
     ]
   },
   "timezone": "browser",
-  "title": "icinga2-default",
-  "version": 15
+  "title": "graphite-icinga2-default",
+  "version": 4
 }
