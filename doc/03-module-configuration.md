@@ -78,6 +78,8 @@ custvardisable = "idontwanttoseeagraph"
 |custvardisable     | **Optional** Custom variable (vars.idontwanttoseeagraph for example) that will disable graphs. Defaults to `grafana_graph_disable`.|
 |theme              | **Optional.** Select grafana theme for the graph (light or dark). Defaults to `light`.|
 
+---
+
 ### host
 **Required** Hostname and port or Grafana url depending on your Grafana installation.
 
