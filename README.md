@@ -95,6 +95,7 @@ timerange          | **Optional.** Global time range for graphs. Defaults to `6h
 enableLink         | **Optional.** Enable/disable graph with a rendered URL to the Grafana dashboard. Defaults to `yes`.
 datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.
 defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. Set to `none` to hide the module output. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.
+defaultorgid       | **Required.** Name of the default organization id where dashboards are located. Defaults to `1`.
 shadows            | **Optional.** Show shadows around the graphs. ** Defaults to `false`.
 defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.
 accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`), are embedded (`direct`) or in iframe ('iframe'. Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
@@ -146,6 +147,7 @@ Setting            | Description
 name               | **Optional.** The name (not the `display_name`) of the service or check command where a graph should be rendered.
 dashboard          | **Optional.** Name of the Grafana dashboard to use.
 panelId            | **Optional.** Graph panelId. Open Grafana and select to share your dashboard to extract the value.
+orgId              | **Optional.** Organization Id where the dashboard is located. Open Grafana and select to share your dashboard to extract the value.
 customVars         | **Optional.** Set additional custom variables used for Grafana.
 timerange          | **Optional.** Specify the time range for this graph.
 height             | **Optional.** Graph height in pixel. Overrides global default.
@@ -158,6 +160,7 @@ vim /etc/icingaweb2/modules/grafana/graphs.ini
 [check_command]
 dashboard = "my-own"
 panelId = "42"
+orgId = "1"
 customVars = "&os=$os$"
 timerange = "3h"
 height = "100"
