@@ -26,6 +26,7 @@
                 <th><?= $this->translate('Timerange') ?></th>
                 <th><?= $this->translate('Height') ?></th>
                 <th><?= $this->translate('Width') ?></th>
+                <th><?= $this->translate('OrgId') ?></th>
             </tr>
         </thead>
         <tbody>
@@ -45,6 +46,7 @@
                 <td><?= $this->escape($graph->timerange) ?></td>
                 <td><?= $this->escape($graph->height) ?></td>
                 <td><?= $this->escape($graph->width) ?></td>
+                <td><?= $this->escape($graph->orgId) ?></td>
                 <td class="icon-col text-right">
                     <?= $this->qlink(
                         '',
