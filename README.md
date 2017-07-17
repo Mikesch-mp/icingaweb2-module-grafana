@@ -100,7 +100,8 @@ defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaul
 accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`), are embedded (`direct`) or in iframe ('iframe'. Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
 timeout            | **Proxy only** **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.
 username           | **Proxy non anonymous only** **Required** HTTP Basic Auth user name to access Grafana.
-password           | **Proxy non anonymous only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.
+password           | **Recommended** HTTP Basic Auth password to access Grafana, and key for encryption.
+                     The password field data is also used during data encryption even when the http auth is disabled, so type a password even if you use anonymous auth.
 directrefresh      | **Direct Only** **Optional.** Refresh graphs on direct access. Defaults to `no`.
 usepublic          | **Optional** Enable usage of publichost/protocol. Defaults to `no`.
 publichost         | **Optional** Use a diffrent host for the graph links.

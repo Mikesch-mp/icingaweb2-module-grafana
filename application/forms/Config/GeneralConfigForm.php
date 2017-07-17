@@ -190,7 +190,8 @@ class GeneralConfigForm extends ConfigForm
                     array(
                         'renderPassword' => true,
                         'label' => $this->translate('Password'),
-                        'description' => $this->translate('The HTTP Basic Auth password used to access Grafana.'),
+                        'description' => $this->translate('HTTP Basic Auth password to access Grafana, and key for encryption. The password field data is also used during data encryption even when the http auth is disabled, so type a password even if you use anonymous auth.'),
+
                         'required' => true
                     )
                 );
