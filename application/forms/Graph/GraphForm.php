@@ -66,7 +66,7 @@ class GraphForm extends ConfigForm
         );
 
         $this->addElement(
-            'text',
+            'number',
             'orgId',
             array(
                 'placeholder'   => 'example 1 ...',

@@ -95,7 +95,7 @@ timerange          | **Optional.** Global time range for graphs. Defaults to `6h
 enableLink         | **Optional.** Enable/disable graph with a rendered URL to the Grafana dashboard. Defaults to `yes`.
 datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.
 defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. Set to `none` to hide the module output. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.
-defaultorgid       | **Required.** Name of the default organization id where dashboards are located. Defaults to `1`.
+defaultorgid       | **Required.** Number of the default organization id where dashboards are located. Defaults to `1`.
 shadows            | **Optional.** Show shadows around the graphs. ** Defaults to `false`.
 defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.
 accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`), are embedded (`direct`) or in iframe ('iframe'. Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.
@@ -125,6 +125,7 @@ height = "280"
 width = "640"
 timerange = "3h"
 enableLink = "yes"
+defaultorgid = "1"
 defaultdashboard = "icinga2-default"
 shadows = "1"
 datasource = "influxdb"

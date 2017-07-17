@@ -88,7 +88,7 @@ class GeneralConfigForm extends ConfigForm
             )
         );
         $this->addElement(
-            'text',
+            'number',
             'grafana_defaultorgid',
             array(
                 'value' => '1',
