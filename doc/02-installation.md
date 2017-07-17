@@ -23,6 +23,8 @@ name MUST be `grafana` and not `icingaweb2-module-grafana` or anything else.
 
 ### Git clone
 
+Use this only if you want tu use/test the latest developer version of the module.
+
 ```
 ICINGAWEB_MODULEPATH="/usr/share/icingaweb2/modules"
 REPO_URL="https://github.com/Mikesch-mp/icingaweb2-module-grafana"
@@ -31,6 +33,8 @@ git clone "${REPO_URL}" "${TARGET_DIR}"
 ```
 
 ### Tarball
+
+Replace the version number with the lates available version from (Latest Release](https://github.com/Mikesch-mp/icingaweb2-module-grafana/releases/latest)
 
 ```
 MODULE_VERSION="1.1.7"
@@ -55,64 +59,65 @@ icingacli module enable grafana
 
 Depending on which mode (proxy/direct/iframe) you want to use you have to set some configuration in Grafana
 
-### Proxy mode
+### For `proxy` mode
 
 If you dont want anonymous access you have to create a user (with password) and enable basic auth in grafana.ini
+
 ```
-#################################### Basic Auth ##########################
-[auth.basic]
-enabled = true
+ #################################### Basic Auth ##########################
+ [auth.basic]
+ enabled = true
 ```
 
 If you want to allow anonymous access (read only) enable "Anonymous Auth" in grafana.ini and set default organization
 
 ```
-#################################### Anonymous Auth ##########################
-[auth.anonymous]
-# enable anonymous access
-enabled = true
+ #################################### Anonymous Auth ##########################
+ [auth.anonymous]
+ # enable anonymous access
+ enabled = true
 
-# specify organization name that should be used for unauthenticated users
-org_name = Koebbes
+ # specify organization name that should be used for unauthenticated users
+ org_name = Koebbes
 
-# specify role for unauthenticated users
-org_role = Viewer
+ # specify role for unauthenticated users
+ org_role = Viewer
 ```
 
-### Direct & iframe mode
+### For `direct` & `iframe` mode
 
 You have to enable "Anonymous Auth" in grafana.ini and set default organization or users need
 to be logged in into Grafana first to see graphs in Icinga Web 2.
 
 ```
-#################################### Anonymous Auth ##########################
-[auth.anonymous]
-# enable anonymous access
-enabled = true
+ #################################### Anonymous Auth ##########################
+ [auth.anonymous]
+ # enable anonymous access
+ enabled = true
 
-# specify organization name that should be used for unauthenticated users
-org_name = Koebbes
+ # specify organization name that should be used for unauthenticated users
+ org_name = Koebbes
 
-# specify role for unauthenticated users
-org_role = Viewer
+ # specify role for unauthenticated users
+ org_role = Viewer
 ```
 ### Create Grafana datasource
 
 Create a datasource depending on the metric backend you want to use.
 
 #### InfluxDB example
-![Grafana Datasource InfluxDB](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/grafana-datasource-influxdb.png "Grafana Datasource InfluxDB")
+![Grafana Datasource InfluxDB](images/grafana-datasource-influxdb.png "Grafana Datasource InfluxDB")
 
 #### Graphite example
-![Grafana Datasource Graphite](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/grafana-datasource-graphite.png "Grafana Datasource Graphite")
+![Grafana Datasource Graphite](images/grafana-datasource-graphite.png "Grafana Datasource Graphite")
 
 ### Import dashboards
 
 Depending which metric backend (influxdb/grpahite) you use, import the 2 provided dashboards.
 
 #### icinga2-default dashboard
-![Grafana import icinga2-default dashboard](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/grafana-import-icinga2-default-dashboard.png "Grafana import icinga2-default dashboard")
+![Grafana import icinga2-default dashboard](images/grafana-import-icinga2-default-dashboard.png "Grafana import icinga2-default dashboard")
 
 #### base-metrics dashboard
-![Grafana import base-metric dashboard](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/grafana-import-base-metrics-dashboard.png "Grafana import base-metric dashboard")
+![Grafana import base-metric dashboard](images/grafana-import-base-metrics-dashboard.png "Grafana import base-metric dashboard")
 
