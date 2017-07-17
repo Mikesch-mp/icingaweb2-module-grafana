@@ -34,7 +34,7 @@ git clone "${REPO_URL}" "${TARGET_DIR}"
 
 ### Tarball
 
-Replace the version number with the lates available version from (Latest Release](https://github.com/Mikesch-mp/icingaweb2-module-grafana/releases/latest)
+Replace the version number with the lates available version from [Latest Release](https://github.com/Mikesch-mp/icingaweb2-module-grafana/releases/latest)
 
 ```
 MODULE_VERSION="1.1.7"
