@@ -38,7 +38,7 @@ class Grapher extends GrapherHook
     protected $defaultDashboardStore = "db";
     protected $dataSource = null;
     protected $accessMode = "proxy";
-    protected $timeout = "5";
+    protected $proxyTimeout = "5";
     protected $refresh = "no";
     protected $title = "<h2>Performance Graph</h2>";
     protected $custvardisable = "grafana_graph_disable";
@@ -91,7 +91,7 @@ class Grapher extends GrapherHook
 
         // Check if there is a timerange in url params
         $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->config->get('timerange', $this->timerange);
-        $this->timeout = $this->config->get('timeout', $this->timeout);
+        $this->proxyTimeout = $this->config->get('proxytimeout', $this->proxyTimeout);
         $this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
         $this->enableLink = $this->config->get('enableLink', $this->enableLink);
@@ -225,7 +225,7 @@ class Grapher extends GrapherHook
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => false, //TODO: config option
                 CURLOPT_SSL_VERIFYHOST => 0, //TODO: config option
-                CURLOPT_TIMEOUT => $this->timeout,
+                CURLOPT_TIMEOUT => $this->proxyTimeout,
                 CURLOPT_USERPWD => "$this->auth",
                 CURLOPT_HTTPAUTH, CURLAUTH_ANY
             );
