@@ -57,6 +57,8 @@ unzip v1.1.0.zip
 mv icingaweb2-module-grafana-1.1.0 grafana
 ```
 
+### Enable Icinga Web 2 module
+
 Enable the module in the Icinga Web 2 frontend in `Configuration -> Modules -> grafana -> enable`.
 You can also enable the module by using the `icingacli` command:
 
