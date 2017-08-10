@@ -165,24 +165,13 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_ICINGA2-GRAPHITE}",
         "hide": 2,
-        "includeAll": false,
         "label": null,
-        "multi": false,
         "name": "hostname",
         "options": [],
-        "query": "icinga2.*",
-        "refresh": 1,
-        "regex": "",
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "query": "",
+        "type": "constant"
       },
       {
         "allValue": null,
