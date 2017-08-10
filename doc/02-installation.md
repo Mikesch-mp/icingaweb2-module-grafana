@@ -1,8 +1,8 @@
 # Installation
 
 These are the instruction to install the Icinga Web 2 module Grafana.
-In case you already installed Grafana module and want to upgrade
-to the latest version, please [read on here](05-Upgrading.md).
+In case you already installed Grafana module and want to update
+to the latest version, please [read on here](05-update.md).
 
 ## Requirements
 
