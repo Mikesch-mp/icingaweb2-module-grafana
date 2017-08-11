@@ -200,6 +200,13 @@ class Grapher extends GrapherHook
     {
         $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
         if ($this->accessMode == "proxy") {
+
+            // Test whether curl is loaded
+            if (extension_loaded('curl') === false) {
+                $previewHtml = "<b>CURL extension is missing. Please install CURL for PHP and ensure it is loaded.</b>";
+                return false;
+            }
+
             $pngUrl = sprintf(
                 '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now',
                 $this->protocol,
