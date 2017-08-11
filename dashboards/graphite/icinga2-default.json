@@ -174,24 +174,13 @@
         "type": "constant"
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_ICINGA2-GRAPHITE}",
         "hide": 2,
-        "includeAll": false,
         "label": null,
-        "multi": false,
         "name": "service",
         "options": [],
-        "query": "icinga2.$hostname.services.*",
-        "refresh": 1,
-        "regex": "",
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "query": "",
+        "type": "constant"
       }
     ]
   },
