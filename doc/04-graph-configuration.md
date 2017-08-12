@@ -16,6 +16,8 @@ customVars         | **Optional.** Set additional custom variables used for Graf
 timerange          | **Optional.** Specify the time range for this graph.  Overrides global default.
 height             | **Optional.** Graph height in pixel. Overrides global default.
 width              | **Optional.** Graph width in pixel. Overrides global default.
+repeatable         | **Optional.** Defines a dashboard with auto repeating panels per metric. Defaults to "no".
+nmetrics           | **Optional.** Defines the number of metrics in an auto repeating panel. Defaults to 1 if repeatable is yes.
 
 Example:
 ```
@@ -29,6 +31,8 @@ customVars = "&os=$os$"
 timerange = "3h"
 height = "100"
 width = "150"
+repeatable = "yes"
+nmetrics = "1"
 
 ```
 
@@ -68,6 +72,8 @@ apply Service "if-usage " for (interface_name => config in host.vars.interfaces)
 At first glance `Name = "if-usage ens3"` must provide a match. Then `if-usage` (`parametrized service name`) and last but not least any service
 `check_command` attribute which is set to `nwc_health`.
 
+### Add new service graph
+
 To add a new graph configuration click on `Add New Grafana Graph`
 
 ![Add New Grafana Graph](images/04-graph.configuration-02.png)
@@ -83,6 +89,15 @@ We will use the `parametrized service name` "if-usage" in our example, the dasbo
 After hitting the `Add graph` button we see our new graph configuration.
 
 ![Add New Grafana Graph](images/04-graph.configuration-05.png)
+
+### Auto repeating panels
+
+If you set a graph to be autorepeating your Grafana dashboard must provide the repeating panels by its own.
+The formula for how many panels will be shown is
+
+´´´
+Number of service perfdata metrics / number of metrics per panel config (nmetrics)
+´´´
 
 ---
 

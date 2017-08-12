@@ -42,6 +42,8 @@ class Grapher extends GrapherHook
     protected $refresh = "no";
     protected $title = "<h2>Performance Graph</h2>";
     protected $custvardisable = "grafana_graph_disable";
+    protected $repeatable = "no";
+    protected $nmetrics = "1";
     protected $timeRanges = array(
         'Minutes' => array(
             '5m' => '5 minutes',
@@ -153,6 +155,8 @@ class Grapher extends GrapherHook
         $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->getGraphConfigOption($serviceName, 'timerange', $this->timerange);
         $this->height = $this->getGraphConfigOption($serviceName, 'height', $this->height);
         $this->width = $this->getGraphConfigOption($serviceName, 'width', $this->width);
+        $this->repeatable = $this->getGraphConfigOption($serviceName, 'repeatable', $this->repeatable);
+        $this->nmetrics = $this->getGraphConfigOption($serviceName, 'nmetrics', $this->nmetrics);
 
         return $this;
     }
@@ -340,6 +344,10 @@ class Grapher extends GrapherHook
 
         if($this->getGraphConf($serviceName, $object->check_command) == NULL) {
             return;
+        }
+
+        if($this->repeatable == "yes" ) {
+            $this->panelId = implode(',', range($this->panelId, ($this->panelId -1) + intval(substr_count($object->perfdata, '=')/$this->nmetrics)));
         }
 
         if ($this->dataSource == "graphite") {

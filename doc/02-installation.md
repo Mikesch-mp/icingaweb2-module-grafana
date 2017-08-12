@@ -9,7 +9,7 @@ to the latest version, please [read on here](05-update.md).
 * [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.1)
 * [Grafana](https://grafana.com/) (>= 4.1)
 * [InfluxDB](https://docs.influxdata.com/influxdb/) (>= 1.0) [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
-* [PHP](https://www.php.net) with curl enabled (for proxy mode)
+* [PHP](https://www.php.net) **with curl enabled** (for proxy mode)
 
 
 ## Install the Grafana module
@@ -49,6 +49,9 @@ wget -q -O - "$URL" | tar xfz - -C "${TARGET_DIR}" --strip-components 1
 ### Enable the module 
 
 In the Icinga Web 2 frontend in `Configuration -> Modules -> grafana -> enable`.
+
+![iEnable grafana module](images/02-installation-01.png)
+
 You can also enable the module by using the `icingacli` command:
 
 ```

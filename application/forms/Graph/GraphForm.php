@@ -133,9 +133,29 @@ class GraphForm extends ConfigForm
                 'required'      => false
             )
         );
-
-
-    }
+        $this->addElement(
+            'select',
+            'repeatable',
+            array(
+                'label' => $this->translate('Repeating Panel'),
+                'value' => 'no',
+                'multiOptions' => array(
+                    'yes' => $this->translate('Yes'),
+                    'no' => $this->translate('No'),
+                ),
+                'description' => $this->translate('Is this an auto repeating panel dashboard?'),
+            )
+        );
+        $this->addElement(
+            'number',
+            'nmetrics',
+            array(
+                'label'         => $this->translate('Metrics per panel'),
+                'description'   => $this->translate('The graph width in pixel.'),
+                'required'      => false
+            )
+        );
+}
 
     /**
      * {@inheritdoc}
@@ -159,7 +179,6 @@ class GraphForm extends ConfigForm
     {
         // The base class implementation does not make sense here. We're not populating the whole configuration but
         // only a section
-        return;
     }
 
     /**
@@ -175,8 +194,12 @@ class GraphForm extends ConfigForm
             'customVars'  => $this->getElement('customVars')->getValue(),
             'timerange'   => $this->getElement('timerange')->getValue(),
             'height'      => $this->getElement('height')->getValue(),
-            'width'       => $this->getElement('width')->getValue()
+            'width'       => $this->getElement('width')->getValue(),
+            'repeatable'  => $this->getElement('repeatable')->getValue(),
+            'nmetrics'    => $this->getElement('nmetrics')->getValue()
         );
+
+
 	if (empty($values['timerange'])) {
             $values['timerange'] = null;
         }
@@ -188,6 +211,12 @@ class GraphForm extends ConfigForm
         }
         if (empty($values['width'])) {
             $values['width'] = null;
+        }
+        if (empty($values['nmetrics']) && ($values['repeatable'] === "yes")) {
+            $values['nmetrics'] = "1";
+        }
+        if (empty($values['nmetrics']) || ($values['repeatable'] === "no")) {
+            $values['nmetrics'] = null;
         }
         if ($this->boundGraph === null) {
             $successNotification = $this->translate('Graph saved');
@@ -306,6 +335,7 @@ class GraphForm extends ConfigForm
                 );
             }
             $this->config->setSection($name, $values);
+echo "1 test";
         }
         return $this;
     }

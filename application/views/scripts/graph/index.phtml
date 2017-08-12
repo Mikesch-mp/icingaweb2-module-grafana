@@ -27,6 +27,8 @@
                 <th><?= $this->translate('Height') ?></th>
                 <th><?= $this->translate('Width') ?></th>
                 <th><?= $this->translate('OrgId') ?></th>
+                <th><?= $this->translate('Repeatable') ?></th>
+                <th><?= $this->translate('Metrics per panel') ?></th>
             </tr>
         </thead>
         <tbody>
@@ -47,6 +49,8 @@
                 <td><?= $this->escape($graph->height) ?></td>
                 <td><?= $this->escape($graph->width) ?></td>
                 <td><?= $this->escape($graph->orgId) ?></td>
+                <td><?= ($graph->repeatable == "yes" ) ? "Yes" : "No" ?></td>
+                <td><?= ($graph->nmetrics >= 1 ) ? $this->escape($graph->nmetrics) : "Not used" ?></td>
                 <td class="icon-col text-right">
                     <?= $this->qlink(
                         '',
