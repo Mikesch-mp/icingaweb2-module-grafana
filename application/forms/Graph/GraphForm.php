@@ -179,6 +179,7 @@ class GraphForm extends ConfigForm
     {
         // The base class implementation does not make sense here. We're not populating the whole configuration but
         // only a section
+        return;
     }
 
     /**
@@ -335,7 +336,6 @@ class GraphForm extends ConfigForm
                 );
             }
             $this->config->setSection($name, $values);
-echo "1 test";
         }
         return $this;
     }

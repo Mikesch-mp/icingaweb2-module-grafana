@@ -99,6 +99,10 @@ The formula for how many panels will be shown is
 Number of service perfdata metrics / number of metrics per panel config (nmetrics)
 ´´´
 
+The Dasboard needs templating for metrics of a service like
+```
+SHOW TAG VALUES FROM /^$command$/ WITH KEY = "metric" where hostname =~ /^$hostname$/ and service =~ /^$service$/
+``` 
 ---
 
 ## Host(s)
