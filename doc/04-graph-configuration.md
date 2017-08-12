@@ -101,8 +101,11 @@ Number of service perfdata metrics / number of metrics per panel config (nmetric
 
 The Dasboard needs templating for metrics of a service like
 ```
-SHOW TAG VALUES FROM /^$command$/ WITH KEY = "metric" where hostname =~ /^$hostname$/ and service =~ /^$service$/
+SHOW TAG VALUES FROM /^COMMAND_NAME$/ WITH KEY = "metric" where hostname =~ /^$hostname$/ and service =~ /^$service$/
 ``` 
+
+See [Repeating Rows and Panels](http://docs.grafana.org/guides/whats-new-in-v2-1/#repeating-rows-and-panels) for more information.
+
 ---
 
 ## Host(s)
