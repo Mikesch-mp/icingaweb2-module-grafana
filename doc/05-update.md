@@ -2,7 +2,8 @@
 
 ## Using Git
 
-If you used [git clone](/02-installation.md#git-clone) to install the module, just do
+If you used [git clone](02-installation.md) to install the module, just do
+
 
 ```bash
 git pull
