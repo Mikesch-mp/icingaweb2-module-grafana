@@ -13,7 +13,7 @@ Description: Grafana - A perfdata visualisation module
  * PHP with curl enabled (for proxy mode)
 
 
- Thanks for bug repoting/fixing or enhancements goes to:
+ Thanks for bug reporting/fixing or enhancements goes to:
 
  Thilo W.
 
