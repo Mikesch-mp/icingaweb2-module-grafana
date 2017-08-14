@@ -95,9 +95,9 @@ After hitting the `Add graph` button we see our new graph configuration.
 If you set a graph to be autorepeating your Grafana dashboard must provide the repeating panels by its own.
 The formula for how many panels will be shown is
 
-´´´
-Number of service perfdata metrics / number of metrics per panel config (nmetrics)
-´´´
+```
+Number of service perfdata metrics / number of metrics per panel config (nmetrics) = number of panels
+```
 
 The Dasboard needs templating for metrics of a service like
 ```
