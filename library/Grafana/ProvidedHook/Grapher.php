@@ -246,8 +246,10 @@ class Grapher extends GrapherHook
             curl_setopt_array($curl_handle, $curl_opts);
             $res = curl_exec($curl_handle);
 
-            if($this->debug && ($res === false || $statusCode > 299)) {
-                $previewHtml = "<b>ImgageURL:</b> ". $pngUrl ."</br>";
+            $statusCode = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
+
+            if($this->debug && $res === false) {
+                $previewHtml .= "<b>ImgageURL:</b> ". $pngUrl ."</br>";
             }
 
             if ($res === false) {
@@ -260,13 +262,16 @@ class Grapher extends GrapherHook
                 return false;
             }
 
-            $statusCode = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-
-            if ($statusCode > 299) {
+            if ($statusCode > 299 && $statusCode != 404) {
                 $error = @json_decode($res);
                 $previewHtml .= "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
                     " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
                 return false;
+            }
+
+            if ($statusCode == 404) {
+		$previewHtml .= "<b>404 Not Found: </b>" . $pngUrl;
+		return false;
             }
 
             curl_close($curl_handle);
