@@ -296,6 +296,15 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
+        $this->addElement(
+            'checkbox',
+            'grafana_debug',
+            array(
+                'value'=> false,
+                'label' => $this->translate('Show URL on failure'),
+                'description' => $this->translate('Show the graph RL if there is any failure.'),
+            )
+        );
     }
 }
 

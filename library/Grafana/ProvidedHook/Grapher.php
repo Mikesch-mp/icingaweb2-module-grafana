@@ -44,6 +44,7 @@ class Grapher extends GrapherHook
     protected $custvardisable = "grafana_graph_disable";
     protected $repeatable = "no";
     protected $nmetrics = "1";
+    protected $debug = false;
     protected $timeRanges = array(
         'Minutes' => array(
             '5m' => '5 minutes',
@@ -121,6 +122,7 @@ class Grapher extends GrapherHook
         $this->refresh = $this->config->get('directrefresh', $this->refresh);
         $this->refresh = ($this->refresh == "yes" && $this->accessMode == "direct" ? time() : 'now');
         $this->custvardisable = ($this->config->get('custvardisable', $this->custvardisable));
+        $this->debug = ($this->config->get('debug', $this->debug));
         if ($this->username != null) {
             if ($this->password != null) {
                 $this->auth = $this->username . ":" . $this->password;
@@ -244,8 +246,12 @@ class Grapher extends GrapherHook
             curl_setopt_array($curl_handle, $curl_opts);
             $res = curl_exec($curl_handle);
 
+            if($this->debug && ($res === false || $statusCode > 299)) {
+                $previewHtml = "<b>ImgageURL:</b> ". $pngUrl ."</br>";
+            }
+
             if ($res === false) {
-                $previewHtml = "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
+                $previewHtml .= "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
 
                 //provide a hint for 'Failed to connect to ...: Permission denied'
                 if (curl_errno($curl_handle) == 7) {
@@ -258,7 +264,7 @@ class Grapher extends GrapherHook
 
             if ($statusCode > 299) {
                 $error = @json_decode($res);
-                $previewHtml = "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
+                $previewHtml .= "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
                     " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
                 return false;
             }
