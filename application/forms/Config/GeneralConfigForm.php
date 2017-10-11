@@ -159,6 +159,21 @@ class GeneralConfigForm extends ConfigForm
             )
         );
 
+        $this->addElement(
+	    'select',
+	    'grafana_authanon',
+	    array(
+	        'label' => $this->translate('Anonymous Access'),
+	        'value' => 'yes',
+	        'multiOptions' => array(
+		    'yes' => $this->translate('Yes'),
+		    'no' => $this->translate('No'),
+	        ),
+	        'description' => $this->translate('Anonymous or username/password access to Grafana server.'),
+	        'class' => 'autosubmit'
+	    )
+        );
+
         if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'proxy') {
             $this->addElement(
                 'number',
@@ -169,28 +184,13 @@ class GeneralConfigForm extends ConfigForm
                     'description' => $this->translate('Timeout in seconds for proxy mode to fetch images.')
                 )
             );
-            $this->addElement(
-                'select',
-                'grafana_authanon',
-                array(
-                    'label' => $this->translate('Anonymous Access'),
-                    'value' => 'yes',
-                    'multiOptions' => array(
-                        'yes' => $this->translate('Yes'),
-                        'no' => $this->translate('No'),
-                    ),
-                    'description' => $this->translate('Anonymous or username/password access to Grafana server.'),
-                    'class' => 'autosubmit'
-                )
-            );
             if (isset($formData['grafana_authanon']) && $formData['grafana_authanon'] === 'no' ) {
                 $this->addElement(
                     'text',
                     'grafana_username',
                     array(
                         'label' => $this->translate('Username'),
-                        'description' => $this->translate('The HTTP Basic Auth user name used to access Grafana.'),
-                        'required' => true
+                        'description' => $this->translate('The HTTP Basic Auth user name used to access Grafana.')
                     )
                 );
                 $this->addElement(
@@ -199,8 +199,7 @@ class GeneralConfigForm extends ConfigForm
                     array(
                         'renderPassword' => true,
                         'label' => $this->translate('Password'),
-                        'description' => $this->translate('The HTTP Basic Auth password used to access Grafana.'),
-                        'required' => true
+                        'description' => $this->translate('The HTTP Basic Auth password used to access Grafana.')
                     )
                 );
             }
@@ -256,6 +255,7 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
+
         if (isset($formData['grafana_enableLink']) && ( $formData['grafana_enableLink'] === 'yes') && ( $formData['grafana_accessmode'] != 'iframe' )) {
             $this->addElement(
                 'select',
@@ -272,6 +272,7 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
+
         if (isset($formData['grafana_usepublic']) && ( $formData['grafana_usepublic'] === 'yes' ) && ( $formData['grafana_accessmode'] != 'iframe' )) {
             $this->addElement(
                 'text',
@@ -296,6 +297,45 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
+
+	if (isset($formData['grafana_accessmode']) && isset($formData['grafana_authanon']) && $formData['grafana_authanon'] === 'no') {
+            $this->addElement(
+                'select',
+                'grafana_authproxy',
+                array(
+                    'label' => $this->translate('Auth Proxy'),
+                    'value' => 'no',
+                    'multiOptions' => array(
+                        'yes' => $this->translate('Yes'),
+                        'no' => $this->translate('No'),
+                    ),
+                    'description' => $this->translate('Use Auth Proxy headers for authentication with Grafana.'),
+                    'class' => 'autosubmit'
+                )
+            );
+        }
+
+        if (isset($formData['grafana_accessmode']) && isset($formData['grafana_authproxy']) && $formData['grafana_authproxy'] === 'yes') {
+            $this->addElement(
+                'text',
+                'grafana_authproxyheader',
+                array(
+                    'label' => $this->translate('Auth proxy header'),
+                    'description' => $this->translate('The name of the header to use for Proxy Authentication.'),
+                    'required' => true
+                )
+            );
+            $this->addElement(
+                'text',
+                'grafana_authproxyvalue',
+                array(
+                    'label' => $this->translate('Auth proxy value'),
+                    'description' => $this->translate('The value of the header to user for Proxy Authentication.'),
+                    'required' => true
+                )
+            );
+        }
+
         $this->addElement(
             'checkbox',
             'grafana_debug',
