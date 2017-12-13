@@ -73,6 +73,8 @@ custvardisable = "idontwanttoseeagraph"
 |authanon           | **Ignore** Only used for configuration via web interface.|
 |username           | **Proxy non anonymous only** **Required** HTTP Basic Auth user name to access Grafana.|
 |password           | **Proxy non anonymous only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.|
+|authproxyheader    | **Proxy/iFrame non anonymous only** **Required** HTTP Header Authentication to access Grafana.|
+|authproxyvalue     | **Proxy/iFrame non anonymous only** **Required** HTTP Header Value to access Grafana.|
 |directrefresh      | **Direct Only** **Optional.** Refresh graphs on direct access. Defaults to `no`.|
 |usepublic          | **Optional** Enable usage of publichost/protocol. Defaults to `no`.|
 |publichost         | **Optional** Use a diffrent host for the graph links.|
@@ -155,6 +157,14 @@ The username used to authenticate to Grafana server.
 ### password
 Used with 'proxy' mode, non anonymous access only.
 The password used to authenticate to Grafana server.
+
+### authproxyheader
+Used with 'proxy', 'direct' and 'iframe' mode, non anonymous access only.
+The header used to authenticate to Grafana server.
+
+### authproxyvalue
+Used with 'proxy', 'direct' and 'iframe' mode, non anonymous access only.
+The header value used to authenticate to Grafana server.
 
 ### usepublic
 Enables/Disables the usage of a `public` URL to the Grafana server.

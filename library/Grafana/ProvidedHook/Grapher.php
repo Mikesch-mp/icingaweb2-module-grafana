@@ -29,6 +29,9 @@ class Grapher extends GrapherHook
     protected $timerange = "6h";
     protected $username = null;
     protected $password = null;
+    protected $authProxy = array();
+    protected $authProxyHeader = null;
+    protected $authProxyValue = null;
     protected $width = 640;
     protected $height = 280;
     protected $enableLink = true;
@@ -91,6 +94,12 @@ class Grapher extends GrapherHook
         }
         $this->password = $this->config->get('password', $this->password);
         $this->protocol = $this->config->get('protocol', $this->protocol);
+
+        $this->authProxyHeader = $this->config->get('authproxyheader', $this->authProxyHeader);
+        $this->authProxyValue = $this->config->get('authproxyvalue', $this->authProxyValue);
+        if ($this->authProxyHeader && $this->authProxyValue) {
+            $this->authProxy[] = "$this->authProxyHeader : $this->authProxyValue";
+        }
 
         // Check if there is a timerange in url params
         $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->config->get('timerange', $this->timerange);
@@ -240,6 +249,7 @@ class Grapher extends GrapherHook
                 CURLOPT_SSL_VERIFYHOST => 0, //TODO: config option
                 CURLOPT_TIMEOUT => $this->proxyTimeout,
                 CURLOPT_USERPWD => "$this->auth",
+                CURLOPT_HTTPHEADER => "$this->authProxy",
                 CURLOPT_HTTPAUTH, CURLAUTH_ANY
             );
 
@@ -286,7 +296,11 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "direct") {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
+            $url = "%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s";
+            if ($this->authProxyHeader && $this->authProxyValue) {
+                $url = $url . "&" . $this->authProxyHeader . "=" . urlencode($this->authProxyValue);
+            }
+            $imghtml = '<img src="' . $url . '" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->protocol,
@@ -308,7 +322,11 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "iframe") {
-            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=now" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+            $url = "%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=now";
+            if ($this->authProxyHeader && $this->authProxyValue) {
+                $url = $url . "&" . $this->authProxyHeader . "=" . urlencode($this->authProxyValue);
+            }
+            $iframehtml = '<iframe src="' . $url . '" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
             $previewHtml = sprintf(
                 $iframehtml,
                 $this->protocol,
