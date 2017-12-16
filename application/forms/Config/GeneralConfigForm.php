@@ -302,7 +302,7 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'value'=> false,
                 'label' => $this->translate('Show URL on failure'),
-                'description' => $this->translate('Show the graph RL if there is any failure.'),
+                'description' => $this->translate('Show the graph URL if there is any failure.'),
             )
         );
     }

@@ -69,8 +69,12 @@ apply Service "if-usage " for (interface_name => config in host.vars.interfaces)
   vars += config
 }
 ```
-At first glance `Name = "if-usage ens3"` must provide a match. Then `if-usage` (`parametrized service name`) and last but not least any service
+At first glance Name = `if-usage ens3` must provide a match. Then `if-usage` (`parametrized service name`) and last but not least the service
 `check_command` attribute which is set to `nwc_health`.
+So you can configure these graphs:
+* if-usage ens3
+* if-usage
+* nwc_health
 
 ### Add new service graph
 

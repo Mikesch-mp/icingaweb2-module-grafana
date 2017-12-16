@@ -19,32 +19,31 @@ class Grapher extends GrapherHook
     protected $config;
     protected $graphConfig;
     protected $auth;
-    protected $grafana = array();
-    protected $grafanaHost = null;
-    protected $grafanaTheme = 'light';
-    protected $protocol = "http";
-    protected $usePublic = "no";
-    protected $publicHost = null;
-    protected $publicProtocol = "http";
-    protected $timerange = "6h";
-    protected $username = null;
-    protected $password = null;
-    protected $width = 640;
-    protected $height = 280;
-    protected $enableLink = true;
-    protected $defaultDashboard = "icinga2-default";
-    protected $defaultOrgId = "1";
-    protected $shadows = false;
+    protected $grafanaHost           = null;
+    protected $grafanaTheme          = 'light';
+    protected $protocol              = "http";
+    protected $usePublic             = "no";
+    protected $publicHost            = null;
+    protected $publicProtocol        = "http";
+    protected $timerange             = "6h";
+    protected $username              = null;
+    protected $password              = null;
+    protected $width                 = 640;
+    protected $height                = 280;
+    protected $enableLink            = true;
+    protected $defaultDashboard      = "icinga2-default";
+    protected $defaultOrgId          = "1";
+    protected $shadows               = false;
     protected $defaultDashboardStore = "db";
-    protected $dataSource = null;
-    protected $accessMode = "proxy";
-    protected $proxyTimeout = "5";
-    protected $refresh = "no";
-    protected $title = "<h2>Performance Graph</h2>";
-    protected $custvardisable = "grafana_graph_disable";
-    protected $repeatable = "no";
-    protected $nmetrics = "1";
-    protected $debug = false;
+    protected $dataSource            = null;
+    protected $accessMode            = "proxy";
+    protected $proxyTimeout          = "5";
+    protected $refresh               = "no";
+    protected $title                 = "<h2>Performance Graph</h2>";
+    protected $custvardisable        = "grafana_graph_disable";
+    protected $repeatable            = "no";
+    protected $numberMetrics         = "1";
+    protected $debug                 = false;
     protected $timeRanges = array(
         'Minutes' => array(
             '5m' => '5 minutes',
@@ -80,23 +79,14 @@ class Grapher extends GrapherHook
 
     protected function init()
     {
+
         $this->config = Config::module('grafana')->getSection('grafana');
-        $this->username = $this->config->get('username', $this->username);
         $this->grafanaHost = $this->config->get('host', $this->grafanaHost);
-        $this->grafanaTheme = $this->config->get('theme', $this->grafanaTheme);
-        if ($this->grafanaHost == null) {
-            throw new ConfigurationError(
-                'No Grafana host configured!'
+            if ($this->grafanaHost == null) {
+                throw new ConfigurationError(
+                    'No Grafana host configured!'
             );
         }
-        $this->password = $this->config->get('password', $this->password);
-        $this->protocol = $this->config->get('protocol', $this->protocol);
-
-        // Check if there is a timerange in url params
-        $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->config->get('timerange', $this->timerange);
-        $this->proxyTimeout = $this->config->get('proxytimeout', $this->proxyTimeout);
-        $this->height = $this->config->get('height', $this->height);
-        $this->width = $this->config->get('width', $this->width);
         $this->enableLink = $this->config->get('enableLink', $this->enableLink);
         if ( $this->enableLink == "yes" ) {
             $this->usePublic = $this->config->get('usepublic', $this->usePublic);
@@ -113,16 +103,51 @@ class Grapher extends GrapherHook
                 $this->publicProtocol = $this->protocol;
             }
         }
+
+        $this->protocol = $this->config->get('protocol', $this->protocol);
+
+        // Confid needed for Grafana
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
         $this->defaultOrgId = $this->config->get('defaultorgid', $this->defaultOrgId);
-        $this->shadows = $this->config->get('shadows', $this->shadows);
+        $this->grafanaTheme = $this->config->get('theme', $this->grafanaTheme);
         $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
-        $this->dataSource = $this->config->get('datasource', $this->dataSource);
+        $this->height = $this->config->get('height', $this->height);
+        $this->width = $this->config->get('width', $this->width);
+
+        // Check if there is a timerange in url params
+        $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->config->get('timerange', $this->timerange);
+
+
         $this->accessMode = $this->config->get('accessmode', $this->accessMode);
+        $this->proxyTimeout = $this->config->get('proxytimeout', $this->proxyTimeout);
+
+        /**
+         * Direct mode refresh graphs trick
+         */
         $this->refresh = $this->config->get('directrefresh', $this->refresh);
         $this->refresh = ($this->refresh == "yes" && $this->accessMode == "direct" ? time() : 'now');
+
+        /**
+         * Datasource needed to regex special chars
+         */
+        $this->dataSource = $this->config->get('datasource', $this->dataSource);
+
+        /**
+         * Display shadows around graph
+         */
+        $this->shadows = $this->config->get('shadows', $this->shadows);
+        /**
+         * Name of the custom varibale to disable graph
+         */
         $this->custvardisable = ($this->config->get('custvardisable', $this->custvardisable));
+
         $this->debug = ($this->config->get('debug', $this->debug));
+
+        /**
+         * Username & Password
+         */
+        $this->username = $this->config->get('username', $this->username);
+        $this->password = $this->config->get('password', $this->password);
         if ($this->username != null) {
             if ($this->password != null) {
                 $this->auth = $this->username . ":" . $this->password;
@@ -158,7 +183,7 @@ class Grapher extends GrapherHook
         $this->height = $this->getGraphConfigOption($serviceName, 'height', $this->height);
         $this->width = $this->getGraphConfigOption($serviceName, 'width', $this->width);
         $this->repeatable = $this->getGraphConfigOption($serviceName, 'repeatable', $this->repeatable);
-        $this->nmetrics = $this->getGraphConfigOption($serviceName, 'nmetrics', $this->nmetrics);
+        $this->numberMetrics = $this->getGraphConfigOption($serviceName, 'numberMetrics', $this->numberMetrics);
 
         return $this;
     }
@@ -218,7 +243,7 @@ class Grapher extends GrapherHook
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
-                $this->dashboard,
+                str_replace(" ", "-", $this->dashboard),
                 urlencode($hostName),
                 rawurlencode($serviceName),
                 $this->customVars,
@@ -262,16 +287,11 @@ class Grapher extends GrapherHook
                 return false;
             }
 
-            if ($statusCode > 299 && $statusCode != 404) {
+            if ($statusCode > 299) {
                 $error = @json_decode($res);
                 $previewHtml .= "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
-                    " ($statusCode)</b>: " . (property_exists($error, 'message') ? $error->message : "");
+                    " ($statusCode)</b>: " . ($error !== null && property_exists($error, 'message') ? $error->message : "");
                 return false;
-            }
-
-            if ($statusCode == 404) {
-		$previewHtml .= "<b>404 Not Found: </b>" . $pngUrl;
-		return false;
             }
 
             curl_close($curl_handle);
@@ -292,7 +312,7 @@ class Grapher extends GrapherHook
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
-                $this->dashboard,
+                str_replace(" ", "-", $this->dashboard),
                 urlencode($hostName),
                 rawurlencode($serviceName),
                 $this->customVars,
@@ -314,7 +334,7 @@ class Grapher extends GrapherHook
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
-                $this->dashboard,
+                str_replace(" ", "-", $this->dashboard),
                 urlencode($hostName),
                 rawurlencode($serviceName),
                 $this->customVars,
@@ -358,15 +378,17 @@ class Grapher extends GrapherHook
         }
 
         if($this->repeatable == "yes" ) {
-            $this->panelId = implode(',', range($this->panelId, ($this->panelId -1) + intval(substr_count($object->perfdata, '=')/$this->nmetrics)));
+            $this->panelId = implode(',', range($this->panelId, ($this->panelId -1) + intval(substr_count($object->perfdata, '=')/$this->numberMetrics)));
         }
 
+        // replace special chars for graphite
         if ($this->dataSource == "graphite") {
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
 
         $customVars = $object->fetchCustomvars()->customvars;
+
         // replace template to customVars from Icinga2
         foreach ($customVars as $k => $v) {
             $search[] = "\$$k\$";
@@ -374,6 +396,7 @@ class Grapher extends GrapherHook
             $this->customVars = str_replace($search, $replace, $this->customVars);
         }
 
+        // build the menu
         $return_html = "";
         $menu = '<table class="grafana-table"><tr>';
         $menu .= '<td><div class="grafana-icon"><div class="grafana-clock"></div></div></td>';
