@@ -174,7 +174,7 @@ class Grapher extends GrapherHook
             }
         }
 
-        $this->dashboard = $this->getGraphConfigOption($serviceName, 'dashboard', $this->defaultDashboard);
+        $this->dashboard = str_replace(" ", "-", $this->getGraphConfigOption($serviceName, 'dashboard', $this->defaultDashboard));
         $this->dashboardstore = $this->getGraphConfigOption($serviceName, 'dashboardstore', $this->defaultDashboardStore);
         $this->panelId = $this->getGraphConfigOption($serviceName, 'panelId', '1');
         $this->orgId = $this->getGraphConfigOption($serviceName, 'orgId', $this->defaultOrgId);
@@ -230,6 +230,9 @@ class Grapher extends GrapherHook
     private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
     {
         $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
+	$hostName = rawurlencode($hostName);
+	$serviceName = rawurlencode($serviceName);
+
         if ($this->accessMode == "proxy") {
 
             // Test whether curl is loaded
@@ -243,9 +246,9 @@ class Grapher extends GrapherHook
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
-                str_replace(" ", "-", $this->dashboard),
-                urlencode($hostName),
-                rawurlencode($serviceName),
+                $this->dashboard,
+                $hostName,
+                $serviceName,
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
@@ -301,7 +304,7 @@ class Grapher extends GrapherHook
             $previewHtml = sprintf(
                 $imghtml,
                 $img,
-                rawurlencode($serviceName),
+                $serviceName,
                 $this->width,
                 $this->height
             );
@@ -312,9 +315,9 @@ class Grapher extends GrapherHook
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
-                str_replace(" ", "-", $this->dashboard),
-                urlencode($hostName),
-                rawurlencode($serviceName),
+                $this->dashboard,
+                $hostName,
+                $serviceName,
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
@@ -334,15 +337,15 @@ class Grapher extends GrapherHook
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
-                str_replace(" ", "-", $this->dashboard),
-                urlencode($hostName),
-                rawurlencode($serviceName),
+                $this->dashboard,
+                $hostName,
+                $serviceName,
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
                 $this->grafanaTheme,
                 $this->timerange,
-                rawurlencode($serviceName),
+                $serviceName,
                 $this->height
             );
         }
