@@ -227,11 +227,12 @@ class Grapher extends GrapherHook
     }
 
     //returns false on error, previewHTML is passed as reference
-    private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
+    private function getMyPreviewHtml($checkCommandName, $serviceName, $hostName, &$previewHtml)
     {
         $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
 	$hostName = rawurlencode($hostName);
 	$serviceName = rawurlencode($serviceName);
+	$checkCommandName = rawurlencode($checkCommandName);
 
         if ($this->accessMode == "proxy") {
 
@@ -242,13 +243,14 @@ class Grapher extends GrapherHook
             }
 
             $pngUrl = sprintf(
-                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now',
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
                 $this->dashboard,
                 $hostName,
                 $serviceName,
+                $checkCommandName,
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
@@ -309,7 +311,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "direct") {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
+            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->protocol,
@@ -318,6 +320,7 @@ class Grapher extends GrapherHook
                 $this->dashboard,
                 $hostName,
                 $serviceName,
+                $checkCommandName,
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
@@ -331,7 +334,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "iframe") {
-            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=now" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=now" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
             $previewHtml = sprintf(
                 $iframehtml,
                 $this->protocol,
@@ -340,6 +343,7 @@ class Grapher extends GrapherHook
                 $this->dashboard,
                 $hostName,
                 $serviceName,
+                $checkCommandName,
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
@@ -369,9 +373,11 @@ class Grapher extends GrapherHook
         }
 
         if ($object instanceof Host) {
+            $checkCommandName = $object->check_command;
             $serviceName = $object->check_command;
             $hostName = $object->host_name;
         } elseif ($object instanceof Service) {
+            $checkCommandName = $object->check_command;
             $serviceName = $object->service_description;
             $hostName = $object->host->getName();
         }
@@ -386,6 +392,7 @@ class Grapher extends GrapherHook
 
         // replace special chars for graphite
         if ($this->dataSource == "graphite") {
+            $checkCommandName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $checkCommandName);
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
@@ -421,13 +428,13 @@ class Grapher extends GrapherHook
 
             //image value will be returned as reference
             $previewHtml = "";
-            $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml);
+            $res = $this->getMyPreviewHtml($checkCommandName, $serviceName, $hostName, $previewHtml);
 
             //do not render URLs on error or if disabled
             if (!$res || $this->enableLink == "no") {
                 $html .= $previewHtml;
             } else {
-                $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s%s&from=now-%s&to=now&orgId=%s';
+                $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=now-%s&to=now&orgId=%s';
 
                 if ($this->dashboard != $this->defaultDashboard) {
                     $html .= '&panelId=' . $this->panelId . '&fullscreen';
@@ -443,6 +450,7 @@ class Grapher extends GrapherHook
                     $this->dashboard,
                     urlencode($hostName),
                     rawurlencode($serviceName),
+                    rawurlencode($checkCommandName),
                     $this->customVars,
                     $this->timerange,
                     $this->orgId,
