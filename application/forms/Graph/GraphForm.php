@@ -78,6 +78,17 @@ class GraphForm extends ConfigForm
 
         $this->addElement(
             'text',
+            'regex',
+            array(
+                'placeholder'   => '/my.*Service/',
+                'label'         => $this->translate('Regex'),
+                'description'   => $this->translate('If this Regex matches this dashboard will be displayed'),
+                'required'      => false
+            )
+        );
+
+        $this->addElement(
+            'text',
             'customVars',
             array(
                 'placeholder'   => '&var-example=$my_variable$',
@@ -192,6 +203,7 @@ class GraphForm extends ConfigForm
             'dashboard'   => $this->getElement('dashboard')->getValue(),
             'panelId'     => $this->getElement('panelId')->getValue(),
             'orgId'     => $this->getElement('orgId')->getValue(),
+            'regex'     => $this->getElement('regex')->getValue(),
             'customVars'  => $this->getElement('customVars')->getValue(),
             'timerange'   => $this->getElement('timerange')->getValue(),
             'height'      => $this->getElement('height')->getValue(),

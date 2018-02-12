@@ -21,6 +21,7 @@
             <tr>
                 <th><?= $this->translate('Name') ?></th>
                 <th><?= $this->translate('Dashboard') ?></th>
+                <th><?= $this->translate('Regex') ?></th>
                 <th><?= $this->translate('PanelID') ?></th>
                 <th><?= $this->translate('CustomVars') ?></th>
                 <th><?= $this->translate('Timerange') ?></th>
@@ -43,6 +44,7 @@
                     ) ?>
                 </td>
                 <td><?= $this->escape($graph->dashboard) ?></td>
+                <td><?= $this->escape($graph->regex) ?></td>
                 <td><?= $this->escape($graph->panelId) ?></td>
                 <td><?= isset($graph->customVars) ? "Yes" : "No" ?></td>
                 <td><?= $this->escape($graph->timerange) ?></td>
