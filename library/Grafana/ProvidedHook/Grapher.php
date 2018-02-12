@@ -163,16 +163,27 @@ class Grapher extends GrapherHook
     {
 
         $this->graphConfig = Config::module('grafana', 'graphs');
-
+        $serviceNameRegex=$serviceName;
         if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) && ($this->graphConfig->hasSection($serviceName) == False)) {
             $serviceName = strtok($serviceName, ' ');
         }
         if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphConfig->hasSection($serviceName) == False)) {
             $serviceName = $serviceCommand;
+            foreach($this->graphConfig as $section => $options){
+                if($this->graphConfig->get($section, "regex") != false ){
+//                    echo $serviceNameRegex;
+//                    echo $this->graphConfig->get($section, "regex");
+                    if(preg_match($this->graphConfig->get($section, "regex"),$serviceNameRegex)){
+                        $serviceName=$section;
+                        break;
+                    }
+                }
+            }
             if($this->graphConfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
                 return NULL;
             }
         }
+        echo $serviceName;
 
         $this->dashboard = str_replace(" ", "-", $this->getGraphConfigOption($serviceName, 'dashboard', $this->defaultDashboard));
         $this->dashboardstore = $this->getGraphConfigOption($serviceName, 'dashboardstore', $this->defaultDashboardStore);
