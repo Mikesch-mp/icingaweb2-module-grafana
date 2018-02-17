@@ -41,8 +41,31 @@ class GeneralConfigForm extends ConfigForm
                     'https' => $this->translate('Secure: https'),
                 ),
                 'description' => $this->translate('Protocol used to access Grafana.'),
+                'class' => 'autosubmit',
              )
         );
+
+        if (isset($formData['grafana_protocol']) && $formData['grafana_protocol'] === 'https' ) {
+            $this->addElement(
+                'checkbox',
+                'grafana_ssl_verifypeer',
+                array(
+                    'value'=> true,
+                    'label' => $this->translate('SSL verify peer'),
+                    'description' => $this->translate('Verify the peer\'s SSL certificate.'),
+                )
+            );
+
+            $this->addElement(
+                'checkbox',
+                'grafana_ssl_verifyhost',
+                array(
+                    'value'=> true,
+                    'label' => $this->translate('SSL verify host'),
+                    'description' => $this->translate('Verify the certificate\'s name against host.'),
+                )
+            );
+        }
         $this->addElement(
             'select',
             'grafana_timerange',
@@ -301,8 +324,8 @@ class GeneralConfigForm extends ConfigForm
             'grafana_debug',
             array(
                 'value'=> false,
-                'label' => $this->translate('Show URL on failure'),
-                'description' => $this->translate('Show the graph URL if there is any failure.'),
+                'label' => $this->translate('Show debug'),
+                'description' => $this->translate('Show debuging information.'),
             )
         );
     }

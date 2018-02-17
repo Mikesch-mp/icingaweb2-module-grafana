@@ -2,17 +2,17 @@
 
 namespace Icinga\Module\Grafana\ProvidedHook;
 
+use Icinga\Authentication\Auth;
 use Icinga\Application\Icinga;
 use Icinga\Application\Config;
 use Icinga\Exception\ConfigurationError;
-use Exception;
 use Icinga\Application\Hook\GrapherHook;
 use Icinga\Module\Monitoring\Object\MonitoredObject;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Web\Url;
-use Icinga\Web\View;
 use Icinga\Module\Grafana\Util;
+
 
 class Grapher extends GrapherHook
 {
@@ -44,6 +44,8 @@ class Grapher extends GrapherHook
     protected $repeatable            = "no";
     protected $numberMetrics         = "1";
     protected $debug                 = false;
+    protected $SSLVerifyPeer         = false;
+    protected $SSLVerifyHost        = "0";
     protected $timeRanges = array(
         'Minutes' => array(
             '5m' => '5 minutes',
@@ -79,7 +81,7 @@ class Grapher extends GrapherHook
 
     protected function init()
     {
-
+        $this->permission = Auth::getInstance();
         $this->config = Config::module('grafana')->getSection('grafana');
         $this->grafanaHost = $this->config->get('host', $this->grafanaHost);
             if ($this->grafanaHost == null) {
@@ -140,8 +142,18 @@ class Grapher extends GrapherHook
          * Name of the custom varibale to disable graph
          */
         $this->custvardisable = ($this->config->get('custvardisable', $this->custvardisable));
-
+        /**
+         * Show some debug informations?
+         */
         $this->debug = ($this->config->get('debug', $this->debug));
+        /**
+         * Verify the certificate's name against host
+         */
+        $this->SSLVerifyHost = ($this->config->get('ssl_verifyhost', $this->SSLVerifyHost));
+        /**
+         * Verify the peer's SSL certificate
+         */
+        $this->SSLVerifyPeer = ($this->config->get('ssl_verifypeer', $this->SSLVerifyPeer));
 
         /**
          * Username & Password
@@ -174,7 +186,7 @@ class Grapher extends GrapherHook
             }
         }
 
-        $this->dashboard = str_replace(" ", "-", $this->getGraphConfigOption($serviceName, 'dashboard', $this->defaultDashboard));
+        $this->dashboard = $this->getGraphConfigOption($serviceName, 'dashboard', $this->defaultDashboard);
         $this->dashboardstore = $this->getGraphConfigOption($serviceName, 'dashboardstore', $this->defaultDashboardStore);
         $this->panelId = $this->getGraphConfigOption($serviceName, 'panelId', '1');
         $this->orgId = $this->getGraphConfigOption($serviceName, 'orgId', $this->defaultOrgId);
@@ -230,9 +242,6 @@ class Grapher extends GrapherHook
     private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
     {
         $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
-	$hostName = rawurlencode($hostName);
-	$serviceName = rawurlencode($serviceName);
-
         if ($this->accessMode == "proxy") {
 
             // Test whether curl is loaded
@@ -241,14 +250,14 @@ class Grapher extends GrapherHook
                 return false;
             }
 
-            $pngUrl = sprintf(
+            $this->pngUrl = sprintf(
                 '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
                 $this->dashboard,
-                $hostName,
-                $serviceName,
+                urlencode($hostName),
+                rawurlencode($serviceName),
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
@@ -261,11 +270,11 @@ class Grapher extends GrapherHook
             // fetch image with curl
             $curl_handle = curl_init();
             $curl_opts = array(
-                CURLOPT_URL => $pngUrl,
+                CURLOPT_URL => $this->pngUrl,
                 CURLOPT_CONNECTTIMEOUT => 2,
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_SSL_VERIFYPEER => false, //TODO: config option
-                CURLOPT_SSL_VERIFYHOST => 0, //TODO: config option
+                CURLOPT_SSL_VERIFYPEER => $this->SSLVerifyPeer,
+                CURLOPT_SSL_VERIFYHOST => ($this->SSLVerifyHost) ? 2 : 0,
                 CURLOPT_TIMEOUT => $this->proxyTimeout,
                 CURLOPT_USERPWD => "$this->auth",
                 CURLOPT_HTTPAUTH, CURLAUTH_ANY
@@ -275,10 +284,6 @@ class Grapher extends GrapherHook
             $res = curl_exec($curl_handle);
 
             $statusCode = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-
-            if($this->debug && $res === false) {
-                $previewHtml .= "<b>ImgageURL:</b> ". $pngUrl ."</br>";
-            }
 
             if ($res === false) {
                 $previewHtml .= "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
@@ -304,7 +309,7 @@ class Grapher extends GrapherHook
             $previewHtml = sprintf(
                 $imghtml,
                 $img,
-                $serviceName,
+                rawurlencode($serviceName),
                 $this->width,
                 $this->height
             );
@@ -316,8 +321,8 @@ class Grapher extends GrapherHook
                 $this->grafanaHost,
                 $this->dashboardstore,
                 $this->dashboard,
-                $hostName,
-                $serviceName,
+                urlencode($hostName),
+                rawurlencode($serviceName),
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
@@ -338,14 +343,14 @@ class Grapher extends GrapherHook
                 $this->grafanaHost,
                 $this->dashboardstore,
                 $this->dashboard,
-                $hostName,
-                $serviceName,
+                urlencode($hostName),
+                rawurlencode($serviceName),
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
                 $this->grafanaTheme,
                 $this->timerange,
-                $serviceName,
+                rawurlencode($serviceName),
                 $this->height
             );
         }
@@ -450,6 +455,42 @@ class Grapher extends GrapherHook
                 );
             }
             $return_html .= $html;
+        }
+        if($this->debug && $this->permission->hasPermission('grafana/debug')) {
+            $usedUrl = "";
+
+            if ($this->accessMode == "proxy") {
+                $usedUrl = $this->pngUrl;
+            } elseif ($this->accessMode == "direct" || $this->accessMode == "iframe" ) {
+                $usedUrl = $m[preg_match('/.*?src\s*=\s*[\'\"](.*?)[\'\"].*/', $previewHtml, $m)];
+                $usedUrl = preg_replace('/.*?src\s*=\s*[\'\"](.*?)[\'\"].*/', "$1", $previewHtml );
+            }
+            if ($this->accessMode == "iframe") {
+                $this->height = "100%";
+            }
+
+            $return_html .= "<h2>Performance Graph Debug</h2>";
+            $return_html .= "<table class=\"name-value-table\"><tbody>";
+            $return_html .= "<tr><th>Access mode</th><td>". $this->accessMode ."</td>";
+            $return_html .= "<tr><th>Protocol</th><td>". $this->protocol ."</td>";
+            $return_html .= "<tr><th>Grafana Host</th><td>". $this->grafanaHost ."</td>";
+            $return_html .= "<tr><th>Dashboard Store</th><td>". $this->defaultDashboardStore ."</td>";
+            $return_html .= "<tr><th>Dashboard Name</th><td>". $this->dashboard ."</td>";
+            $return_html .= "<tr><th>Panel ID</th><td>". $this->panelId ."</td>";
+            $return_html .= "<tr><th>Organization ID</th><td>". $this->orgId ."</td>";
+            $return_html .= "<tr><th>Theme</th><td>". $this->grafanaTheme ."</td>";
+            $return_html .= "<tr><th>Timerange</th><td>". $this->timerange ."</td>";
+            $return_html .= "<tr><th>Height</th><td>". $this->height ."</td>";
+            $return_html .= "<tr><th>Width</th><td>". $this->width ."</td>";
+            $return_html .= "<tr><th>Graph URL</th><td>". $usedUrl ."</td>";
+            $return_html .= "<tr><th>Disable graph custom variable</th><td>". $this->custvardisable ."</td>";
+            $return_html .= "<tr><th>Shadows</th><td>". (($this->shadows) ? 'Yes' : 'No') ."</td>";
+            if ($this->accessMode == "proxy") {
+                $return_html .= "<tr><th>SSL Verify Peer</th><td>". (($this->SSLVerifyPeer) ? 'Yes' : 'No') ."</td>";
+                $return_html .= "<tr><th>SSL Verify Host</th><td>". (($this->SSLVerifyHost) ? 'Yes' : 'No') ."</td>";
+            }
+            $return_html .= " </tbody></table>";
+
         }
         return '<div class="icinga-module module-grafana">'.$this->title.$menu.$return_html.'</div>';
     }

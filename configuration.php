@@ -4,6 +4,7 @@ use Icinga\Authentication\Auth;
 $auth = Auth::getInstance();
 
 $this->providePermission('grafana/graph', $this->translate('Allow to configure graphs'));
+$this->providePermission('grafana/debug', $this->translate('Can see debuging informations, if enabled'));
 
 $this->provideConfigTab('config', array(
     'title' => 'Configuration',

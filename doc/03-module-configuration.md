@@ -49,6 +49,9 @@ usepublic = "no"
 publichost = "otherhost:3000"
 publicprotocol = "http"
 custvardisable = "idontwanttoseeagraph"
+debug = "0"
+ssl_verifypeer = "0"
+ssl_verifyhost = "0"
 ```
 
 ---
@@ -79,6 +82,10 @@ custvardisable = "idontwanttoseeagraph"
 |publicprotocol     | **Optional** Use a diffrent protocol for the graph links.|
 |custvardisable     | **Optional** Custom variable (vars.idontwanttoseeagraph for example) that will disable graphs. Defaults to `grafana_graph_disable`.|
 |theme              | **Optional.** Select grafana theme for the graph (light or dark). Defaults to `light`.|
+|debug              | **Optional.** Enables the debug information under the graph if the user has permission to see them. Defaults to `disabled`.|
+|ssl_verifypeer     | **Proxy mode only** **Optional.** Verify the peer's SSL certificate. Defaults to `false`.|
+|ssl_verifyhost     | **Proxy mode only** **Optional.** Verify the certificate's name against host. Defaults to `false`.|
+
 
 ---
 
@@ -130,6 +137,14 @@ With this mode the graphs are feteched with curl on **server side**. The image w
 Pro: Very secure
 Contra: slower page rendering, because Icingaweb2 needs to load the image first from Grafana.
 
+### ssl_verifypeer
+Verify the peer's SSL certificate. Defaults to `false`.
+Read [CURLOPT_SSL_VERIFYHOST](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html) for mor informations.
+
+### ssl_verifyhost
+Verify the certificate's name against host. Defaults to `false`.
+Read [CURLOPT_SSL_VERIFYPEER](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html) for mor informations.
+
 #### Direct
 With `direct` access, the graph images are loaded from the users directly from the Grafana server.
 Pro: fast page rendering, refresh of graph can be disabled by option.
@@ -162,7 +177,7 @@ If you have set your grafanaurl for example to localhost then you can set here a
 
 ### publichost
 Used with 'usepublic = yes'.
-Public host name and port. Same as `host`option.
+Public host name and port. Same as `host` option.
 
 ### publicprotocol
 Used with 'usepublic = yes'.
@@ -172,4 +187,7 @@ The protocol used for the links to graphs.
 Name of the custom variable (vars.idontwanttoseeagraph for example) that will disable graphs if set to true. Defaults to `grafana_graph_disable`.
 
 ### theme
-The Grafana theme that will be used. Defaults to `light`
+The Grafana theme that will be used. Defaults to `light`.
+
+### debug
+Show debug informtions if user has permission to see them. Defaults to `false`.
