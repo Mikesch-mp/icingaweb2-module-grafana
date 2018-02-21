@@ -12,7 +12,7 @@ use Icinga\Application\Icinga;
 
 class Timeranges
 {
-    protected static $timeRanges = array(
+     static $timeRanges = array(
         'Minutes' => array(
             '5m' => '5 minutes',
             '15m' => '15 minutes',
@@ -79,7 +79,7 @@ class Timeranges
     {
         $menu = '<table class="grafana-table"><tr>';
         $menu .= '<td><div class="grafana-icon"><div class="grafana-clock"></div></div></td>';
-        foreach ($this->timeRanges as $key => $mainValue) {
+        foreach (self::$timeRanges as $key => $mainValue) {
             $menu .= '<td><ul class="grafana-menu-navigation"><a class="main" href="#">' . $key . '</a>';
             $counter = 1;
             foreach ($mainValue as $subkey => $value) {
