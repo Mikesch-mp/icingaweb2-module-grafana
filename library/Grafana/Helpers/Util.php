@@ -1,6 +1,6 @@
 <?php
 
-namespace Icinga\Module\Grafana;
+namespace Icinga\Module\Grafana\Helpers;
 
 class Util
 {

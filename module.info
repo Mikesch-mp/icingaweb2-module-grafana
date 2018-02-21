@@ -10,7 +10,7 @@ Description: Grafana - A perfdata visualisation module
 
  * InfluxDB or Graphite as datasource backend.
 
- * PHP with curl enabled (for proxy mode)
+ * PHP 7 with curl enabled (for proxy mode)
 
 
  Thanks for bug reporting/fixing or enhancements goes to:
@@ -28,3 +28,5 @@ Description: Grafana - A perfdata visualisation module
  Martin N.
 
  Emerson P.
+
+ Markus (mj84)

@@ -9,7 +9,7 @@ to the latest version, please [read on here](05-update.md).
 * [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.1)
 * [Grafana](https://grafana.com/) (>= 4.1)
 * [InfluxDB](https://docs.influxdata.com/influxdb/) (>= 1.0) [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
-* [PHP](https://www.php.net) **with curl enabled** (for proxy mode)
+* [PHP 7](https://www.php.net) **with curl enabled** (for proxy mode)
 
 
 ## Install the Grafana module
@@ -37,7 +37,7 @@ git clone "${REPO_URL}" "${TARGET_DIR}"
 Replace the version number with the lates available version from [Latest Release](https://github.com/Mikesch-mp/icingaweb2-module-grafana/releases/latest)
 
 ```
-MODULE_VERSION="1.1.7"
+MODULE_VERSION="1.2.0"
 ICINGAWEB_MODULEPATH="/usr/share/icingaweb2/modules"
 REPO_URL="https://github.com/Mikesch-mp/icingaweb2-module-grafana"
 TARGET_DIR="${ICINGAWEB_MODULEPATH}/grafana"

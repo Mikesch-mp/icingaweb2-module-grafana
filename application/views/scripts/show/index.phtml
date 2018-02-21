@@ -1,1 +1,34 @@
-<div class="content" data-base-target="_main">
+<div class="controls">
+    <?php if (! $this->showFullscreen): ?>
+        <?= $this->tabs ?>
+    <?php endif ?>
+    <h1><?= $this->escape($this->title) ?></h1>
+    <?php if (! $this->showFullscreen): ?>
+        <?= $this->menu ?>
+    <?php endif ?>
+</div>
+<div class="content">
+<?php
+// echo '<pre>' . var_export($services, true) . '</pre>';
+    foreach ($objects as $object) {
+        if ($object->process_perfdata) {
+            if ( ! property_exists($object, 'service_description') && isset($object->service_description) ) {
+                echo "<h2>" . $object->service_description . "</h2>";
+            } else {
+                echo "<h2>" . $object->check_command . "</h2>";
+            }
+            //echo '<div style="page-break-after: always;">';
+            echo $grapher->getPreviewHtml($object, true);
+            //echo "</div>";
+        }
+	}
+
+?>
+</div>
+<?php if ($this->showFullscreen): ?>
+<script type="text/javascript">
+    <!--
+    window.print();
+    //-->
+</script>
+<?php endif ?>

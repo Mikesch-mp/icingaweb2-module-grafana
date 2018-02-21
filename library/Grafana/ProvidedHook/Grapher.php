@@ -3,7 +3,6 @@
 namespace Icinga\Module\Grafana\ProvidedHook;
 
 use Icinga\Authentication\Auth;
-use Icinga\Application\Icinga;
 use Icinga\Application\Config;
 use Icinga\Exception\ConfigurationError;
 use Icinga\Application\Hook\GrapherHook;
@@ -11,7 +10,8 @@ use Icinga\Module\Monitoring\Object\MonitoredObject;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Web\Url;
-use Icinga\Module\Grafana\Util;
+use Icinga\Module\Grafana\Helpers\Util;
+use Icinga\Module\Grafana\Helpers\Timeranges;
 
 
 class Grapher extends GrapherHook
@@ -26,6 +26,7 @@ class Grapher extends GrapherHook
     protected $publicHost            = null;
     protected $publicProtocol        = "http";
     protected $timerange             = "6h";
+    protected $timerangeto           = "now";
     protected $username              = null;
     protected $password              = null;
     protected $width                 = 640;
@@ -46,38 +47,6 @@ class Grapher extends GrapherHook
     protected $debug                 = false;
     protected $SSLVerifyPeer         = false;
     protected $SSLVerifyHost        = "0";
-    protected $timeRanges = array(
-        'Minutes' => array(
-            '5m' => '5 minutes',
-            '15m' => '15 minutes',
-            '30m' => '30 minutes',
-            '45m' => '45 minutes'
-        ),
-        'Hours' => array(
-            '1h' => '1 hour',
-            '3h' => '3 hours',
-            '6h' => '6 hours',
-            '8h' => '8 hours',
-            '12h' => '12 hours',
-            '24h' => '24 hours'
-        ),
-        'Days' => array (
-            '2d' => '2 days',
-            '7d' => '7 days',
-            '14d' => '14 days',
-            '30d' => '30 days',
-        ),
-        'Months' => array (
-            '2M' => '2 month',
-            '6M' => '6 months',
-            '9M' => '9 months'
-        ),
-        'Years' => array(
-            '1y' => '1 year',
-            '2y' => '2 years',
-            '3y' => '3 years'
-        )
-    );
 
     protected function init()
     {
@@ -89,6 +58,7 @@ class Grapher extends GrapherHook
                     'No Grafana host configured!'
             );
         }
+        $this->protocol = $this->config->get('protocol', $this->protocol);
         $this->enableLink = $this->config->get('enableLink', $this->enableLink);
         if ( $this->enableLink == "yes" ) {
             $this->usePublic = $this->config->get('usepublic', $this->usePublic);
@@ -106,8 +76,6 @@ class Grapher extends GrapherHook
             }
         }
 
-        $this->protocol = $this->config->get('protocol', $this->protocol);
-
         // Confid needed for Grafana
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
         $this->defaultOrgId = $this->config->get('defaultorgid', $this->defaultOrgId);
@@ -117,8 +85,8 @@ class Grapher extends GrapherHook
         $this->width = $this->config->get('width', $this->width);
 
         // Check if there is a timerange in url params
-        $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->config->get('timerange', $this->timerange);
-
+ //       $this->timerange = Url::fromRequest()->hasParam('timerange') ? urldecode(Url::fromRequest()->getParam('timerange')) : $this->config->get('timerange', $this->timerange);
+//        $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : $this->timerange;
 
         $this->accessMode = $this->config->get('accessmode', $this->accessMode);
         $this->proxyTimeout = $this->config->get('proxytimeout', $this->proxyTimeout);
@@ -191,7 +159,8 @@ class Grapher extends GrapherHook
         $this->panelId = $this->getGraphConfigOption($serviceName, 'panelId', '1');
         $this->orgId = $this->getGraphConfigOption($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $this->getGraphConfigOption($serviceName, 'customVars', '');
-        $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->getGraphConfigOption($serviceName, 'timerange', $this->timerange);
+        $this->timerange = Url::fromRequest()->hasParam('timerange') ? urldecode(Url::fromRequest()->getParam('timerange')) : $this->getGraphConfigOption($serviceName, 'timerange', $this->timerange);
+        $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : $this->timerangeto;
         $this->height = $this->getGraphConfigOption($serviceName, 'height', $this->height);
         $this->width = $this->getGraphConfigOption($serviceName, 'width', $this->width);
         $this->repeatable = $this->getGraphConfigOption($serviceName, 'repeatable', $this->repeatable);
@@ -208,36 +177,6 @@ class Grapher extends GrapherHook
         return $value;
     }
 
-    private function getTimerangeLink($object, $rangeName, $timeRange)
-    {
-        $this->view = Icinga::app()->getViewRenderer()->view;
-        if ($object instanceof Host) {
-            $array = array(
-                'host' => $object->host_name,
-                'timerange' => $timeRange
-            );
-            $link = 'monitoring/host/show';
-        } else {
-            $array = array(
-                'host' => $object->host->getName(),
-                'service' => $object->service_description,
-                'timerange' => $timeRange
-            );
-            $link = 'monitoring/service/show';
-        }
-
-        return $this->view->qlink(
-            $rangeName,
-            $link,
-            $array,
-            array(
-                'class' => 'action-link',
-                'data-base-target' => '_self',
-                'title' => 'Set timerange for graph to ' . $rangeName
-            )
-        );
-    }
-
     //returns false on error, previewHTML is passed as reference
     private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
     {
@@ -251,7 +190,7 @@ class Grapher extends GrapherHook
             }
 
             $this->pngUrl = sprintf(
-                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now',
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
@@ -264,7 +203,8 @@ class Grapher extends GrapherHook
                 $this->width,
                 $this->height,
                 $this->grafanaTheme,
-                $this->timerange
+                urlencode($this->timerange),
+                urlencode($this->timerangeto)
             );
 
             // fetch image with curl
@@ -314,7 +254,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "direct") {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
+            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->protocol,
@@ -329,14 +269,15 @@ class Grapher extends GrapherHook
                 $this->width,
                 $this->height,
                 $this->grafanaTheme,
-                $this->timerange,
+                urlencode($this->timerange),
+                urlencode($this->timerangeto),
                 $this->refresh,
                 rawurlencode($serviceName),
                 $this->width,
                 $this->height
             );
         } elseif ($this->accessMode == "iframe") {
-            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=now" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
             $previewHtml = sprintf(
                 $iframehtml,
                 $this->protocol,
@@ -349,7 +290,8 @@ class Grapher extends GrapherHook
                 $this->panelId,
                 $this->orgId,
                 $this->grafanaTheme,
-                $this->timerange,
+                urlencode($this->timerange),
+                urlencode($this->timerangeto),
                 rawurlencode($serviceName),
                 $this->height
             );
@@ -366,7 +308,7 @@ class Grapher extends GrapherHook
         }
     }
 
-    public function getPreviewHtml(MonitoredObject $object)
+    public function getPreviewHtml(MonitoredObject $object, $report = false)
     {
         // enable_perfdata = true ?  || disablevar == true
         if (!$object->process_perfdata || isset($object->customvars[$this->custvardisable])) {
@@ -376,9 +318,18 @@ class Grapher extends GrapherHook
         if ($object instanceof Host) {
             $serviceName = $object->check_command;
             $hostName = $object->host_name;
+            $linkarray = array(
+                'host' => $object->host_name,
+            );
+            $link = 'monitoring/host/show';
         } elseif ($object instanceof Service) {
             $serviceName = $object->service_description;
             $hostName = $object->host->getName();
+            $linkarray = array(
+                'host' => $object->host->getName(),
+                'service' => $object->service_description,
+            );
+            $link = 'monitoring/service/show';
         }
 
         if($this->getGraphConf($serviceName, $object->check_command) == NULL) {
@@ -404,20 +355,17 @@ class Grapher extends GrapherHook
             $this->customVars = str_replace($search, $replace, $this->customVars);
         }
 
-        // build the menu
+
         $return_html = "";
-        $menu = '<table class="grafana-table"><tr>';
-        $menu .= '<td><div class="grafana-icon"><div class="grafana-clock"></div></div></td>';
-        foreach ($this->timeRanges as $key => $mainValue) {
-            $menu .= '<td><ul class="grafana-menu-navigation"><a class="main" href="#">' . $key . '</a>';
-            $counter = 1;
-            foreach ($mainValue as $subkey => $value) {
-                $menu .= '<li class="grafana-menu-n'. $counter .'">' . $this->getTimerangeLink($object, $value, $subkey) . '</li>';
-                $counter++;
-            }
-            $menu .= '</ul></td>';
+
+        // Menu only if we are not called from report
+        $menu = "";
+        if ($report === false) {
+            $timeranges = new Timeranges($linkarray, $link);
+            $menu = $timeranges->getTimerangeMenu();
+        } else {
+            $this->title = '';
         }
-        $menu .= '</tr></table>';
 
         foreach (explode(',', $this->panelId) as $panelid) {
 
@@ -432,7 +380,7 @@ class Grapher extends GrapherHook
             if (!$res || $this->enableLink == "no") {
                 $html .= $previewHtml;
             } else {
-                $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s%s&from=now-%s&to=now&orgId=%s';
+                $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s%s&from=now-%s&to=%s&orgId=%s';
 
                 if ($this->dashboard != $this->defaultDashboard) {
                     $html .= '&panelId=' . $this->panelId . '&fullscreen';
@@ -449,14 +397,15 @@ class Grapher extends GrapherHook
                     urlencode($hostName),
                     rawurlencode($serviceName),
                     $this->customVars,
-                    $this->timerange,
+                    urlencode($this->timerange),
+                    urlencode($this->timerangeto),
                     $this->orgId,
                     $previewHtml
                 );
             }
             $return_html .= $html;
         }
-        if($this->debug && $this->permission->hasPermission('grafana/debug')) {
+        if($this->debug && $this->permission->hasPermission('grafana/debug') && $report === false) {
             $usedUrl = "";
 
             if ($this->accessMode == "proxy") {
@@ -480,6 +429,7 @@ class Grapher extends GrapherHook
             $return_html .= "<tr><th>Organization ID</th><td>". $this->orgId ."</td>";
             $return_html .= "<tr><th>Theme</th><td>". $this->grafanaTheme ."</td>";
             $return_html .= "<tr><th>Timerange</th><td>". $this->timerange ."</td>";
+            $return_html .= "<tr><th>Timerangeto</th><td>". $this->timerangeto ."</td>";
             $return_html .= "<tr><th>Height</th><td>". $this->height ."</td>";
             $return_html .= "<tr><th>Width</th><td>". $this->width ."</td>";
             $return_html .= "<tr><th>Graph URL</th><td>". $usedUrl ."</td>";

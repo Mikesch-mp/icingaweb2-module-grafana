@@ -98,7 +98,15 @@ class GeneralConfigForm extends ConfigForm
             'grafana_custvardisable',
             array(
                 'label' => $this->translate('Disable customvar'),
-                'description' => $this->translate('Name of the custom variable that, if set, will disable the graph.'),
+                'description' => $this->translate('Name of the custom variable that, if set to true, will disable the graph.'),
+            )
+        );
+        $this->addElement(
+            'text',
+            'grafana_custvaruseconfig',
+            array(
+                'label' => $this->translate('Config customvar'),
+                'description' => $this->translate('Name of the custom variable that, if set, hold the config name to be used.'),
             )
         );
         $this->addElement(
@@ -240,7 +248,7 @@ class GeneralConfigForm extends ConfigForm
                         'yes' => $this->translate('Yes'),
                         'no' => $this->translate('No'),
                     ),
-                    'description' => $this->translate('Refresh fraphs on direct access.')
+                    'description' => $this->translate('Refresh graphs on direct access.')
                 )
             );
         }

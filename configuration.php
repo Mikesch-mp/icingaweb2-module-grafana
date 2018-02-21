@@ -3,8 +3,9 @@
 use Icinga\Authentication\Auth;
 $auth = Auth::getInstance();
 
-$this->providePermission('grafana/graph', $this->translate('Allow to configure graphs'));
-$this->providePermission('grafana/debug', $this->translate('Can see debuging informations, if enabled'));
+$this->providePermission('grafana/graphconfig', $this->translate('Allow to configure graphs.'));
+$this->providePermission('grafana/debug', $this->translate('Allow to see module debug informations.'));
+$this->providePermission('grafana/showall', $this->translate('Allow access to see all graphs of a host.'));
 
 $this->provideConfigTab('config', array(
     'title' => 'Configuration',
@@ -12,7 +13,7 @@ $this->provideConfigTab('config', array(
     'url' => 'config'
 ));
 
-if ($auth->hasPermission('grafana/graph'))
+if ($auth->hasPermission('grafana/graphconfig'))
 {
    $this->menuSection(N_('Configuration'))->add('Grafana Graphs')->setUrl('grafana/graph')->setPriority(900);
    $this->provideConfigTab('graph', array(
