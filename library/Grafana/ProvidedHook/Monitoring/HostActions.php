@@ -12,6 +12,7 @@ use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Web\Navigation\Navigation;
 use Icinga\Web\Navigation\NavigationItem;
 use Icinga\Web\Url;
+use Icinga\Application\Config;
 
 
 
@@ -19,9 +20,11 @@ class HostActions extends HostActionsHook
 {
     public function getActionsForHost(Host $host)
     {
+        $config = Config::module('grafana')->getSection('grafana');
+        $timerange = $config->get('timerangeAll', '1w/w');
         $nav = new Navigation();
         $nav->addItem(new NavigationItem('Show Grafana Graphs', array(
-            'url' => Url::fromPath('grafana/show', array('host' => $host->getName(), 'timerange' => '1w/w')),
+            'url' => Url::fromPath('grafana/show', array('host' => $host->getName(), 'timerange' => $timerange)),
             'target' => '_next',
         )));
         return $nav;

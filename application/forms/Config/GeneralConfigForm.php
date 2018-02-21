@@ -76,6 +76,16 @@ class GeneralConfigForm extends ConfigForm
             )
         );
         $this->addElement(
+            'select',
+            'grafana_timerangeAll',
+            array(
+                'label' => $this->translate('Timerange ShowAll'),
+                'value' => '1w/w',
+                'multiOptions' => Timeranges::getTimeranges(),
+                'description' => $this->translate('The default timerange to use for show all graphs.')
+            )
+        );
+        $this->addElement(
             'text',
             'grafana_custvardisable',
             array(
