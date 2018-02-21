@@ -159,18 +159,20 @@ class Grapher extends GrapherHook
         }
     }
 
-    private function getGraphConf($serviceName, $serviceCommand)
+    private function getGraphConf($serviceName, $serviceCommand = NULL)
     {
 
         $this->graphConfig = Config::module('grafana', 'graphs');
 
-        if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) && ($this->graphConfig->hasSection($serviceName) == False)) {
-            $serviceName = strtok($serviceName, ' ');
-        }
-        if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphConfig->hasSection($serviceName) == False)) {
-            $serviceName = $serviceCommand;
-            if($this->graphConfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
-                return NULL;
+        if ($serviceCommand != NULL) {
+            if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) && ($this->graphConfig->hasSection($serviceName) == False)) {
+                $serviceName = strtok($serviceName, ' ');
+            }
+            if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphConfig->hasSection($serviceName) == False)) {
+                $serviceName = $serviceCommand;
+                if($this->graphConfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
+                    return NULL;
+                }
             }
         }
 
@@ -376,8 +378,14 @@ class Grapher extends GrapherHook
             $hostName = $object->host->getName();
         }
 
-        if($this->getGraphConf($serviceName, $object->check_command) == NULL) {
-            return;
+        if (isset($object->customvars['grafana_graph_confname'])) {
+            if($this->getGraphConf($object->customvars['grafana_graph_confname']) == NULL) {
+                return ;
+            }
+        } else {
+            if($this->getGraphConf($serviceName, $object->check_command) == NULL) {
+                return;
+            }
         }
 
         if($this->repeatable == "yes" ) {
