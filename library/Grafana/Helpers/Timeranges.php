@@ -12,7 +12,7 @@ use Icinga\Application\Icinga;
 
 class Timeranges
 {
-    protected $timeRanges = array(
+    protected static $timeRanges = array(
         'Minutes' => array(
             '5m' => '5 minutes',
             '15m' => '15 minutes',
@@ -53,7 +53,7 @@ class Timeranges
     );
 
 
-    public function __construct(array $array, $link)
+    public function __construct(array $array = array(), $link = "")
     {
         $this->array = $array;
         $this->link = $link;
@@ -96,5 +96,10 @@ class Timeranges
     public function getTimerangeMenu()
     {
         return $this->buildTimrangeMenu();
+    }
+
+    public static function getTimeranges()
+    {
+        return call_user_func_array('array_merge',self::$timeRanges);
     }
 }
