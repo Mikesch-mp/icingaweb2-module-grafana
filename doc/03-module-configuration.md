@@ -9,7 +9,7 @@ The configuration can be done via web interface or by editing the configuration 
 ### Configuration with web interface
 Browse to [/icingaweb2/config/modules#!/icingaweb2/grafana/config](/icingaweb2/config/modules#!/icingaweb2/grafana/config). Here you can set all the options descripted below.
 
-![Grafana module configuration](images/module_grafana_configuration01.png "Grafana module configuration")
+![Grafana module configuration](images/03-module_grafana_configuration01.png "Grafana module configuration")
 
 
 ---
@@ -36,6 +36,7 @@ password = "123456"
 height = "280"
 width = "640"
 timerange = "3h"
+timerangeAll = "1M/M"
 enableLink = "yes"
 defaultorgid = "1"
 defaultdashboard = "icinga2-default"
@@ -65,6 +66,7 @@ ssl_verifyhost = "0"
 |height             | **Optional.** Global graph height in pixel. Defaults to `280`.|
 |width              | **Optional.** Global graph width in pixel. Defaults to `640`.|
 |timerange          | **Optional.** Global time range for graphs. Defaults to `6h`.|
+|timerangeAll       | **Optional.** Time range for all graphs feature. Defaults to `Previous week`.|
 |enableLink         | **Optional.** Enable/disable graph with a rendered URL to the Grafana dashboard. Defaults to `yes`.|
 |datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.|
 |defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. Set to `none` to hide the module output. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.|
@@ -110,6 +112,9 @@ This option can be overwritten by a graph configuration.
 The default timerange used for the graphs. Defaults to `6 hours`.
 This option can be overwritten by a graph configuration.
 
+### timerangeAll
+Time range for all graphs feature. Defaults to `Previous week`
+
 ### enableLink
 Enable or disable the graphs as a link to the Grafana Server.
 
@@ -120,8 +125,10 @@ The datasource that Grafana server uses. Can be InfluxDB, Graphite and PNP (unte
 Number of the default organization id where dashboards are located. Defaults to `1`.
 You can fetch the id if you browse to your grafana server menu -> Admin -> Global Orgs
 
-### defaultdashbaord
-The name of the default dashboard that is used when no service/host graph s configured.
+### defaultdashboard
+The name of the default dashboard that is used when **no graph is configured** for your service, host or command.
+The panel id used for this dashboard will always be **"1"** and **cannot be changed**
+See [04-graph configuration](04-graph-configuration.md) for details about how to configure graphs.
 
 ### defaultdashboardstore
 The dashboard store, `database`or `file`, that is used by Grafana server. Defaults to `database`

@@ -42,7 +42,7 @@ nmetrics = "1"
 
 ### Name search order
 
-This module prefers the `service name`, then looks for an optional `parametrized service name` and for the `service check command name`.
+This module prefers the `service name`, then looks for an optional `parametrized service name` and at last for the `service check command name`.
 
 If there is no match, it will use the default dashboard as fallback.
 

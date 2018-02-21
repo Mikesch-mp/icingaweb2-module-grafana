@@ -18,7 +18,7 @@ we will delete the old module directory first. Get the [latest version number](h
 into the `MODULE_VERSION` variable
 
 ```
-MODULE_VERSION="1.1.7"
+MODULE_VERSION="1.2.0"
 ICINGAWEB_MODULEPATH="/usr/share/icingaweb2/modules"
 REPO_URL="https://github.com/Mikesch-mp/icingaweb2-module-grafana"
 TARGET_DIR="${ICINGAWEB_MODULEPATH}/grafana"
