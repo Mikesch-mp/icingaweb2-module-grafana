@@ -116,7 +116,7 @@ Create a datasource depending on the metric backend you want to use.
 
 ### Import dashboards
 
-Depending which metric backend (influxdb/grpahite) you use, import the 2 provided dashboards.
+Depending which metric backend (influxdb/graphite) you use, import the 2 provided dashboards.
 
 #### icinga2-default dashboard
 ![Grafana import icinga2-default dashboard](images/grafana-import-icinga2-default-dashboard.png "Grafana import icinga2-default dashboard")
