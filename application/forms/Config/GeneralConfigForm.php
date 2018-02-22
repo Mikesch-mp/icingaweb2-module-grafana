@@ -194,35 +194,46 @@ class GeneralConfigForm extends ConfigForm
             );
             $this->addElement(
                 'select',
-                'grafana_authanon',
+                'grafana_authentication',
                 array(
-                    'label' => $this->translate('Anonymous Access'),
-                    'value' => 'yes',
+                    'label' => $this->translate('Authentication type'),
+                    'value' => 'anon',
                     'multiOptions' => array(
-                        'yes' => $this->translate('Yes'),
-                        'no' => $this->translate('No'),
+                        'anon' => $this->translate('Anonymous'),
+                        'token' => $this->translate('API Token'),
+                        'basic' => $this->translate('Username & Password'),
                     ),
-                    'description' => $this->translate('Anonymous or username/password access to Grafana server.'),
+                    'description' => $this->translate('Authentication type used for Grafana access.'),
                     'class' => 'autosubmit'
                 )
             );
-            if (isset($formData['grafana_authanon']) && $formData['grafana_authanon'] === 'no' ) {
+            if (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'basic' ) {
+                    $this->addElement(
+                        'text',
+                        'grafana_username',
+                        array(
+                            'label' => $this->translate('Username'),
+                            'description' => $this->translate('The HTTP Basic Auth user name used to access Grafana.'),
+                            'required' => true
+                        )
+                    );
+                    $this->addElement(
+                        'password',
+                        'grafana_password',
+                        array(
+                            'renderPassword' => true,
+                            'label' => $this->translate('Password'),
+                            'description' => $this->translate('The HTTP Basic Auth password used to access Grafana.'),
+                            'required' => true
+                        )
+                    );
+            } elseif (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'token' ) {
                 $this->addElement(
                     'text',
-                    'grafana_username',
+                    'grafana_apitoken',
                     array(
-                        'label' => $this->translate('Username'),
-                        'description' => $this->translate('The HTTP Basic Auth user name used to access Grafana.'),
-                        'required' => true
-                    )
-                );
-                $this->addElement(
-                    'password',
-                    'grafana_password',
-                    array(
-                        'renderPassword' => true,
-                        'label' => $this->translate('Password'),
-                        'description' => $this->translate('The HTTP Basic Auth password used to access Grafana.'),
+                        'label' => $this->translate('API Token'),
+                        'description' => $this->translate('The API token used to access Grafana.'),
                         'required' => true
                     )
                 );

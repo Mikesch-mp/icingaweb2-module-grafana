@@ -75,9 +75,10 @@ ssl_verifyhost = "0"
 |defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.|
 |accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`), are embedded (`direct`) or in iframe ('iframe'). Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.|
 |timeout            | **Proxy only** **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.|
-|authanon           | **Ignore** Only used for configuration via web interface.|
-|username           | **Proxy non anonymous only** **Required** HTTP Basic Auth user name to access Grafana.|
-|password           | **Proxy non anonymous only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.|
+|authentication     | **Proxy only** Authentication type used to acccess Grafana. Can be set to `anon`,`token` or `basic`. Defaults to `anon`.
+|username           | **Proxy with basic only** **Required** HTTP Basic Auth user name to access Grafana.|
+|password           | **Proxy with basic only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.|
+|apitoken           | **Proxy with token only** **Required** API token used to access Grafana.|
 |directrefresh      | **Direct Only** **Optional.** Refresh graphs on direct access. Defaults to `no`.|
 |usepublic          | **Optional** Enable usage of publichost/protocol. Defaults to `no`.|
 |publichost         | **Optional** Use a diffrent host for the graph links.|
@@ -168,8 +169,11 @@ Used with 'proxy' mode only.
 Timeout in seconds for loading graph images from Grafana server. Defaults to `5 seconds`.
 If you often get a timeout message then the image, raise this to 10 or more seconds.
 
-### authanon
-This option is only used for the web configuration to hide/show username and password options.
+### authentication
+Authentication type used to acccess Grafana. Can be set to `anon`,`token` or `basic`. Defaults to `anon`.
+ * `anon` needs enabled [auth.anonymous] enabled in grafana.ini.
+ * `basic` needs [auth.basic] enabled in grafana.ini.
+ * `token` needs a generated API token from Grafana.
 
 ### username
 Used with 'proxy' mode, non anonymous access only.
@@ -178,6 +182,9 @@ The username used to authenticate to Grafana server.
 ### password
 Used with 'proxy' mode, non anonymous access only.
 The password used to authenticate to Grafana server.
+
+### apitoken
+API token used to access Grafana. See [Create API Token](http://docs.grafana.org/http_api/auth/#create-api-token) for details how to create a API token.
 
 ### usepublic
 Enables/Disables the usage of a `public` URL to the Grafana server.

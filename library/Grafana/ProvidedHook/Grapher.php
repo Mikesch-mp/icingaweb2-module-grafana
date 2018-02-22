@@ -19,6 +19,7 @@ class Grapher extends GrapherHook
     protected $config;
     protected $graphConfig;
     protected $auth;
+    protected $authentication;
     protected $grafanaHost           = null;
     protected $grafanaTheme          = 'light';
     protected $protocol              = "http";
@@ -29,6 +30,7 @@ class Grapher extends GrapherHook
     protected $timerangeto           = "now";
     protected $username              = null;
     protected $password              = null;
+    protected $apiToken              = null;
     protected $width                 = 640;
     protected $height                = 280;
     protected $enableLink            = true;
@@ -85,10 +87,6 @@ class Grapher extends GrapherHook
         $this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
 
-        // Check if there is a timerange in url params
- //       $this->timerange = Url::fromRequest()->hasParam('timerange') ? urldecode(Url::fromRequest()->getParam('timerange')) : $this->config->get('timerange', $this->timerange);
-//        $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : $this->timerange;
-
         $this->accessMode = $this->config->get('accessmode', $this->accessMode);
         $this->proxyTimeout = $this->config->get('proxytimeout', $this->proxyTimeout);
 
@@ -130,18 +128,27 @@ class Grapher extends GrapherHook
         $this->SSLVerifyPeer = ($this->config->get('ssl_verifypeer', $this->SSLVerifyPeer));
 
         /**
-         * Username & Password
+         * Username & Password or token
          */
-        $this->username = $this->config->get('username', $this->username);
-        $this->password = $this->config->get('password', $this->password);
-        if ($this->username != null) {
-            if ($this->password != null) {
-                $this->auth = $this->username . ":" . $this->password;
-            } else {
-                $this->auth = $this->username;
-            }
+
+        $this->apiToken = $this->config->get('apitoken', $this->apiToken);
+        $this->authentication = $this->config->get('authentication');
+        if ($this->apiToken == null && $this->authentication == "token") {
+            throw new ConfigurationError(
+                'API token usage configured, but no token given!'
+            );
         } else {
-            $this->auth = "";
+            $this->username = $this->config->get('username', $this->username);
+            $this->password = $this->config->get('password', $this->password);
+            if ($this->username != null) {
+                if ($this->password != null) {
+                    $this->auth = $this->username . ":" . $this->password;
+                } else {
+                    $this->auth = $this->username;
+                }
+            } else {
+                $this->auth = "";
+            }
         }
     }
 
@@ -222,9 +229,13 @@ class Grapher extends GrapherHook
                 CURLOPT_SSL_VERIFYPEER => $this->SSLVerifyPeer,
                 CURLOPT_SSL_VERIFYHOST => ($this->SSLVerifyHost) ? 2 : 0,
                 CURLOPT_TIMEOUT => $this->proxyTimeout,
-                CURLOPT_USERPWD => "$this->auth",
-                CURLOPT_HTTPAUTH, CURLAUTH_ANY
             );
+
+            if ($this->authentication == "token") {
+                $curl_opts[CURLOPT_HTTPHEADER] = array('Content-Type: application/json' , "Authorization: Bearer ". $this->apiToken);
+            } else {
+                $curl_opts[CURLOPT_USERPWD] = "$this->auth";
+            }
 
             curl_setopt_array($curl_handle, $curl_opts);
             $res = curl_exec($curl_handle);
@@ -432,6 +443,7 @@ class Grapher extends GrapherHook
             $return_html .= "<h2>Performance Graph Debug</h2>";
             $return_html .= "<table class=\"name-value-table\"><tbody>";
             $return_html .= "<tr><th>Access mode</th><td>". $this->accessMode ."</td>";
+            $return_html .= "<tr><th>Authentication type</th><td>". $this->authentication ."</td>";
             $return_html .= "<tr><th>Protocol</th><td>". $this->protocol ."</td>";
             $return_html .= "<tr><th>Grafana Host</th><td>". $this->grafanaHost ."</td>";
             $return_html .= "<tr><th>Dashboard Store</th><td>". $this->defaultDashboardStore ."</td>";
