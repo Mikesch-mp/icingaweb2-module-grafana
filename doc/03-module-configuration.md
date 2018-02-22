@@ -83,6 +83,7 @@ ssl_verifyhost = "0"
 |publichost         | **Optional** Use a diffrent host for the graph links.|
 |publicprotocol     | **Optional** Use a diffrent protocol for the graph links.|
 |custvardisable     | **Optional** Custom variable (vars.idontwanttoseeagraph for example) that will disable graphs. Defaults to `grafana_graph_disable`.|
+|custvarconfig      | **Optional** Custom variable (vars.usegraphconfig for example) that will be used as config name. Defaults to `grafana_graph_config`.|
 |theme              | **Optional.** Select grafana theme for the graph (light or dark). Defaults to `light`.|
 |debug              | **Optional.** Enables the debug information under the graph if the user has permission to see them. Defaults to `disabled`.|
 |ssl_verifypeer     | **Proxy mode only** **Optional.** Verify the peer's SSL certificate. Defaults to `false`.|
@@ -192,6 +193,13 @@ The protocol used for the links to graphs.
 
 ### custvardisable
 Name of the custom variable (vars.idontwanttoseeagraph for example) that will disable graphs if set to true. Defaults to `grafana_graph_disable`.
+
+### custvarconfig
+Name of the custom variable (vars.usegraphconfig for example) that will be used as graph config name. Defaults to `grafana_graph_config`.
+This will overwrite the search order and force the module to use the graph configuration name that the variiable points to.
+For example you have `vars.grafana_graph_config = "check_my_tesla"` in your service configuration, the module will look for
+an [graph configuration](04-graph-configuration.md) that is named `check_my_tesla` and use this to render/show the performance graph.
+If there is no such a configuration, the `default-template` will be used.
 
 ### theme
 The Grafana theme that will be used. Defaults to `light`.

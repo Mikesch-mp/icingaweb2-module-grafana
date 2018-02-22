@@ -42,6 +42,7 @@ class Grapher extends GrapherHook
     protected $refresh               = "no";
     protected $title                 = "<h2>Performance Graph</h2>";
     protected $custvardisable        = "grafana_graph_disable";
+    protected $custvarconfig         = "grafana_graph_config";
     protected $repeatable            = "no";
     protected $numberMetrics         = "1";
     protected $debug                 = false;
@@ -111,6 +112,11 @@ class Grapher extends GrapherHook
          */
         $this->custvardisable = ($this->config->get('custvardisable', $this->custvardisable));
         /**
+         * Name of the custom varibale for graph config
+         */
+        $this->custvarconfig = ($this->config->get('custvarconfig', $this->custvarconfig));
+
+        /**
          * Show some debug informations?
          */
         $this->debug = ($this->config->get('debug', $this->debug));
@@ -139,7 +145,7 @@ class Grapher extends GrapherHook
         }
     }
 
-    private function getGraphConf($serviceName, $serviceCommand)
+    private function getGraphConf($serviceName, $serviceCommand = NULL)
     {
 
         $this->graphConfig = Config::module('grafana', 'graphs');
@@ -332,7 +338,12 @@ class Grapher extends GrapherHook
             $link = 'monitoring/service/show';
         }
 
-        if($this->getGraphConf($serviceName, $object->check_command) == NULL) {
+        if (isset($object->customvars[$this->custvarconfig]) && ! empty($object->customvars[$this->custvarconfig])) {
+            $graphConfiguation = $this->getGraphConf($object->customvars[$this->custvarconfig]);
+        } else {
+            $graphConfiguation = $this->getGraphConf($serviceName, $object->check_command);
+        }
+        if($graphConfiguation == NULL) {
             return;
         }
 
@@ -434,6 +445,10 @@ class Grapher extends GrapherHook
             $return_html .= "<tr><th>Width</th><td>". $this->width ."</td>";
             $return_html .= "<tr><th>Graph URL</th><td>". $usedUrl ."</td>";
             $return_html .= "<tr><th>Disable graph custom variable</th><td>". $this->custvardisable ."</td>";
+            $return_html .= "<tr><th>Graph config custom variable</th><td>". $this->custvarconfig ."</td>";
+            if(isset($object->customvars[$this->custvarconfig])){
+                $return_html .= "<tr><th>" . $this->custvarconfig . "</th><td>". $object->customvars[$this->custvarconfig] ."</td>";
+            }
             $return_html .= "<tr><th>Shadows</th><td>". (($this->shadows) ? 'Yes' : 'No') ."</td>";
             if ($this->accessMode == "proxy") {
                 $return_html .= "<tr><th>SSL Verify Peer</th><td>". (($this->SSLVerifyPeer) ? 'Yes' : 'No') ."</td>";

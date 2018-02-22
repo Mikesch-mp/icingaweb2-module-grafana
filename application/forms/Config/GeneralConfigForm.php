@@ -95,7 +95,7 @@ class GeneralConfigForm extends ConfigForm
         );
         $this->addElement(
             'text',
-            'grafana_custvaruseconfig',
+            'grafana_custvarconfig',
             array(
                 'label' => $this->translate('Config customvar'),
                 'description' => $this->translate('Name of the custom variable that, if set, hold the config name to be used.'),
