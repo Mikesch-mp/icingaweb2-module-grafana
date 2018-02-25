@@ -203,13 +203,14 @@ class Grapher extends GrapherHook
             }
 
             $this->pngUrl = sprintf(
-                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
                 $this->dashboard,
                 urlencode($hostName),
                 rawurlencode($serviceName),
+                $this->object->check_command,
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
@@ -271,7 +272,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "direct") {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
+            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->protocol,
@@ -280,6 +281,7 @@ class Grapher extends GrapherHook
                 $this->dashboard,
                 urlencode($hostName),
                 rawurlencode($serviceName),
+                $this->object->check_command,
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
@@ -294,7 +296,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "iframe") {
-            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+            $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
             $previewHtml = sprintf(
                 $iframehtml,
                 $this->protocol,
@@ -303,6 +305,7 @@ class Grapher extends GrapherHook
                 $this->dashboard,
                 urlencode($hostName),
                 rawurlencode($serviceName),
+                $this->object->check_command,
                 $this->customVars,
                 $this->panelId,
                 $this->orgId,
@@ -327,29 +330,30 @@ class Grapher extends GrapherHook
 
     public function getPreviewHtml(MonitoredObject $object, $report = false)
     {
+        $this->object = $object;
         // enable_perfdata = true ?  || disablevar == true
-        if (!$object->process_perfdata || isset($object->customvars[$this->custvardisable])) {
+        if (!$this->object->process_perfdata || isset($this->object->customvars[$this->custvardisable])) {
             return '';
         }
 
-        if ($object instanceof Host) {
-            $serviceName = $object->check_command;
-            $hostName = $object->host_name;
+        if ($this->object instanceof Host) {
+            $serviceName = $this->object->check_command;
+            $hostName = $this->object->host_name;
             $linkarray = array(
-                'host' => $object->host_name,
+                'host' => $this->object->host_name,
             );
             $link = 'monitoring/host/show';
-        } elseif ($object instanceof Service) {
-            $serviceName = $object->service_description;
-            $hostName = $object->host->getName();
+        } elseif ($this->object instanceof Service) {
+            $serviceName = $this->object->service_description;
+            $hostName = $this->object->host->getName();
             $linkarray = array(
-                'host' => $object->host->getName(),
-                'service' => $object->service_description,
+                'host' => $this->object->host->getName(),
+                'service' => $this->object->service_description,
             );
             $link = 'monitoring/service/show';
         }
 
-        if (isset($object->customvars[$this->custvarconfig]) && ! empty($object->customvars[$this->custvarconfig])) {
+        if (isset($this->object->customvars[$this->custvarconfig]) && ! empty($this->object->customvars[$this->custvarconfig])) {
             $graphConfiguation = $this->getGraphConf($object->customvars[$this->custvarconfig]);
         } else {
             $graphConfiguation = $this->getGraphConf($serviceName, $object->check_command);
@@ -402,7 +406,7 @@ class Grapher extends GrapherHook
             if (!$res || $this->enableLink == "no") {
                 $html .= $previewHtml;
             } else {
-                $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s%s&from=now-%s&to=%s&orgId=%s';
+                $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=now-%s&to=%s&orgId=%s';
 
                 if ($this->dashboard != $this->defaultDashboard) {
                     $html .= '&panelId=' . $this->panelId . '&fullscreen';
@@ -418,6 +422,7 @@ class Grapher extends GrapherHook
                     $this->dashboard,
                     urlencode($hostName),
                     rawurlencode($serviceName),
+                    $this->object->check_command,
                     $this->customVars,
                     urlencode($this->timerange),
                     urlencode($this->timerangeto),
