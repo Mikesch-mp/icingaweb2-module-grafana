@@ -62,9 +62,9 @@ icingacli module enable grafana
 
 Depending on which mode (proxy/direct/iframe) you want to use you have to set some configuration in Grafana
 
-### For `proxy` mode
+### For 'proxy' mode
 
-If you dont want anonymous access you have to create a user (with password) and enable basic auth in grafana.ini
+If you don't want anonymous access you have to create a user (with password) and enable basic auth in grafana.ini
 
 ```
  #################################### Basic Auth ##########################
@@ -87,7 +87,7 @@ If you want to allow anonymous access (read only) enable "Anonymous Auth" in gra
  org_role = Viewer
 ```
 
-### For `direct` & `iframe` mode
+### For 'direct' & 'iframe' mode
 
 You have to enable "Anonymous Auth" in grafana.ini and set default organization or users need
 to be logged in into Grafana first to see graphs in Icinga Web 2.
