@@ -6,7 +6,7 @@ Description: Grafana - A perfdata visualisation module
 
  This module requires:
 
- * Grafana (>= 4.1.0) with basic auth enabled or anonymous access
+ * Grafana (>= 4.1.0 < 5.0) with basic auth enabled or anonymous access
 
  * InfluxDB or Graphite as datasource backend.
 
