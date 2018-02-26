@@ -1,4 +1,9 @@
 <?php
+use Icinga\Authentication\Auth;
+$auth = Auth::getInstance();
 
 $this->provideHook('grapher');
-/* $this->provideHook('monitoring/HostActions'); */
+
+if ($auth->hasPermission('grafana/showall')) {
+    $this->provideHook('monitoring/HostActions');
+}

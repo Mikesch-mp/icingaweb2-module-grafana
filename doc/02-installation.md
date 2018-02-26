@@ -7,9 +7,9 @@ to the latest version, please [read on here](05-update.md).
 ## Requirements
 
 * [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.1)
-* [Grafana](https://grafana.com/) (>= 4.1)
+* [Grafana](https://grafana.com/) (>= 4.1 < 5.0)
 * [InfluxDB](https://docs.influxdata.com/influxdb/) (>= 1.0) [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
-* [PHP](https://www.php.net) **with curl enabled** (for proxy mode)
+* [PHP 7](https://www.php.net) **with curl enabled** (for proxy mode)
 
 
 ## Install the Grafana module
@@ -62,9 +62,9 @@ icingacli module enable grafana
 
 Depending on which mode (proxy/direct/iframe) you want to use you have to set some configuration in Grafana
 
-### For `proxy` mode
+### For 'proxy' mode
 
-If you dont want anonymous access you have to create a user (with password) and enable basic auth in grafana.ini
+If you don't want anonymous access you have to create a user (with password) and enable basic auth in grafana.ini
 
 ```
  #################################### Basic Auth ##########################
@@ -87,7 +87,7 @@ If you want to allow anonymous access (read only) enable "Anonymous Auth" in gra
  org_role = Viewer
 ```
 
-### For `direct` & `iframe` mode
+### For 'direct' & 'iframe' mode
 
 You have to enable "Anonymous Auth" in grafana.ini and set default organization or users need
 to be logged in into Grafana first to see graphs in Icinga Web 2.
@@ -116,7 +116,7 @@ Create a datasource depending on the metric backend you want to use.
 
 ### Import dashboards
 
-Depending which metric backend (influxdb/grpahite) you use, import the 2 provided dashboards.
+Depending which metric backend (influxdb/graphite) you use, import the 2 provided dashboards.
 
 #### icinga2-default dashboard
 ![Grafana import icinga2-default dashboard](images/grafana-import-icinga2-default-dashboard.png "Grafana import icinga2-default dashboard")

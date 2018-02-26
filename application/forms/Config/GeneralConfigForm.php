@@ -2,7 +2,7 @@
 
 namespace Icinga\Module\Grafana\Forms\Config;
 
-use Icinga\Application\Config;
+use Icinga\Module\Grafana\Helpers\Timeranges;
 use Icinga\Forms\ConfigForm;
 
 class GeneralConfigForm extends ConfigForm
@@ -41,33 +41,48 @@ class GeneralConfigForm extends ConfigForm
                     'https' => $this->translate('Secure: https'),
                 ),
                 'description' => $this->translate('Protocol used to access Grafana.'),
+                'class' => 'autosubmit',
              )
         );
+
+        if (isset($formData['grafana_protocol']) && $formData['grafana_protocol'] === 'https' ) {
+            $this->addElement(
+                'checkbox',
+                'grafana_ssl_verifypeer',
+                array(
+                    'value'=> true,
+                    'label' => $this->translate('SSL verify peer'),
+                    'description' => $this->translate('Verify the peer\'s SSL certificate.'),
+                )
+            );
+
+            $this->addElement(
+                'checkbox',
+                'grafana_ssl_verifyhost',
+                array(
+                    'value'=> true,
+                    'label' => $this->translate('SSL verify host'),
+                    'description' => $this->translate('Verify the certificate\'s name against host.'),
+                )
+            );
+        }
         $this->addElement(
             'select',
             'grafana_timerange',
             array(
                 'label' => $this->translate('Timerange'),
-                'multiOptions' => array(
-                    '' => $this->translate('Use default'),
-                    '5m' => $this->translate('Last 5 minutes'),
-                    '15m' => $this->translate('Last 15 minutes'),
-                    '30m' => $this->translate('Last 30 minutes'),
-                    '1h' => $this->translate('Last 1 hour'),
-                    '3h' => $this->translate('Last 3 hours'),
-                    '6h' => $this->translate('Last 6 hours'),
-                    '8h' => $this->translate('Last 8 hours'),
-                    '12h' => $this->translate('Last 12 hours'),
-                    '24h' => $this->translate('Last 24 hours'),
-                    '2d' => $this->translate('Last 2 days'),
-                    '7d' => $this->translate('Last 7 days'),
-                    '30d' => $this->translate('Last 30 days'),
-                    '60d' => $this->translate('Last 60 days'),
-                    '6M' => $this->translate('Last 6 months'),
-                    '1y' => $this->translate('Last 1 year'),
-                    '2y' => $this->translate('Last 2 years'),
-                ),
+                'multiOptions' => array_merge(array('' => 'Use default (6h)'), Timeranges::getTimeranges()),
                 'description' => $this->translate('The default timerange to use for the graphs.')
+            )
+        );
+        $this->addElement(
+            'select',
+            'grafana_timerangeAll',
+            array(
+                'label' => $this->translate('Timerange ShowAll'),
+                'value' => '1w/w',
+                'multiOptions' => Timeranges::getTimeranges(),
+                'description' => $this->translate('The default timerange to use for show all graphs.')
             )
         );
         $this->addElement(
@@ -75,7 +90,15 @@ class GeneralConfigForm extends ConfigForm
             'grafana_custvardisable',
             array(
                 'label' => $this->translate('Disable customvar'),
-                'description' => $this->translate('Name of the custom variable that, if set, will disable the graph.'),
+                'description' => $this->translate('Name of the custom variable that, if set to true, will disable the graph.'),
+            )
+        );
+        $this->addElement(
+            'text',
+            'grafana_custvarconfig',
+            array(
+                'label' => $this->translate('Config customvar'),
+                'description' => $this->translate('Name of the custom variable that, if set, hold the config name to be used.'),
             )
         );
         $this->addElement(
@@ -171,35 +194,46 @@ class GeneralConfigForm extends ConfigForm
             );
             $this->addElement(
                 'select',
-                'grafana_authanon',
+                'grafana_authentication',
                 array(
-                    'label' => $this->translate('Anonymous Access'),
-                    'value' => 'yes',
+                    'label' => $this->translate('Authentication type'),
+                    'value' => 'anon',
                     'multiOptions' => array(
-                        'yes' => $this->translate('Yes'),
-                        'no' => $this->translate('No'),
+                        'anon' => $this->translate('Anonymous'),
+                        'token' => $this->translate('API Token'),
+                        'basic' => $this->translate('Username & Password'),
                     ),
-                    'description' => $this->translate('Anonymous or username/password access to Grafana server.'),
+                    'description' => $this->translate('Authentication type used for Grafana access.'),
                     'class' => 'autosubmit'
                 )
             );
-            if (isset($formData['grafana_authanon']) && $formData['grafana_authanon'] === 'no' ) {
+            if (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'basic' ) {
+                    $this->addElement(
+                        'text',
+                        'grafana_username',
+                        array(
+                            'label' => $this->translate('Username'),
+                            'description' => $this->translate('The HTTP Basic Auth user name used to access Grafana.'),
+                            'required' => true
+                        )
+                    );
+                    $this->addElement(
+                        'password',
+                        'grafana_password',
+                        array(
+                            'renderPassword' => true,
+                            'label' => $this->translate('Password'),
+                            'description' => $this->translate('The HTTP Basic Auth password used to access Grafana.'),
+                            'required' => true
+                        )
+                    );
+            } elseif (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'token' ) {
                 $this->addElement(
                     'text',
-                    'grafana_username',
+                    'grafana_apitoken',
                     array(
-                        'label' => $this->translate('Username'),
-                        'description' => $this->translate('The HTTP Basic Auth user name used to access Grafana.'),
-                        'required' => true
-                    )
-                );
-                $this->addElement(
-                    'password',
-                    'grafana_password',
-                    array(
-                        'renderPassword' => true,
-                        'label' => $this->translate('Password'),
-                        'description' => $this->translate('The HTTP Basic Auth password used to access Grafana.'),
+                        'label' => $this->translate('API Token'),
+                        'description' => $this->translate('The API token used to access Grafana.'),
                         'required' => true
                     )
                 );
@@ -217,7 +251,7 @@ class GeneralConfigForm extends ConfigForm
                         'yes' => $this->translate('Yes'),
                         'no' => $this->translate('No'),
                     ),
-                    'description' => $this->translate('Refresh fraphs on direct access.')
+                    'description' => $this->translate('Refresh graphs on direct access.')
                 )
             );
         }
@@ -301,8 +335,8 @@ class GeneralConfigForm extends ConfigForm
             'grafana_debug',
             array(
                 'value'=> false,
-                'label' => $this->translate('Show URL on failure'),
-                'description' => $this->translate('Show the graph URL if there is any failure.'),
+                'label' => $this->translate('Show debug'),
+                'description' => $this->translate('Show debuging information.'),
             )
         );
     }

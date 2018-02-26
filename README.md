@@ -30,7 +30,7 @@ Join the [Icinga community channels](https://www.icinga.com/community/get-involv
 ## Requirements
 
 * [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.1)
-* [Grafana](https://grafana.com/) (>= 4.1)
+* [Grafana](https://grafana.com/) (>= 4.1 < 5.0)
 * [InfluxDB](https://docs.influxdata.com/influxdb/), [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
 * [PHP](https://www.php.net) **with curl enabled** (for proxy mode)
 

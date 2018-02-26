@@ -9,7 +9,7 @@ The configuration can be done via web interface or by editing the configuration 
 ### Configuration with web interface
 Browse to [/icingaweb2/config/modules#!/icingaweb2/grafana/config](/icingaweb2/config/modules#!/icingaweb2/grafana/config). Here you can set all the options descripted below.
 
-![Grafana module configuration](images/module_grafana_configuration01.png "Grafana module configuration")
+![Grafana module configuration](images/03-module_grafana_configuration01.png "Grafana module configuration")
 
 
 ---
@@ -36,6 +36,7 @@ password = "123456"
 height = "280"
 width = "640"
 timerange = "3h"
+timerangeAll = "1M/M"
 enableLink = "yes"
 defaultorgid = "1"
 defaultdashboard = "icinga2-default"
@@ -49,6 +50,9 @@ usepublic = "no"
 publichost = "otherhost:3000"
 publicprotocol = "http"
 custvardisable = "idontwanttoseeagraph"
+debug = "0"
+ssl_verifypeer = "0"
+ssl_verifyhost = "0"
 ```
 
 ---
@@ -62,6 +66,7 @@ custvardisable = "idontwanttoseeagraph"
 |height             | **Optional.** Global graph height in pixel. Defaults to `280`.|
 |width              | **Optional.** Global graph width in pixel. Defaults to `640`.|
 |timerange          | **Optional.** Global time range for graphs. Defaults to `6h`.|
+|timerangeAll       | **Optional.** Time range for all graphs feature. Defaults to `Previous week`.|
 |enableLink         | **Optional.** Enable/disable graph with a rendered URL to the Grafana dashboard. Defaults to `yes`.|
 |datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.|
 |defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. Set to `none` to hide the module output. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.|
@@ -70,15 +75,21 @@ custvardisable = "idontwanttoseeagraph"
 |defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.|
 |accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`), are embedded (`direct`) or in iframe ('iframe'). Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.|
 |timeout            | **Proxy only** **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.|
-|authanon           | **Ignore** Only used for configuration via web interface.|
-|username           | **Proxy non anonymous only** **Required** HTTP Basic Auth user name to access Grafana.|
-|password           | **Proxy non anonymous only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.|
+|authentication     | **Proxy only** Authentication type used to acccess Grafana. Can be set to `anon`,`token` or `basic`. Defaults to `anon`.
+|username           | **Proxy with basic only** **Required** HTTP Basic Auth user name to access Grafana.|
+|password           | **Proxy with basic only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.|
+|apitoken           | **Proxy with token only** **Required** API token used to access Grafana.|
 |directrefresh      | **Direct Only** **Optional.** Refresh graphs on direct access. Defaults to `no`.|
 |usepublic          | **Optional** Enable usage of publichost/protocol. Defaults to `no`.|
 |publichost         | **Optional** Use a diffrent host for the graph links.|
 |publicprotocol     | **Optional** Use a diffrent protocol for the graph links.|
 |custvardisable     | **Optional** Custom variable (vars.idontwanttoseeagraph for example) that will disable graphs. Defaults to `grafana_graph_disable`.|
+|custvarconfig      | **Optional** Custom variable (vars.usegraphconfig for example) that will be used as config name. Defaults to `grafana_graph_config`.|
 |theme              | **Optional.** Select grafana theme for the graph (light or dark). Defaults to `light`.|
+|debug              | **Optional.** Enables the debug information under the graph if the user has permission to see them. Defaults to `disabled`.|
+|ssl_verifypeer     | **Proxy mode only** **Optional.** Verify the peer's SSL certificate. Defaults to `false`.|
+|ssl_verifyhost     | **Proxy mode only** **Optional.** Verify the certificate's name against host. Defaults to `false`.|
+
 
 ---
 
@@ -103,6 +114,9 @@ This option can be overwritten by a graph configuration.
 The default timerange used for the graphs. Defaults to `6 hours`.
 This option can be overwritten by a graph configuration.
 
+### timerangeAll
+Time range for all graphs feature. Defaults to `Previous week`
+
 ### enableLink
 Enable or disable the graphs as a link to the Grafana Server.
 
@@ -113,8 +127,10 @@ The datasource that Grafana server uses. Can be InfluxDB, Graphite and PNP (unte
 Number of the default organization id where dashboards are located. Defaults to `1`.
 You can fetch the id if you browse to your grafana server menu -> Admin -> Global Orgs
 
-### defaultdashbaord
-The name of the default dashboard that is used when no service/host graph s configured.
+### defaultdashboard
+The name of the default dashboard that is used when **no graph is configured** for your service, host or command.
+The panel id used for this dashboard will always be **"1"** and **cannot be changed**
+See [04-graph configuration](04-graph-configuration.md) for details about how to configure graphs.
 
 ### defaultdashboardstore
 The dashboard store, `database`or `file`, that is used by Grafana server. Defaults to `database`
@@ -129,6 +145,14 @@ Controls ihow the graphs are fetched/delivered for/to the users. Defaults to `pr
 With this mode the graphs are feteched with curl on **server side**. The image will be served by Icingaweb2 to the users.
 Pro: Very secure
 Contra: slower page rendering, because Icingaweb2 needs to load the image first from Grafana.
+
+### ssl_verifypeer
+Verify the peer's SSL certificate. Defaults to `false`.
+Read [CURLOPT_SSL_VERIFYHOST](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html) for mor informations.
+
+### ssl_verifyhost
+Verify the certificate's name against host. Defaults to `false`.
+Read [CURLOPT_SSL_VERIFYPEER](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html) for mor informations.
 
 #### Direct
 With `direct` access, the graph images are loaded from the users directly from the Grafana server.
@@ -145,8 +169,11 @@ Used with 'proxy' mode only.
 Timeout in seconds for loading graph images from Grafana server. Defaults to `5 seconds`.
 If you often get a timeout message then the image, raise this to 10 or more seconds.
 
-### authanon
-This option is only used for the web configuration to hide/show username and password options.
+### authentication
+Authentication type used to acccess Grafana. Can be set to `anon`,`token` or `basic`. Defaults to `anon`.
+ * `anon` needs enabled [auth.anonymous] enabled in grafana.ini.
+ * `basic` needs [auth.basic] enabled in grafana.ini.
+ * `token` needs a generated API token from Grafana.
 
 ### username
 Used with 'proxy' mode, non anonymous access only.
@@ -156,13 +183,16 @@ The username used to authenticate to Grafana server.
 Used with 'proxy' mode, non anonymous access only.
 The password used to authenticate to Grafana server.
 
+### apitoken
+API token used to access Grafana. See [Create API Token](http://docs.grafana.org/http_api/auth/#create-api-token) for details how to create a API token.
+
 ### usepublic
 Enables/Disables the usage of a `public` URL to the Grafana server.
 If you have set your grafanaurl for example to localhost then you can set here a url that is used for to link to Grafana.
 
 ### publichost
 Used with 'usepublic = yes'.
-Public host name and port. Same as `host`option.
+Public host name and port. Same as `host` option.
 
 ### publicprotocol
 Used with 'usepublic = yes'.
@@ -171,5 +201,15 @@ The protocol used for the links to graphs.
 ### custvardisable
 Name of the custom variable (vars.idontwanttoseeagraph for example) that will disable graphs if set to true. Defaults to `grafana_graph_disable`.
 
+### custvarconfig
+Name of the custom variable (vars.usegraphconfig for example) that will be used as graph config name. Defaults to `grafana_graph_config`.
+This will overwrite the search order and force the module to use the graph configuration name that the variiable points to.
+For example you have `vars.grafana_graph_config = "check_my_tesla"` in your service configuration, the module will look for
+an [graph configuration](04-graph-configuration.md) that is named `check_my_tesla` and use this to render/show the performance graph.
+If there is no such a configuration, the `default-template` will be used.
+
 ### theme
-The Grafana theme that will be used. Defaults to `light`
+The Grafana theme that will be used. Defaults to `light`.
+
+### debug
+Show debug informtions if user has permission to see them. Defaults to `false`.

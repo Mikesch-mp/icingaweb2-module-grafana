@@ -1,6 +1,6 @@
-# Configuring Graphs
+# Graph Configuration
 
-You can add specific graph configuration settings in Icinga Web 2 in `Configuration -> Grafana Graphs`.
+You can add specific [graph configuration](/icingaweb2/grafana/graph) settings in Icinga Web 2 in [`Configuration -> Grafana Graphs`](/icingaweb2/grafana/graph).
 
 ![Graph Configuration Menu](images/04-graph.configuration-01.png)
 
@@ -42,7 +42,7 @@ nmetrics = "1"
 
 ### Name search order
 
-This module prefers the `service name`, then looks for an optional `parametrized service name` and for the `service check command name`.
+This module prefers the `service name`, then looks for an optional `parametrized service name` and at last for the `service check command name`.
 
 If there is no match, it will use the default dashboard as fallback.
 
@@ -50,25 +50,26 @@ Example Icinga2 host + service configuration
 
 ```
 object Host "HeinBloed" {
-  import "icinga-host"
+   import "icinga-host"
 
-  address = "127.0.0.1"
+   address = "127.0.0.1"
 
-  vars.interfaces["ens3"] = {
-  }
+   vars.interfaces["ens3"] = {
+   }
 }
 
 apply Service "if-usage " for (interface_name => config in host.vars.interfaces) {
-  import "generic-service"
+   import "generic-service"
 
-  check_command = "nwc_health"
+   check_command = "nwc_health"
 
-  vars.nwc_health_mode = "interface-usage"
-  vars.nwc_health_name = interface_name
+   vars.nwc_health_mode = "interface-usage"
+   vars.nwc_health_name = interface_name
 
-  vars += config
+   vars += config
 }
 ```
+
 At first glance Name = `if-usage ens3` must provide a match. Then `if-usage` (`parametrized service name`) and last but not least the service
 `check_command` attribute which is set to `nwc_health`.
 So you can configure these graphs:
