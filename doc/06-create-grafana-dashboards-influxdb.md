@@ -42,7 +42,7 @@ Close the templateing and hit the :floppy_disk: icon to save the dashboard we ma
 
 ## Add Panel (Graph)
 
-Now we add a new `Panel` to our dashboard, click on the 3 points in the left side of the row and choos `Add Panel`
+Now we add a new `Panel` to our dashboard, click on the 3 points in the left side of the row and choose `Add Panel`
 
 ![Add Panel](images/06-dashboard-add-panel.png)
 
