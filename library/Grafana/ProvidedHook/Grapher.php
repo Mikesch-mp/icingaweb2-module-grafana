@@ -406,12 +406,8 @@ class Grapher extends GrapherHook
             if (!$res || $this->enableLink == "no") {
                 $html .= $previewHtml;
             } else {
-                $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=now-%s&to=%s&orgId=%s';
-
-                if ($this->dashboard != $this->defaultDashboard) {
-                    $html .= '&panelId=' . $this->panelId . '&fullscreen';
-                }
-
+                $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=now-%s&to=%s&orgId=%s&panelId=%s&fullscreen';
+                
                 $html .= '"target="_blank">%s</a>';
 
                 $html = sprintf(
@@ -427,6 +423,7 @@ class Grapher extends GrapherHook
                     urlencode($this->timerange),
                     urlencode($this->timerangeto),
                     $this->orgId,
+                    $this->panelId,
                     $previewHtml
                 );
             }
