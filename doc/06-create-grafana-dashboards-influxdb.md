@@ -58,9 +58,9 @@ Choose `Edit` from the opened menu. Now you will see a new menu below the graph.
 ## Edit Panel Metrics (Metrics Tab)
 
  1. Change the `Data Source` to your InfluxDB data source if it is not your default data source.
- 2. Choose a __fixed__ measurement or change it to `/^$command$/` if you want it a more dynamically.
+ 2. Choose a **fixed** measurement or change it to `/^$command$/` if you want it a more dynamically.
  3. Add to where clause the `hostname =~ /^$hostname$/`.
- 4. If you have more then one service for your host that uses __ping6__ as command you should also add another where clause for the service with `service =~ /^$service$/`.
+ 4. If you have more then one service for your host that uses **ping6** as command you should also add another where clause for the service with `service =~ /^$service$/`.
  5. Change `fill(null)` to `fill(none)`.
  6. Add `tag(metric)` in the same line where `fill(none)` is. This will give us all metric (short) names to use in the legend.
  7. Insert `$tag_metric` at **ALIAS BY**.
@@ -71,13 +71,13 @@ Choose `Edit` from the opened menu. Now you will see a new menu below the graph.
 
 Adding thresholds will change the Y-axis range, so you will not see as much details of your metric as without them.
 
- 1. For __critical__ duplicate the **A** query to **B**.
+ 1. For **critical** duplicate the **A** query to **B**.
  2. Change `field(value)` to `field(crit)` on query **B**.
  3. Remove `mean()` and add `last()` instead on query **B**.
  4. Remove `tag(metric) on query **B**.
  5. Change `fill(none)` to `fill(last)` on query **B**.
- 6. Change __ALIAS BY__ to `critical` on query **B**.
- 7. For __warning__ duplicate tge **B** query to **C**.
+ 6. Change **ALIAS BY** to `critical` on query **B**.
+ 7. For **warning** duplicate tge **B** query to **C**.
  8. Change `field(crit)` to `field(warn)` on query **C**.
  9. Change **ALIAS BY** to `warning` on query **C**.
 
@@ -117,7 +117,7 @@ The left Y axis we set to `percent: (0-100)`, the `Y-Min` and `Decimals` to **0*
 ## Legend (Legend tab)
 
 Activate `As Table`, `Min`, `Max`, `Avg` and `Current` to have some more information shown.
-If you want to hide metrics with only **0** in the choosen time range, activate __Hide series__ `With only zeros` too.
+If you want to hide metrics with only **0** in the choosen time range, activate **Hide series** `With only zeros` too.
 
 ![Legend](images/06-dashboard-panel-legend.png)
 

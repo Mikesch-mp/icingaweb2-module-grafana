@@ -76,16 +76,16 @@ You will not see any lines until you change `Stacking & Null value` to `connecte
 
 Adding thresholds will change the Y-axis range, so you will not see as much details of your metric as without them.
 
- 1. For __critical__ duplicate the __A__ query to __B__
+ 1. For **critical** duplicate the **A** query to **B**
  2. Remove the `aliasByNode(6)`.
- 3. Change `value` to `crit` on query __B__
- 4. Add `substr(6.0) on query __B__
- 5. For __warning__ duplicate the __B__ query to __C__
- 6. Change `crit` to `warn` on query __C__
+ 3. Change `value` to `crit` on query **B**
+ 4. Add `substr(6.0) on query **B**
+ 5. For **warning** duplicate the **B** query to **C**
+ 6. Change `crit` to `warn` on query **C**
 
 ![Critical and Warning](images/07-dashboard-panel-metrics-crit-warn-graphite.png)
 
-You will not see any lines until you change `Stacking & Null value` to `connected` in at the __Display__ tab!
+You will not see any lines until you change `Stacking & Null value` to `connected` in at the **Display** tab!
 
 ## Change axis for second metric/thresholds (pl)
 
@@ -114,14 +114,14 @@ To make your colleagues happy, enter also a short description (optional), the fi
 ## Axis Units (Axis tab)
 
 Set the left Y axis unit to `seconds` (Icinga2 stores all time based metrics in seconds) for the `rta` metric.
-The left Y axis we set to `percent: (0-100)`, the `Y-Min` and `Decimals` to __0__, because pl is a percentage without decimals.
+The left Y axis we set to `percent: (0-100)`, the `Y-Min` and `Decimals` to **0**, because pl is a percentage without decimals.
 
 ![Axis](images/06-dashboard-panel-axis.png)
 
 ## Legend (Legend tab)
 
 Activate `As Table`, `Min`, `Max`, `Avg` and `Current` to have some more information shown.
-If you want to hide metrics with only __0__ in the choosen time range, activate __Hide series__ `With only zeros` too.
+If you want to hide metrics with only **0** in the choosen time range, activate **Hide series** `With only zeros` too.
 
 ![Legend](images/06-dashboard-panel-legend.png)
 
