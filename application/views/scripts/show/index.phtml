@@ -1,15 +1,13 @@
 <div class="controls">
     <?php if (! $this->showFullscreen): ?>
         <?= $this->tabs ?>
-    <?php endif ?>
-    <h1><?= $this->escape($this->title) ?></h1>
-    <?php if (! $this->showFullscreen): ?>
         <?= $this->menu ?>
     <?php endif ?>
+    <h1><?= $this->escape($this->title) ?></h1>
 </div>
 <div class="content">
 <?php
-    echo "<h1>" . $this->host . "</h1>";
+// echo '<pre>' . var_export($services, true) . '</pre>';
     foreach ($objects as $object) {
         if ($object->process_perfdata) {
             if ( ! property_exists($object, 'service_description') && isset($object->service_description) ) {
@@ -20,7 +18,6 @@
             echo $grapher->getPreviewHtml($object, true);
         }
 	}
-
 ?>
 </div>
 <?php if ($this->showFullscreen): ?>

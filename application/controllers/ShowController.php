@@ -50,7 +50,6 @@ class ShowController extends MonitoringAwareController
             $fullscreen->setTargetBlank();
             $tabs->addAsDropdown('fullscreen', $fullscreen);
 
-        } else {
             $this->view->title = sprintf(
                 $this->translate('Performance graphs for %s'),
                 $host
