@@ -406,10 +406,8 @@ class Grapher extends GrapherHook
             if (!$res || $this->enableLink == "no") {
                 $html .= $previewHtml;
             } else {
-                $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=now-%s&to=%s&orgId=%s&panelId=%s&fullscreen';
+                $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=now-%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
                 
-                $html .= '"target="_blank">%s</a>';
-
                 $html = sprintf(
                     $html,
                     $this->publicProtocol,

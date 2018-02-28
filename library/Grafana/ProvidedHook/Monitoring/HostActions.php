@@ -18,12 +18,14 @@ use Icinga\Application\Config;
 
 class HostActions extends HostActionsHook
 {
+    protected $defaultTimerange = '1w/w';
+
     public function getActionsForHost(Host $host)
     {
         $config = Config::module('grafana')->getSection('grafana');
-        $timerange = $config->get('timerangeAll', '1w/w');
+        $timerange = $config->get('timerangeAll', $this->defaultTimerange);
         $nav = new Navigation();
-        $nav->addItem(new NavigationItem('Show all graphs', array(
+        $nav->addItem(new NavigationItem(t('Show all graphs'), array(
             'url' => Url::fromPath('grafana/show', array('host' => $host->getName(), 'timerange' => $timerange)),
             'target' => '_next',
             'icon' => 'gauge',

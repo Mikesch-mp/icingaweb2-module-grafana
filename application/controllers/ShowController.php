@@ -9,7 +9,6 @@
 namespace Icinga\Module\Grafana\Controllers;
 
 use Icinga\Module\Grafana\Web\Controller\MonitoringAwareController;
-//use Icinga\Web\Widget\Tabextension\OutputFormat;
 use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Web\Widget\Tab;
@@ -41,7 +40,6 @@ class ShowController extends MonitoringAwareController
             $tabs = $this->getTabs();
             $tabs->add('graphs', array(
                 'label' => $this->translate('Grafana Graphs'),
-                //'url' => $this->getRequest()->getUrl()))->extend(new OutputFormat(array('json', 'csv')))->activate('graphs');
                 'url' => $this->getRequest()->getUrl()))->activate('graphs');
 
             $fullscreen = new Tab(array(
@@ -62,7 +60,6 @@ class ShowController extends MonitoringAwareController
         $menu = new Timeranges(array( 'host' => $host), 'grafana/show');
         $this->view->menu = $menu->getTimerangeMenu();
 
-        //$objects = array();
         $hostobject = new Host($this->backend, $host);
         $this->applyRestriction('monitoring/filter/objects', $hostobject);
         if ($hostobject->fetch() === false) {
@@ -71,28 +68,15 @@ class ShowController extends MonitoringAwareController
         $objects[] = $hostobject;
 
         $query = $this->backend->select()->from('servicestatus', [
-            //'host_name',
-            //'host_display_name',
             'service_description',
-            //'service_display_name',
-            //'service_perfdata',
-            //'service_check_command',
         ]);
         $this->applyRestriction('monitoring/filter/objects', $query);
-        //$this->view->services = $query->where('host_name', $host);
 
         foreach ($query->where('host_name', $host) as $service){
             $objects[] = $this->getServiceObject($service->service_description);
         }
         $this->view->objects = $objects;
         $this->view->grapher = Hook::first('grapher');
-
-       /*
-        $this->view->services = $this->backend->select()->from('servicestatus', [
-            'host_name',
-            'service_description',
-        ]);
-       */
     }
 
     public function getServiceObject($serviceName)
