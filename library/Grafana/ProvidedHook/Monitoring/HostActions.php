@@ -23,9 +23,10 @@ class HostActions extends HostActionsHook
         $config = Config::module('grafana')->getSection('grafana');
         $timerange = $config->get('timerangeAll', '1w/w');
         $nav = new Navigation();
-        $nav->addItem(new NavigationItem('Show Grafana Graphs', array(
+        $nav->addItem(new NavigationItem('Show all graphs', array(
             'url' => Url::fromPath('grafana/show', array('host' => $host->getName(), 'timerange' => $timerange)),
             'target' => '_next',
+            'icon' => 'gauge',
         )));
         return $nav;
     }
