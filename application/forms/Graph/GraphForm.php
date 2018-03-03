@@ -151,7 +151,7 @@ class GraphForm extends ConfigForm
             'nmetrics',
             array(
                 'label'         => $this->translate('Metrics per panel'),
-                'description'   => $this->translate('The graph width in pixel.'),
+                'description'   => $this->translate('The number of metrics in an auto repeating panel'),
                 'required'      => false
             )
         );
