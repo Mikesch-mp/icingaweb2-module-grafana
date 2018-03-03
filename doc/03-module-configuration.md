@@ -40,6 +40,7 @@ timerangeAll = "1M/M"
 enableLink = "yes"
 defaultorgid = "1"
 defaultdashboard = "icinga2-default"
+defaultdashboardpanelid = "1"
 shadows = "1"
 datasource = "influxdb"
 defaultdashboardstore = "db"
@@ -59,36 +60,37 @@ ssl_verifyhost = "0"
 
 ## Options
 
-|Setting            | Short description|
-|-------------------|-------------------|
-|host               | **Required.** Grafana server host name (and port).|
-|protocol           | **Optional.** Protocol used to access the Grafana server. Defaults to `http`.|
-|height             | **Optional.** Global graph height in pixel. Defaults to `280`.|
-|width              | **Optional.** Global graph width in pixel. Defaults to `640`.|
-|timerange          | **Optional.** Global time range for graphs. Defaults to `6h`.|
-|timerangeAll       | **Optional.** Time range for all graphs feature. Defaults to `Previous week`.|
-|enableLink         | **Optional.** Enable/disable graph with a rendered URL to the Grafana dashboard. Defaults to `yes`.|
-|datasource         | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.|
-|defaultdashboard   | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. Set to `none` to hide the module output. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.|
-|shadows            | **Optional.** Show shadows around the graphs. ** Defaults to `false`.|
-|defaultorgid       | **Required.** Number of the default organization id where dashboards are located. Defaults to `1`.
-|defaultdashboardstore | **Optional.** Grafana backend (file or database). Defaults to `Database`.|
-|accessmode         | **Optional.** Controls whether graphs are fetched with curl (`proxy`), are embedded (`direct`) or in iframe ('iframe'). Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.|
-|timeout            | **Proxy only** **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.|
-|authentication     | **Proxy only** Authentication type used to acccess Grafana. Can be set to `anon`,`token` or `basic`. Defaults to `anon`.
-|username           | **Proxy with basic only** **Required** HTTP Basic Auth user name to access Grafana.|
-|password           | **Proxy with basic only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.|
-|apitoken           | **Proxy with token only** **Required** API token used to access Grafana.|
-|directrefresh      | **Direct Only** **Optional.** Refresh graphs on direct access. Defaults to `no`.|
-|usepublic          | **Optional** Enable usage of publichost/protocol. Defaults to `no`.|
-|publichost         | **Optional** Use a diffrent host for the graph links.|
-|publicprotocol     | **Optional** Use a diffrent protocol for the graph links.|
-|custvardisable     | **Optional** Custom variable (vars.idontwanttoseeagraph for example) that will disable graphs. Defaults to `grafana_graph_disable`.|
-|custvarconfig      | **Optional** Custom variable (vars.usegraphconfig for example) that will be used as config name. Defaults to `grafana_graph_config`.|
-|theme              | **Optional.** Select grafana theme for the graph (light or dark). Defaults to `light`.|
-|debug              | **Optional.** Enables the debug information under the graph if the user has permission to see them. Defaults to `disabled`.|
-|ssl_verifypeer     | **Proxy mode only** **Optional.** Verify the peer's SSL certificate. Defaults to `false`.|
-|ssl_verifyhost     | **Proxy mode only** **Optional.** Verify the certificate's name against host. Defaults to `false`.|
+|Setting                | Short description|
+|-----------------------|-----------------------|
+|host                   | **Required.** Grafana server host name (and port).|
+|protocol               | **Optional.** Protocol used to access the Grafana server. Defaults to `http`.|
+|height                 | **Optional.** Global graph height in pixel. Defaults to `280`.|
+|width                  | **Optional.** Global graph width in pixel. Defaults to `640`.|
+|timerange              | **Optional.** Global time range for graphs. Defaults to `6h`.|
+|timerangeAll           | **Optional.** Time range for all graphs feature. Defaults to `Previous week`.|
+|enableLink             | **Optional.** Enable/disable graph with a rendered URL to the Grafana dashboard. Defaults to `yes`.|
+|datasource             | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.|
+|defaultdashboard       | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. Set to `none` to hide the module output. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.|
+|defaultdashboardpanelid| **Required** ID of the panel used in the default dashboard. Defaults to `1`.
+|shadows                | **Optional.** Show shadows around the graphs. ** Defaults to `false`.|
+|defaultorgid           | **Required.** Number of the default organization id where dashboards are located. Defaults to `1`.
+|defaultdashboardstore  | **Optional.** Grafana backend (file or database). Defaults to `Database`.|
+|accessmode             | **Optional.** Controls whether graphs are fetched with curl (`proxy`), are embedded (`direct`) or in iframe ('iframe'). Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.|
+|timeout                | **Proxy only** **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.|
+|authentication         | **Proxy only** Authentication type used to acccess Grafana. Can be set to `anon`,`token` or `basic`. Defaults to `anon`.
+|username               | **Proxy with basic only** **Required** HTTP Basic Auth user name to access Grafana.|
+|password               | **Proxy with basic only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.|
+|apitoken               | **Proxy with token only** **Required** API token used to access Grafana.|
+|directrefresh          | **Direct Only** **Optional.** Refresh graphs on direct access. Defaults to `no`.|
+|usepublic              | **Optional** Enable usage of publichost/protocol. Defaults to `no`.|
+|publichost             | **Optional** Use a diffrent host for the graph links.|
+|publicprotocol         | **Optional** Use a diffrent protocol for the graph links.|
+|custvardisable         | **Optional** Custom variable (vars.idontwanttoseeagraph for example) that will disable graphs. Defaults to `grafana_graph_disable`.|
+|custvarconfig          | **Optional** Custom variable (vars.usegraphconfig for example) that will be used as config name. Defaults to `grafana_graph_config`.|
+|theme                  | **Optional.** Select grafana theme for the graph (light or dark). Defaults to `light`.|
+|debug                  | **Optional.** Enables the debug information under the graph if the user has permission to see them. Defaults to `disabled`.|
+|ssl_verifypeer         | **Proxy mode only** **Optional.** Verify the peer's SSL certificate. Defaults to `false`.|
+|ssl_verifyhost         | **Proxy mode only** **Optional.** Verify the certificate's name against host. Defaults to `false`.|
 
 
 ---
@@ -131,6 +133,10 @@ You can fetch the id if you browse to your grafana server menu -> Admin -> Globa
 The name of the default dashboard that is used when **no graph is configured** for your service, host or command.
 The panel id used for this dashboard will always be **"1"** and **cannot be changed**
 See [04-graph configuration](04-graph-configuration.md) for details about how to configure graphs.
+
+### defaultdashboardpanelid
+The id of the panel used in the defaul dashboard. Defaults to `1`.
+This is needed if you use **Grafana 5** and imported or created a new default dashboard, because the first useable panel id is now `2`.
 
 ### defaultdashboardstore
 The dashboard store, `database`or `file`, that is used by Grafana server. Defaults to `database`

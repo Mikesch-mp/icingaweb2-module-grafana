@@ -20,36 +20,37 @@ class Grapher extends GrapherHook
     protected $graphConfig;
     protected $auth;
     protected $authentication;
-    protected $grafanaHost           = null;
-    protected $grafanaTheme          = 'light';
-    protected $protocol              = "http";
-    protected $usePublic             = "no";
-    protected $publicHost            = null;
-    protected $publicProtocol        = "http";
-    protected $timerange             = "6h";
-    protected $timerangeto           = "now";
-    protected $username              = null;
-    protected $password              = null;
-    protected $apiToken              = null;
-    protected $width                 = 640;
-    protected $height                = 280;
-    protected $enableLink            = true;
-    protected $defaultDashboard      = "icinga2-default";
-    protected $defaultOrgId          = "1";
-    protected $shadows               = false;
-    protected $defaultDashboardStore = "db";
-    protected $dataSource            = null;
-    protected $accessMode            = "proxy";
-    protected $proxyTimeout          = "5";
-    protected $refresh               = "no";
-    protected $title                 = "<h2>Performance Graph</h2>";
-    protected $custvardisable        = "grafana_graph_disable";
-    protected $custvarconfig         = "grafana_graph_config";
-    protected $repeatable            = "no";
-    protected $numberMetrics         = "1";
-    protected $debug                 = false;
-    protected $SSLVerifyPeer         = false;
-    protected $SSLVerifyHost        = "0";
+    protected $grafanaHost             = null;
+    protected $grafanaTheme            = 'light';
+    protected $protocol                = "http";
+    protected $usePublic               = "no";
+    protected $publicHost              = null;
+    protected $publicProtocol          = "http";
+    protected $timerange               = "6h";
+    protected $timerangeto             = "now";
+    protected $username                = null;
+    protected $password                = null;
+    protected $apiToken                = null;
+    protected $width                   = 640;
+    protected $height                  = 280;
+    protected $enableLink              = true;
+    protected $defaultDashboard        = "icinga2-default";
+    protected $defaultDashboardPanelId = "1";
+    protected $defaultOrgId            = "1";
+    protected $shadows                 = false;
+    protected $defaultDashboardStore   = "db";
+    protected $dataSource              = null;
+    protected $accessMode              = "proxy";
+    protected $proxyTimeout            = "5";
+    protected $refresh                 = "no";
+    protected $title                   = "<h2>Performance Graph</h2>";
+    protected $custvardisable          = "grafana_graph_disable";
+    protected $custvarconfig           = "grafana_graph_config";
+    protected $repeatable              = "no";
+    protected $numberMetrics           = "1";
+    protected $debug                   = false;
+    protected $SSLVerifyPeer           = false;
+    protected $SSLVerifyHost           = "0";
 
     protected function init()
     {
@@ -81,6 +82,7 @@ class Grapher extends GrapherHook
 
         // Confid needed for Grafana
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
+        $this->defaultdashboardpanelid = $this->config->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
         $this->defaultOrgId = $this->config->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->config->get('theme', $this->grafanaTheme);
         $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
@@ -169,7 +171,7 @@ class Grapher extends GrapherHook
 
         $this->dashboard = $this->getGraphConfigOption($serviceName, 'dashboard', $this->defaultDashboard);
         $this->dashboardstore = $this->getGraphConfigOption($serviceName, 'dashboardstore', $this->defaultDashboardStore);
-        $this->panelId = $this->getGraphConfigOption($serviceName, 'panelId', '1');
+        $this->panelId = $this->getGraphConfigOption($serviceName, 'panelId', $this->defaultDashboardPanelId);
         $this->orgId = $this->getGraphConfigOption($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $this->getGraphConfigOption($serviceName, 'customVars', '');
         $this->timerange = Url::fromRequest()->hasParam('timerange') ? urldecode(Url::fromRequest()->getParam('timerange')) : $this->getGraphConfigOption($serviceName, 'timerange', $this->timerange);
