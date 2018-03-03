@@ -2,6 +2,7 @@
 
 namespace Icinga\Module\Grafana\Forms\Graph;
 
+use Icinga\Module\Grafana\Helpers\Timeranges;
 use Icinga\Exception\AlreadyExistsException;
 use Icinga\Exception\IcingaException;
 use Icinga\Exception\NotFoundError;
@@ -92,25 +93,7 @@ class GraphForm extends ConfigForm
             'timerange',
             array(
                 'label'         => $this->translate('Timerange'),
-                'multiOptions'  => array(
-                    ''              => $this->translate('Use default'),
-                    '5m'            => $this->translate('Last 5 minutes'),
-                    '15m'           => $this->translate('Last 15 minutes'),
-                    '30m'           => $this->translate('Last 30 minutes'),
-                    '1h'            => $this->translate('Last 1 hour'),
-                    '3h'            => $this->translate('Last 3 hours'),
-                    '6h'            => $this->translate('Last 6 hours'),
-                    '8h'            => $this->translate('Last 8 hours'),
-                    '12h'           => $this->translate('Last 12 hours'),
-                    '24h'           => $this->translate('Last 24 hours'),
-                    '2d'            => $this->translate('Last 2 days'),
-                    '7d'            => $this->translate('Last 7 days'),
-                    '30d'           => $this->translate('Last 30 days'),
-                    '60d'           => $this->translate('Last 60 days'),
-                    '6M'            => $this->translate('Last 6 months'),
-                    '1y'            => $this->translate('Last 1 year'),
-                    '2y'            => $this->translate('Last 2 years'),
-                ),
+                'multiOptions'  => array_merge(array('' => 'Use default (6h)'), Timeranges::getTimeranges()),
                 'description'  => $this->translate('Timerange to use for the graph.'),
                 'required'     => false
             )
