@@ -15,13 +15,13 @@
 
 Add Grafana graphs into Icinga Web 2 to display performance metrics.
 
-<table>
+<table border="0">
 <tr>
-   <td>![Icinga Web 2 Grafana Integration](doc/images/icingaweb2_grafana_screenshot_01.png "Grafana")</td>
-   <td rowspan="2">![Icinga Web 2 Grafana Integration](doc/images/icingaweb2_grafana_screenshot_05.png "Grafana")</td>
+   <td><img src="https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/icingaweb2_grafana_screenshot_01.png"></td>
+   <td rowspan="2"><img src="https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/icingaweb2_grafana_screenshot_05.png"></td>
 </tr>
 <tr>
-   <td>![Icinga Web 2 Grafana Integration](doc/images/icingaweb2_grafana_screenshot_02.png "Grafana")</td>
+   <td><img src="https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/icingaweb2_grafana_screenshot_01.png"></td>
 </tr>
 </table>
 
