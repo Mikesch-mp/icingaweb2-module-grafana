@@ -7,15 +7,26 @@
 3. [Support](#support)
 4. [Requirements](#requirements)
 5. [Documentation](#documentation)
-9. [Contributing](#contributing)
+6. [Contributing](#contributing)
+7. [Donations](#donations)
 
 
 ## About
 
 Add Grafana graphs into Icinga Web 2 to display performance metrics.
 
-![Icinga Web 2 Grafana Integration](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/icingaweb2_grafana_screenshot_01.png "Grafana")
-![Icinga Web 2 Grafana Integration](https://github.com/Mikesch-mp/icingaweb2-module-grafana/raw/master/doc/images/icingaweb2_grafana_screenshot_02.png "Grafana")
+<table>
+<tr>
+   <td>![Icinga Web 2 Grafana Integration](doc/images/icingaweb2_grafana_screenshot_01.png "Grafana")</td>
+   <td rowspan="2">![Icinga Web 2 Grafana Integration](doc/images/icingaweb2_grafana_screenshot_05.png "Grafana")</td>
+</tr>
+<tr>
+   <td>![Icinga Web 2 Grafana Integration](doc/images/icingaweb2_grafana_screenshot_02.png "Grafana")</td>
+</tr>
+</table>
+
+
+
 
 ## License
 
@@ -51,5 +62,5 @@ updating the documentation. Every contribution is appreciated!
 Please continue reading in the [contributing chapter](CONTRIBUTING.md).
 
 ## Donations
-This module is and will always be free of charge. But if you feel the urge to make the developer happy, you can donate an item from his [Amazon wishlist](https://www.amazon.de/hz/wishlist/ls/1QS5BHOL5V7AE?&sort=default) :)
+This module is and will always be free of charge. But if you feel the urge to make the developer happy, you can donate item(s) from his [Amazon wishlist](https://www.amazon.de/hz/wishlist/ls/1QS5BHOL5V7AE?&sort=default) :)
 
