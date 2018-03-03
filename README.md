@@ -30,7 +30,7 @@ Join the [Icinga community channels](https://www.icinga.com/community/get-involv
 ## Requirements
 
 * [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.1)
-* [Grafana](https://grafana.com/) (>= 4.1 < 5.0)
+* [Grafana](https://grafana.com/) (>= 4.1) **For Grafana 5, dashboard names need to be unique!**
 * [InfluxDB](https://docs.influxdata.com/influxdb/), [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
 * [PHP](https://www.php.net) **with curl enabled** (for proxy mode)
 
@@ -49,4 +49,7 @@ whether it be sending patches, testing, reporting bugs, or reviewing and
 updating the documentation. Every contribution is appreciated!
 
 Please continue reading in the [contributing chapter](CONTRIBUTING.md).
+
+## Donations
+This module is and will always be free of charge. But if you feel the urge to make the developer happy, you can donate an item from his [Amazon wishlist](https://www.amazon.de/hz/wishlist/ls/1QS5BHOL5V7AE?&sort=default) :)
 
