@@ -63,7 +63,6 @@
       }
     ]
   },
-  "description": "Show all metrics from a Icinga2 service or host",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -81,25 +80,26 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_ICINGA2}",
-          "fill": 1,
+          "fill": 0,
           "id": 1,
           "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
-          "pointradius": 1,
+          "pointradius": 5,
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
@@ -131,7 +131,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "/^$command$/",
+              "measurement": "nscp-local-cpu",
               "orderByTime": "ASC",
               "policy": "default",
               "refId": "A",
@@ -171,7 +171,7 @@
           "title": "$service",
           "tooltip": {
             "shared": true,
-            "sort": 1,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -184,11 +184,11 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "percent",
               "label": null,
               "logBase": 1,
               "max": null,
-              "min": null,
+              "min": "0",
               "show": true
             },
             {
@@ -206,16 +206,13 @@
       "repeatIteration": null,
       "repeatRowId": null,
       "showTitle": false,
-      "title": "Default",
+      "title": "Dashboard Row",
       "titleSize": "h6"
     }
   ],
   "schemaVersion": 14,
   "style": "dark",
-  "tags": [
-    "Icinga2",
-    "influxdb"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
@@ -301,6 +298,6 @@
     ]
   },
   "timezone": "",
-  "title": "icinga2-default",
-  "version": 3
+  "title": "nscp-local-cpu",
+  "version": 1
 }

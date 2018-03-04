@@ -14,20 +14,6 @@
       "label": "hostname",
       "value": "null",
       "description": ""
-    },
-    {
-      "name": "VAR_SERVICE",
-      "type": "constant",
-      "label": "service",
-      "value": "null",
-      "description": ""
-    },
-    {
-      "name": "VAR_COMMAND",
-      "type": "constant",
-      "label": "command",
-      "value": "null",
-      "description": ""
     }
   ],
   "__requires": [
@@ -63,7 +49,6 @@
       }
     ]
   },
-  "description": "Show all metrics from a Icinga2 service or host",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -76,33 +61,45 @@
       "height": "250px",
       "panels": [
         {
-          "aliasColors": {},
+          "aliasColors": {
+            "pl": "#0a50a1",
+            "rta": "#cca300"
+          },
           "bars": false,
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_ICINGA2}",
+          "decimals": null,
           "fill": 1,
           "id": 1,
           "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": true,
+            "max": true,
+            "min": true,
             "show": true,
+            "sortDesc": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
-          "pointradius": 1,
+          "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "pl",
+              "fill": 0,
+              "yaxis": 2
+            }
+          ],
           "spaceLength": 10,
           "span": 12,
           "stack": false,
@@ -131,7 +128,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "/^$command$/",
+              "measurement": "hostalive4",
               "orderByTime": "ASC",
               "policy": "default",
               "refId": "A",
@@ -155,12 +152,6 @@
                   "key": "hostname",
                   "operator": "=~",
                   "value": "/^$hostname$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "service",
-                  "operator": "=~",
-                  "value": "/^$service$/"
                 }
               ]
             }
@@ -168,10 +159,10 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "$service",
+          "title": "hostalive4",
           "tooltip": {
             "shared": true,
-            "sort": 1,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -184,20 +175,21 @@
           },
           "yaxes": [
             {
-              "format": "short",
-              "label": null,
+              "format": "s",
+              "label": "rta",
               "logBase": 1,
               "max": null,
               "min": null,
               "show": true
             },
             {
+              "decimals": 0,
               "format": "short",
-              "label": null,
+              "label": "pl",
               "logBase": 1,
               "max": null,
-              "min": null,
-              "show": false
+              "min": "0",
+              "show": true
             }
           ]
         }
@@ -206,16 +198,13 @@
       "repeatIteration": null,
       "repeatRowId": null,
       "showTitle": false,
-      "title": "Default",
+      "title": "Dashboard Row",
       "titleSize": "h6"
     }
   ],
   "schemaVersion": 14,
   "style": "dark",
-  "tags": [
-    "Icinga2",
-    "influxdb"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
@@ -233,40 +222,6 @@
           }
         ],
         "query": "${VAR_HOSTNAME}",
-        "type": "constant"
-      },
-      {
-        "current": {
-          "value": "${VAR_SERVICE}",
-          "text": "${VAR_SERVICE}"
-        },
-        "hide": 2,
-        "label": null,
-        "name": "service",
-        "options": [
-          {
-            "value": "${VAR_SERVICE}",
-            "text": "${VAR_SERVICE}"
-          }
-        ],
-        "query": "${VAR_SERVICE}",
-        "type": "constant"
-      },
-      {
-        "current": {
-          "value": "${VAR_COMMAND}",
-          "text": "${VAR_COMMAND}"
-        },
-        "hide": 2,
-        "label": null,
-        "name": "command",
-        "options": [
-          {
-            "value": "${VAR_COMMAND}",
-            "text": "${VAR_COMMAND}"
-          }
-        ],
-        "query": "${VAR_COMMAND}",
         "type": "constant"
       }
     ]
@@ -301,6 +256,6 @@
     ]
   },
   "timezone": "",
-  "title": "icinga2-default",
-  "version": 3
+  "title": "hostalive4",
+  "version": 1
 }

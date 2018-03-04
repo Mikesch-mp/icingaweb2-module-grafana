@@ -63,7 +63,6 @@
       }
     ]
   },
-  "description": "Show all metrics from a Icinga2 service or host",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -76,23 +75,26 @@
       "height": "250px",
       "panels": [
         {
-          "aliasColors": {},
+          "aliasColors": {
+            "load1": "#0a50a1",
+            "load15": "#962d82",
+            "load5": "#629e51"
+          },
           "bars": false,
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_ICINGA2}",
-          "fill": 1,
+          "fill": 0,
           "id": 1,
           "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
@@ -131,9 +133,11 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "/^$command$/",
+              "measurement": "load",
               "orderByTime": "ASC",
               "policy": "default",
+              "query": "SELECT mean(\"value\") FROM \"load\" WHERE (\"hostname\" =~ /^$hostname$/ AND \"service\" =~ /^$service$/) AND $timeFilter GROUP BY time($__interval), \"metric\" fill(none)",
+              "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -171,8 +175,8 @@
           "title": "$service",
           "tooltip": {
             "shared": true,
-            "sort": 1,
-            "value_type": "individual"
+            "sort": 0,
+            "value_type": "cumulative"
           },
           "type": "graph",
           "xaxis": {
@@ -184,7 +188,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "none",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -206,16 +210,13 @@
       "repeatIteration": null,
       "repeatRowId": null,
       "showTitle": false,
-      "title": "Default",
+      "title": "Dashboard Row",
       "titleSize": "h6"
     }
   ],
   "schemaVersion": 14,
   "style": "dark",
-  "tags": [
-    "Icinga2",
-    "influxdb"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
@@ -301,6 +302,6 @@
     ]
   },
   "timezone": "",
-  "title": "icinga2-default",
-  "version": 3
+  "title": "load",
+  "version": 1
 }

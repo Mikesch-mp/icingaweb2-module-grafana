@@ -1,12 +1,12 @@
 {
   "__inputs": [
     {
-      "name": "DS_ICINGA2",
-      "label": "Icinga2",
+      "name": "DS_GRAPHITE",
+      "label": "Graphite",
       "description": "",
       "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
+      "pluginId": "graphite",
+      "pluginName": "Graphite"
     },
     {
       "name": "VAR_HOSTNAME",
@@ -45,8 +45,8 @@
     },
     {
       "type": "datasource",
-      "id": "influxdb",
-      "name": "InfluxDB",
+      "id": "graphite",
+      "name": "Graphite",
       "version": "1.0.0"
     }
   ],
@@ -63,7 +63,6 @@
       }
     ]
   },
-  "description": "Show all metrics from a Icinga2 service or host",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -73,33 +72,34 @@
   "rows": [
     {
       "collapse": false,
-      "height": "250px",
+      "height": 250,
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_ICINGA2}",
-          "fill": 1,
+          "datasource": "${DS_GRAPHITE}",
+          "fill": 0,
           "id": 1,
           "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": false,
+            "max": true,
+            "min": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
           "links": [],
-          "nullPointMode": "null",
+          "nullPointMode": "connected",
           "percentage": false,
-          "pointradius": 1,
+          "pointradius": 5,
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
@@ -109,60 +109,8 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$tag_metric",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "metric"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "none"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "/^$command$/",
-              "orderByTime": "ASC",
-              "policy": "default",
               "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "hostname",
-                  "operator": "=~",
-                  "value": "/^$hostname$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "service",
-                  "operator": "=~",
-                  "value": "/^$service$/"
-                }
-              ]
+              "target": "aliasByNode(icinga2.$hostname.services.$service.nscp-local-cpu.perfdata.*.value, 6)"
             }
           ],
           "thresholds": [],
@@ -171,7 +119,7 @@
           "title": "$service",
           "tooltip": {
             "shared": true,
-            "sort": 1,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -185,10 +133,10 @@
           "yaxes": [
             {
               "format": "short",
-              "label": null,
+              "label": "",
               "logBase": 1,
               "max": null,
-              "min": null,
+              "min": "0",
               "show": true
             },
             {
@@ -206,16 +154,13 @@
       "repeatIteration": null,
       "repeatRowId": null,
       "showTitle": false,
-      "title": "Default",
+      "title": "Dashboard Row",
       "titleSize": "h6"
     }
   ],
   "schemaVersion": 14,
   "style": "dark",
-  "tags": [
-    "Icinga2",
-    "influxdb"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
@@ -300,7 +245,7 @@
       "30d"
     ]
   },
-  "timezone": "",
-  "title": "icinga2-default",
-  "version": 3
+  "timezone": "browser",
+  "title": "nscp-local-cpu-graphite",
+  "version": 1
 }
