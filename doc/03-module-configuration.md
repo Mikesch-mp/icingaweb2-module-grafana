@@ -131,7 +131,6 @@ You can fetch the id if you browse to your grafana server menu -> Admin -> Globa
 
 ### defaultdashboard
 The name of the default dashboard that is used when **no graph is configured** for your service, host or command.
-The panel id used for this dashboard will always be **"1"** and **cannot be changed**
 See [04-graph configuration](04-graph-configuration.md) for details about how to configure graphs.
 
 ### defaultdashboardpanelid
@@ -149,14 +148,15 @@ Controls ihow the graphs are fetched/delivered for/to the users. Defaults to `pr
 
 #### Proxy
 With this mode the graphs are feteched with curl on **server side**. The image will be served by Icingaweb2 to the users.
+Here you can use `auth.anonymous`, `auth.basic` or use a [API Token](03-module-configuration.md#apitoken)
 Pro: Very secure
 Contra: slower page rendering, because Icingaweb2 needs to load the image first from Grafana.
 
-### ssl_verifypeer
+##### ssl_verifypeer
 Verify the peer's SSL certificate. Defaults to `false`.
 Read [CURLOPT_SSL_VERIFYHOST](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html) for mor informations.
 
-### ssl_verifyhost
+##### ssl_verifyhost
 Verify the certificate's name against host. Defaults to `false`.
 Read [CURLOPT_SSL_VERIFYPEER](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html) for mor informations.
 
