@@ -50,7 +50,7 @@ class GeneralConfigForm extends ConfigForm
                 'checkbox',
                 'grafana_ssl_verifypeer',
                 array(
-                    'value'=> true,
+                    'value'=> false,
                     'label' => $this->translate('SSL verify peer'),
                     'description' => $this->translate('Verify the peer\'s SSL certificate.'),
                 )
@@ -60,7 +60,7 @@ class GeneralConfigForm extends ConfigForm
                 'checkbox',
                 'grafana_ssl_verifyhost',
                 array(
-                    'value'=> true,
+                    'value'=> false,
                     'label' => $this->translate('SSL verify host'),
                     'description' => $this->translate('Verify the certificate\'s name against host.'),
                 )
@@ -111,7 +111,7 @@ class GeneralConfigForm extends ConfigForm
             )
         );
         $this->addElement(
-            'text',
+            'number',
             'grafana_defaultdashboardpanelid',
             array(
                 'value' => '1',
