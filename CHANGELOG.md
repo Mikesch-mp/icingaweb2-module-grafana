@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.2.0](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.2.0) (2018-03-04)
+## [1.2.0](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.2.0) (2018-03-06)
 [Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.1.10...1.2.0)
 
 **Implemented enhancements:**
@@ -17,14 +17,17 @@
 
 **Closed issues:**
 
+- Document host -\> all graphs action [\#125](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/125)
 - Make panel id for default dashboard configurable [\#122](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/122)
 - Grafana ApiKey and iFrame [\#121](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/121)
+- custom variables in graphs [\#120](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/120)
 - Using "hostdisplayname" as a parameter for graph generation [\#109](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/109)
 - Service performance graph shows wrong graph of another service [\#103](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/103)
 - Explain the purpose of Grafana dashboards & how to enhance them [\#75](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/75)
 
 **Merged pull requests:**
 
+- Add Changelog for 1.2.0; update release docs [\#124](https://github.com/Mikesch-mp/icingaweb2-module-grafana/pull/124) ([dnsmichi](https://github.com/dnsmichi))
 - Update GraphForm.php [\#123](https://github.com/Mikesch-mp/icingaweb2-module-grafana/pull/123) ([nbuchwitz](https://github.com/nbuchwitz))
 - 1.2.0 [\#118](https://github.com/Mikesch-mp/icingaweb2-module-grafana/pull/118) ([Mikesch-mp](https://github.com/Mikesch-mp))
 - Update 02-installation.md [\#117](https://github.com/Mikesch-mp/icingaweb2-module-grafana/pull/117) ([nbuchwitz](https://github.com/nbuchwitz))
