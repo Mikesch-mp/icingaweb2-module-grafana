@@ -75,7 +75,7 @@ ssl_verifyhost = "0"
 |shadows                | **Optional.** Show shadows around the graphs. ** Defaults to `false`.|
 |defaultorgid           | **Required.** Number of the default organization id where dashboards are located. Defaults to `1`.
 |defaultdashboardstore  | **Optional.** Grafana backend (file or database). Defaults to `Database`.|
-|accessmode             | **Optional.** Controls whether graphs are fetched with curl (`proxy`), are embedded (`direct`) or in iframe ('iframe'). Direct access is faster and needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.|
+|accessmode             | **Optional.** Controls whether graphs are fetched with curl (`proxy` & `indirectproxy`), are embedded (`direct`) or in iframe ('iframe'). Direct access & iframe needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.|
 |timeout                | **Proxy only** **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.|
 |authentication         | **Proxy only** Authentication type used to acccess Grafana. Can be set to `anon`,`token` or `basic`. Defaults to `anon`.
 |username               | **Proxy with basic only** **Required** HTTP Basic Auth user name to access Grafana.|
@@ -146,29 +146,35 @@ Enable/Disable fancy shadows around the graph image.
 ### accessmode
 Controls ihow the graphs are fetched/delivered for/to the users. Defaults to `proxy`.
 
-#### Proxy
+#### proxy
 With this mode the graphs are feteched with curl on **server side**. The image will be served by Icingaweb2 to the users.
 Here you can use `auth.anonymous`, `auth.basic` or use a [API Token](03-module-configuration.md#apitoken)
 Pro: Very secure
 Contra: slower page rendering, because Icingaweb2 needs to load the image first from Grafana.
 
-##### ssl_verifypeer
-Verify the peer's SSL certificate. Defaults to `false`.
-Read [CURLOPT_SSL_VERIFYHOST](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html) for mor informations.
+#### indirectproxy
+This mode the module still will feth the graphs with curl on **server side**, but the images are given by reference.
+This will speed up the page load, but the image will take some seconds to show up.
+Pro: Very fast page loading, very secure.
+Contra: Images take some seconds to show up.
 
-##### ssl_verifyhost
-Verify the certificate's name against host. Defaults to `false`.
-Read [CURLOPT_SSL_VERIFYPEER](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html) for mor informations.
-
-#### Direct
+#### direct
 With `direct` access, the graph images are loaded from the users directly from the Grafana server.
 Pro: fast page rendering, refresh of graph can be disabled by option.
 Contra: Less secure then proxy mode. Needs `auth.anonymous` enabled in Grafana.
 
-#### Iframe
+#### iframe
 In Iframe mode you have the full power of Grafana features like mouse over tooltip.
 Pro: All features from Grafana enabled. Fast page rendering.
 Contra: Less secure, page refresh from Icingaweb2 will be distracting! Needs `auth.anonymous` enabled in Grafana.
+
+### ssl_verifypeer
+Only for `proxy` & `ìndirectproxy` modes. Verify the peer's SSL certificate. Defaults to `false`.
+Read [CURLOPT_SSL_VERIFYHOST](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html) for mor informations.
+
+### ssl_verifyhost
+Only for `proxy` & `ìndirectproxy` modes.Verify the certificate's name against host. Defaults to `false`.
+Read [CURLOPT_SSL_VERIFYPEER](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html) for mor informations.
 
 ### timeout
 Used with 'proxy' mode only.

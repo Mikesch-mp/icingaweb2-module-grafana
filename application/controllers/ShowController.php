@@ -21,6 +21,7 @@ class ShowController extends MonitoringAwareController
 {
     /** @var bool */
     protected $showFullscreen;
+    protected $host;
 
     public function init()
     {
@@ -28,13 +29,13 @@ class ShowController extends MonitoringAwareController
         $this->view->showFullscreen
             = $this->showFullscreen
             = (bool)$this->_helper->layout()->showFullscreen;
+        $this->host = $this->getParam('host');
     }
 
     public function indexAction()
     {
         $this->disableAutoRefresh();
-        $host = $this->getParam('host');
-        $this->view->host = $host;
+        $this->view->host = $this->host;
 
         if (! $this->showFullscreen) {
             $tabs = $this->getTabs();
@@ -52,43 +53,58 @@ class ShowController extends MonitoringAwareController
 
             $this->view->title = sprintf(
                 $this->translate('Performance graphs for %s'),
-                $host
+                $this->host
             );
         }
-
-        $menu = new Timeranges(array( 'host' => $host), 'grafana/show');
+        /* The timerange menu */
+        $menu = new Timeranges(array( 'host' => $this->host), 'grafana/show');
         $this->view->menu = $menu->getTimerangeMenu();
 
-        $hostobject = new Host($this->backend, $host);
-        $this->applyRestriction('monitoring/filter/objects', $hostobject);
-        if ($hostobject->fetch() === false) {
-            $this->httpNotFound($this->translate('Host not found'));
-        }
-        $objects[] = $hostobject;
+        /* first host object for host graph */
+        $objects[] = $this->getHostObject($this->host);
 
+        /* Get all services for this host */
         $query = $this->backend->select()->from('servicestatus', [
             'service_description',
         ]);
         $this->applyRestriction('monitoring/filter/objects', $query);
 
-        foreach ($query->where('host_name', $host) as $service){
-            $objects[] = $this->getServiceObject($service->service_description);
+        foreach ($query->where('host_name', $this->host) as $service){
+            $objects[] = $this->getServiceObject($service->service_description, $this->host);
         }
         $this->view->objects = $objects;
         $this->view->grapher = Hook::first('grapher');
     }
 
-    public function getServiceObject($serviceName)
+
+    public function getHostObject($host)
     {
-        $service = new Service(
+
+        $myHost = new Host($this->backend, $host);
+        $this->applyRestriction('monitoring/filter/objects', $myHost);
+
+        if ($myHost->fetch() === false) {
+            $this->httpNotFound($this->translate('Host not found'));
+        }
+
+        return $myHost;
+    }
+
+    public function getServiceObject($service, $host)
+    {
+        $myService = new Service(
             $this->backend,
-            $this->view->host,
-            $serviceName
+            $host,
+            $service
         );
-        $this->applyRestriction('monitoring/filter/objects', $service);
-        if ($service->fetch() === false) {
+        $this->applyRestriction('monitoring/filter/objects', $myService);
+
+        if ($myService->fetch() === false) {
             $this->httpNotFound($this->translate('Service not found'));
         }
-        return $service;
+
+        return $myService;
     }
+
+
 }

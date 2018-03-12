@@ -184,6 +184,7 @@ class GeneralConfigForm extends ConfigForm
                 'multiOptions' => array(
                     'direct' => $this->translate('Direct'),
                     'proxy' => $this->translate('Proxy'),
+                    'indirectproxy' => $this->translate('Indirect Proxy'),
                     'iframe' => $this->translate('iFrame'),
                 ),
                 'description' => $this->translate('User access Grafana directly or module proxies graphs.'),
@@ -192,7 +193,7 @@ class GeneralConfigForm extends ConfigForm
             )
         );
 
-        if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'proxy') {
+        if (isset($formData['grafana_accessmode']) && ($formData['grafana_accessmode'] === 'proxy' || $formData['grafana_accessmode'] === 'indirectproxy')) {
             $this->addElement(
                 'number',
                 'grafana_proxytimeout',

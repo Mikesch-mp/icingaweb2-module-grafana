@@ -51,6 +51,7 @@ class Grapher extends GrapherHook
     protected $debug                   = false;
     protected $SSLVerifyPeer           = false;
     protected $SSLVerifyHost           = "0";
+    protected $cacheTime                = 300;
 
     protected function init()
     {
@@ -273,6 +274,22 @@ class Grapher extends GrapherHook
                 $this->width,
                 $this->height
             );
+        } elseif ($this->accessMode == "indirectproxy") {
+            if ($this->object instanceof Service) {
+                $link = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'service' => rawurlencode($serviceName), 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
+            } else {
+                $link = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
+            }
+            $imghtml = '<img src="%s%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
+            $previewHtml = sprintf(
+                $imghtml,
+                $this->getView()->serverUrl(),
+                $link,
+                $serviceName,
+                $this->width,
+                $this->height
+
+            );
         } elseif ($this->accessMode == "direct") {
             $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
             $previewHtml = sprintf(
@@ -339,6 +356,7 @@ class Grapher extends GrapherHook
         }
 
         if ($this->object instanceof Host) {
+            $this->cacheTime = $this->object->host_next_check - $this->object->host_last_check;
             $serviceName = $this->object->check_command;
             $hostName = $this->object->host_name;
             $linkarray = array(
@@ -346,6 +364,7 @@ class Grapher extends GrapherHook
             );
             $link = 'monitoring/host/show';
         } elseif ($this->object instanceof Service) {
+            $this->cacheTime = $this->object->service_next_check - $this->object->service_last_check;
             $serviceName = $this->object->service_description;
             $hostName = $this->object->host->getName();
             $linkarray = array(
@@ -355,7 +374,7 @@ class Grapher extends GrapherHook
             $link = 'monitoring/service/show';
         }
 
-        if (isset($this->object->customvars[$this->custvarconfig]) && ! empty($this->object->customvars[$this->custvarconfig])) {
+        if (array_key_exists($this->custvarconfig, $this->object->customvars) && ! empty($this->object->customvars[$this->custvarconfig])) {
             $graphConfiguation = $this->getGraphConf($object->customvars[$this->custvarconfig]);
         } else {
             $graphConfiguation = $this->getGraphConf($serviceName, $object->check_command);
@@ -382,7 +401,6 @@ class Grapher extends GrapherHook
             $replace[] = is_string($v) ? rawurlencode($v)  : null;
             $this->customVars = str_replace($search, $replace, $this->customVars);
         }
-
 
         $return_html = "";
 
@@ -431,10 +449,9 @@ class Grapher extends GrapherHook
         }
         if($this->debug && $this->permission->hasPermission('grafana/debug') && $report === false) {
             $usedUrl = "";
-
             if ($this->accessMode == "proxy") {
                 $usedUrl = $this->pngUrl;
-            } elseif ($this->accessMode == "direct" || $this->accessMode == "iframe" ) {
+            } else {
                 $usedUrl = $m[preg_match('/.*?src\s*=\s*[\'\"](.*?)[\'\"].*/', $previewHtml, $m)];
                 $usedUrl = preg_replace('/.*?src\s*=\s*[\'\"](.*?)[\'\"].*/', "$1", $previewHtml );
             }
