@@ -46,7 +46,7 @@ class ShowController extends MonitoringAwareController
             $fullscreen = new Tab(array(
                 'title' => $this->translate('Print'),
                 'icon'  => 'print',
-                'url'   => ((string) $this->getRequest()->getUrl()) . '&showFullscreen'
+                'url'   => ((string) htmlspecialchars_decode($this->getRequest()->getUrl())) . '&showFullscreen'
             ));
             $fullscreen->setTargetBlank();
             $tabs->addAsDropdown('fullscreen', $fullscreen);
