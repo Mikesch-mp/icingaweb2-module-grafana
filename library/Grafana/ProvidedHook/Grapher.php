@@ -266,7 +266,7 @@ class Grapher extends GrapherHook
             curl_close($curl_handle);
 
             $img = 'data:image/png;base64,' . base64_encode($res);
-            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
+            $imghtml = '<img src="%s" alt="%s" width="%spx" height="%spx" class="'. $imgClass .'"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $img,
@@ -280,18 +280,19 @@ class Grapher extends GrapherHook
             } else {
                 $link = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
             }
-            $imghtml = '<img src="%s%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
+            $imghtml = '<img src="%s%s" alt="%s" width="%spx" height="%spx" class="'. $imgClass .'" style="min-height: %spx;"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->getView()->serverUrl(),
                 $link,
                 $serviceName,
                 $this->width,
+                $this->height,
                 $this->height
 
             );
         } elseif ($this->accessMode == "direct") {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
+            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="'. $imgClass .'" style="min-height: %spx;"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->protocol,
@@ -312,6 +313,7 @@ class Grapher extends GrapherHook
                 $this->refresh,
                 rawurlencode($serviceName),
                 $this->width,
+                $this->height,
                 $this->height
             );
         } elseif ($this->accessMode == "iframe") {
