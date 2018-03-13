@@ -276,7 +276,7 @@ class Grapher extends GrapherHook
             );
         } elseif ($this->accessMode == "indirectproxy") {
             if ($this->object instanceof Service) {
-                $link = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'service' => rawurlencode($serviceName), 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
+                $link = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'service' => rawurlencode($serviceName), 'panelid' => $this->panelId, 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
             } else {
                 $link = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
             }

@@ -225,7 +225,7 @@ class ImgController extends MonitoringAwareController
 
         $this->dashboard = $graphConfig->get($serviceName, 'dashboard', $this->defaultDashboard);
         $this->dashboardstore = $graphConfig->get($serviceName, 'dashboardstore', $this->defaultDashboardStore);
-        $this->panelId = $graphConfig->get($serviceName, 'panelId', $this->defaultDashboardPanelId);
+        $this->panelId = $this->hasParam('panelid') ? $this->getParam('panelid') : $graphConfig->get($serviceName, 'panelId', $this->defaultDashboardPanelId);
         $this->orgId = $graphConfig->get($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $graphConfig->get($serviceName, 'customVars', '');
         $this->height = $graphConfig->get($serviceName, 'height', $this->height);
