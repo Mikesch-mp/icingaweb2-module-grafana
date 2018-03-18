@@ -159,7 +159,7 @@ class GeneralConfigForm extends ConfigForm
                 'description' => $this->translate('Show shadows around the graph.'),
             )
         );
-        if (! isset($formData['grafana_version']) && ! $formData['grafana_version'] === '1' ) {
+        if (! isset($formData['grafana_version']) || $formData['grafana_version'] === '0' ) {
             $this->addElement(
                 'select',
                 'grafana_defaultdashboardstore',
