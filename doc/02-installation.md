@@ -7,7 +7,7 @@ to the latest version, please [read on here](05-update.md).
 ## Requirements
 
 * [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.1)
-* [Grafana](https://grafana.com/) (>= 4.1) **For Grafana 5, dashboard names need to be unique!**
+* [Grafana](https://grafana.com/) (>= 4.1)
 * [InfluxDB](https://docs.influxdata.com/influxdb/) (>= 1.0) [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
 * [PHP 7](https://www.php.net) **with curl enabled** (for proxy mode)
 
@@ -60,9 +60,9 @@ icingacli module enable grafana
 
 ## Grafana Preparations
 
-Depending on which mode (proxy/direct/iframe) you want to use you have to set some configuration in Grafana
+Depending on which mode (proxy/indirect proxy/direct/iframe) you want to use you have to set some configuration in Grafana
 
-### For 'proxy' mode
+### For 'proxy' or 'indirect proxy' mode
 
 If you don't want anonymous access you have to create a user (with password) and enable basic auth in grafana.ini
 
@@ -87,6 +87,8 @@ If you want to allow anonymous access (read only) enable "Anonymous Auth" in gra
  org_role = Viewer
 ```
 
+For API-Token access you need to create an API-Token with Grafana. See the [Grafana Docs](http://docs.grafana.org/tutorials/api_org_token_howto/#how-to-create-a-new-organization-and-an-api-token) on how to create one
+
 ### For 'direct' & 'iframe' mode
 
 You have to enable "Anonymous Auth" in grafana.ini and set default organization or users need
@@ -104,6 +106,7 @@ to be logged in into Grafana first to see graphs in Icinga Web 2.
  # specify role for unauthenticated users
  org_role = Viewer
 ```
+
 ### Create Grafana datasource
 
 Create a datasource depending on the metric backend you want to use.

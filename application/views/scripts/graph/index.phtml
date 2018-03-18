@@ -21,6 +21,9 @@
             <tr>
                 <th><?= $this->translate('Name') ?></th>
                 <th><?= $this->translate('Dashboard') ?></th>
+                <?php if ($this->grafanaVersion == "1"): ?>
+                    <th><?= $this->translate('DasboardUID') ?></th>
+                <?php endif ?>
                 <th><?= $this->translate('PanelID') ?></th>
                 <th><?= $this->translate('CustomVars') ?></th>
                 <th><?= $this->translate('Timerange') ?></th>
@@ -43,6 +46,9 @@
                     ) ?>
                 </td>
                 <td><?= $this->escape($graph->dashboard) ?></td>
+                <?php if ($this->grafanaVersion == "1"): ?>
+                <td><?= $this->escape($graph->dashboarduid) ?></td>
+                <?php endif ?>
                 <td><?= $this->escape($graph->panelId) ?></td>
                 <td><?= isset($graph->customVars) ? "Yes" : "No" ?></td>
                 <td><?= $this->escape($graph->timerange) ?></td>

@@ -43,6 +43,8 @@ class ImgController extends MonitoringAwareController
     protected $SSLVerifyPeer           = false;
     protected $SSLVerifyHost           = "0";
     protected $cacheTime;
+    protected $grafanaVersion           = "0";
+    protected $defaultdashboarduid;
 
 
     public function init()
@@ -58,9 +60,10 @@ class ImgController extends MonitoringAwareController
         $this->timerange = $this->hasParam('timerange') ? urldecode($this->getParam('timerange')) : null;
         $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : "now";
         $this->cacheTime = $this->hasParam('cachetime') ? $this->getParam('cachtime') : 300;
-        
+
         /* load global configuration */
         $this->myConfig = Config::module('grafana')->getSection('grafana');
+        $this->grafanaVersion = $this->myConfig->get('version', $this->grafanaVersion);
         $this->grafanaHost = $this->myConfig->get('host', $this->grafanaHost);
         if ($this->grafanaHost == null) {
             throw new ConfigurationError(
@@ -70,6 +73,12 @@ class ImgController extends MonitoringAwareController
         $this->protocol = $this->myConfig->get('protocol', $this->protocol);
 
         $this->defaultDashboard = $this->myConfig->get('defaultdashboard', $this->defaultDashboard);
+        $this->defaultdashboarduid = $this->myConfig->get('defaultdashboarduid', NULL);
+        if ($this->grafanaVersion == "1" && is_null($this->defaultdashboarduid)) {
+            throw new ConfigurationError(
+                'Usage of Grafana 5 is configured but no UID for default dashboard found!'
+            );
+        }
         $this->defaultdashboardpanelid = $this->myConfig->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
         $this->defaultOrgId = $this->myConfig->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->myConfig->get('theme', $this->grafanaTheme);
@@ -224,7 +233,12 @@ class ImgController extends MonitoringAwareController
         }
 
         $this->dashboard = $graphConfig->get($serviceName, 'dashboard', $this->defaultDashboard);
-        $this->dashboardstore = $graphConfig->get($serviceName, 'dashboardstore', $this->defaultDashboardStore);
+        if ($this->grafanaVersion == "1")
+        {
+            $this->dashboarduid = $graphConfig->get($serviceName, 'dashboarduid', $this->defaultdashboarduid);
+        } else {
+            $this->dashboardstore = $graphConfig->get($serviceName, 'dashboardstore', $this->defaultDashboardStore);
+        }
         $this->panelId = $this->hasParam('panelid') ? $this->getParam('panelid') : $graphConfig->get($serviceName, 'panelId', $this->defaultDashboardPanelId);
         $this->orgId = $graphConfig->get($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $graphConfig->get($serviceName, 'customVars', '');
@@ -240,25 +254,47 @@ class ImgController extends MonitoringAwareController
             $imageHtml = $this->translate('CURL extension is missing. Please install CURL for PHP and ensure it is loaded.');
             return false;
         }
+        if ($this->grafanaVersion == "1")
+        {
+            $this->pngUrl = sprintf(
+                '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                $this->protocol,
+                $this->grafanaHost,
+                $this->dashboarduid,
+                $this->dashboard,
+                urlencode($hostName),
+                rawurlencode($serviceName),
+                $this->object->check_command,
+                $this->customVars,
+                $this->panelId,
+                $this->orgId,
+                $this->width,
+                $this->height,
+                $this->grafanaTheme,
+                urlencode($this->timerange),
+                urlencode($this->timerangeto)
+            );
+        } else {
 
-        $this->pngUrl = sprintf(
-            '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
-            $this->protocol,
-            $this->grafanaHost,
-            $this->dashboardstore,
-            $this->dashboard,
-            urlencode($hostName),
-            rawurlencode($serviceName),
-            $this->object->check_command,
-            $this->customVars,
-            $this->panelId,
-            $this->orgId,
-            $this->width,
-            $this->height,
-            $this->grafanaTheme,
-            urlencode($this->timerange),
-            urlencode($this->timerangeto)
-        );
+            $this->pngUrl = sprintf(
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                $this->protocol,
+                $this->grafanaHost,
+                $this->dashboardstore,
+                $this->dashboard,
+                urlencode($hostName),
+                rawurlencode($serviceName),
+                $this->object->check_command,
+                $this->customVars,
+                $this->panelId,
+                $this->orgId,
+                $this->width,
+                $this->height,
+                $this->grafanaTheme,
+                urlencode($this->timerange),
+                urlencode($this->timerangeto)
+            );
+        }
 
         // fetch image with curl
         $curl_handle = curl_init();

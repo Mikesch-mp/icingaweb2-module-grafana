@@ -11,7 +11,6 @@ Browse to [/icingaweb2/config/modules#!/icingaweb2/grafana/config](/icingaweb2/c
 
 ![Grafana module configuration](images/03-module_grafana_configuration01.png "Grafana module configuration")
 
-
 ---
 ### Configuration by editing inifile
 
@@ -62,6 +61,7 @@ ssl_verifyhost = "0"
 
 |Setting                | Short description|
 |-----------------------|-----------------------|
+|version                | **Optional** If you want to use Grafana 5 with all features, enable this option. Defaults to `false`
 |host                   | **Required.** Grafana server host name (and port).|
 |protocol               | **Optional.** Protocol used to access the Grafana server. Defaults to `http`.|
 |height                 | **Optional.** Global graph height in pixel. Defaults to `280`.|
@@ -69,8 +69,9 @@ ssl_verifyhost = "0"
 |timerange              | **Optional.** Global time range for graphs. Defaults to `6h`.|
 |timerangeAll           | **Optional.** Time range for all graphs feature. Defaults to `Previous week`.|
 |enableLink             | **Optional.** Enable/disable graph with a rendered URL to the Grafana dashboard. Defaults to `yes`.|
-|datasource             | **Required.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.|
-|defaultdashboard       | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. Set to `none` to hide the module output. **Important: `panelID` must be set to `1`!** Defaults to `icinga2-default`.|
+|datasource             | **Required for Grafana 4.x only.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.|
+|defaultdashboard       | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. Set to `none` to hide the module output. Defaults to `icinga2-default`.|
+|defaultdashboarduid    | **Required for Grafana 5** The UID of the default dashbaoard for **Grafana 5**.
 |defaultdashboardpanelid| **Required** ID of the panel used in the default dashboard. Defaults to `1`.
 |shadows                | **Optional.** Show shadows around the graphs. ** Defaults to `false`.|
 |defaultorgid           | **Required.** Number of the default organization id where dashboards are located. Defaults to `1`.
@@ -94,6 +95,9 @@ ssl_verifyhost = "0"
 
 
 ---
+
+### version
+If you want to use full Grafana 5 features, set this to `1`. Defaults to `false`
 
 ### host
 **Required** Hostname and port or Grafana url depending on your Grafana installation.
@@ -132,6 +136,11 @@ You can fetch the id if you browse to your grafana server menu -> Admin -> Globa
 ### defaultdashboard
 The name of the default dashboard that is used when **no graph is configured** for your service, host or command.
 See [04-graph configuration](04-graph-configuration.md) for details about how to configure graphs.
+
+### defaultdashboarduid
+**Required for Grrafana 5** The UID for the default dashboard for Grafana 5.
+To get the UID, inspect the URL from your dashboard inside Grafana, it is right before the dashboard name.
+For example the URL is 'https://192.168.178.52:3000/d/FxAre-ekz/icinga2-default?orgId=1' the UID is then 'FxAre-ekz'.
 
 ### defaultdashboardpanelid
 The id of the panel used in the defaul dashboard. Defaults to `1`.

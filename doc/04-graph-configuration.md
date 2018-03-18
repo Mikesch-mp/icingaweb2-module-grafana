@@ -6,18 +6,19 @@ You can add specific [graph configuration](/icingaweb2/grafana/graph) settings i
 
 ---
 ## Options
-Setting            | Description
--------------------|-------------------
-name               | **Required.** The name of the `service` (not the `display_name`) or `parametrized service name` or `check_command` where a graph should be rendered.
-dashboard          | **Required.** Name of the Grafana dashboard to use.
-panelId            | **Required.** Graph panelId. Open Grafana and select to share your dashboard to extract the value.
-orgId              | **Optional.** Organization Id where the dashboard is located. Overrides global default.
-customVars         | **Optional.** Set additional custom variables used for Grafana.
-timerange          | **Optional.** Specify the time range for this graph.  Overrides global default.
-height             | **Optional.** Graph height in pixel. Overrides global default.
-width              | **Optional.** Graph width in pixel. Overrides global default.
-repeatable         | **Optional.** Defines a dashboard with auto repeating panels per metric. Defaults to "no".
-nmetrics           | **Optional.** Defines the number of metrics in an auto repeating panel. Defaults to 1 if repeatable is yes.
+|Setting            | Description|
+|-------------------|-------------------|
+|name               | **Required.** The name of the `service` (not the `display_name`) or `parametrized service name` or `check_command` where a graph should be rendered.|
+|dashboard          | **Required.** Name of the Grafana dashboard to use.|
+|dashboarduid       | **Required for Grafana 5** The UID of the dashboard.|
+|panelId            | **Required.** Graph panelId. Open Grafana and select to share your dashboard to extract the value.|
+|orgId              | **Optional.** Organization Id where the dashboard is located. Overrides global default.|
+|customVars         | **Optional.** Set additional custom variables used for Grafana.|
+|timerange          | **Optional.** Specify the time range for this graph.  Overrides global default.|
+|height             | **Optional.** Graph height in pixel. Overrides global default.|
+|width              | **Optional.** Graph width in pixel. Overrides global default.|
+|repeatable         | **Optional.** Defines a dashboard with auto repeating panels per metric. Defaults to "no".|
+|nmetrics           | **Optional.** Defines the number of metrics in an auto repeating panel. Defaults to 1 if repeatable is yes.|
 
 Example:
 ```
@@ -25,6 +26,7 @@ vim /etc/icingaweb2/modules/grafana/graphs.ini
 
 [check_command]
 dashboard = "my-own"
+dashboarduid = "FxAre-ekz"
 panelId = "42"
 orgId = "1"
 customVars = "&os=$os$"

@@ -2,6 +2,7 @@
 
 namespace Icinga\Module\Grafana\Forms\Graph;
 
+use Icinga\Module\Grafana\Forms\Config\GeneralConfigForm;
 use Icinga\Module\Grafana\Helpers\Timeranges;
 use Icinga\Exception\AlreadyExistsException;
 use Icinga\Exception\IcingaException;
@@ -20,13 +21,14 @@ class GraphForm extends ConfigForm
      * @var string
      */
     protected $boundGraph;
+    protected $grafanaVersion;
 
     /**
      * {@inheritdoc}
      */
     public function init()
     {
-        $this->setName('form_config_grafana_graph');
+       $this->setName('form_config_grafana_graph');
     }
 
     /**
@@ -54,6 +56,19 @@ class GraphForm extends ConfigForm
                 'required'      => true
             )
         );
+
+        if($this->grafanaVersion == "1")
+        {
+            $this->addElement(
+                'text',
+                'dashboarduid',
+                array(
+                    'label' => $this->translate('Dashboard UID'),
+                    'description' => $this->translate('UID of the dashboard.'),
+                    'required' => true,
+                )
+            );
+        }
 
         $this->addElement(
             'text',
@@ -182,12 +197,17 @@ class GraphForm extends ConfigForm
             'repeatable'  => $this->getElement('repeatable')->getValue(),
             'nmetrics'    => $this->getElement('nmetrics')->getValue()
         );
+        if($this->grafanaVersion = "1")
+        {
+            $values['dashboarduid'] = $this->getElement('dashboarduid')->getValue();
+        }
 
 
-	if (empty($values['timerange'])) {
+	    if (empty($values['timerange']))
+	    {
             $values['timerange'] = null;
         }
-	if (empty($values['customVars'])) {
+	    if (empty($values['customVars'])) {
             $values['customVars'] = null;
         }
         if (empty($values['height'])) {
@@ -322,4 +342,11 @@ class GraphForm extends ConfigForm
         }
         return $this;
     }
+
+    public function setGrafanaVersion ($version = "0")
+    {
+        $this->grafanaVersion = $version;
+        return $this;
+    }
+
 }

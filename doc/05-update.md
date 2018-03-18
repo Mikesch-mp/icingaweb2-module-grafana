@@ -37,4 +37,8 @@ and or changed configuration options. When done, just hit the `Save Changes` but
 ## Dashboards
 
 Dont forget to check the dashboard directories for newer versions of existing ones 
-or new dashboards. 
+or new dashboards.
+
+## Grafana 5
+
+If you enable Grafana 5 support in general configurations. You have to add the UID to all your configured graphs or they will not work anymore!

@@ -14,7 +14,8 @@ class GraphController extends Controller
     public function init()
     {
 	$this->assertPermission('grafana/graphconfig');
-    }
+	$this->view->grafanaVersion = $this->Config()->get('grafana', 'version');
+	}
 
     /**
      * List Grafana graphs
@@ -42,6 +43,7 @@ class GraphController extends Controller
         $graphs
             ->setIniConfig($this->Config('graphs'))
             ->setRedirectUrl('grafana/graph')
+            ->setGrafanaVersion($this->view->grafanaVersion)
             ->handleRequest();
         $this->view->form = $graphs;
     }
@@ -95,12 +97,14 @@ class GraphController extends Controller
         try {
             $graphs
                 ->setIniConfig($this->Config('graphs'))
+                ->setGrafanaVersion($this->view->grafanaVersion)
                 ->bind($graph);
         } catch (NotFoundError $e) {
             $this->httpNotFound($e->getMessage());
         }
         $graphs
             ->setRedirectUrl('grafana/graph')
+            ->setGrafanaVersion($this->view->grafanaVersion)
             ->handleRequest();
         $this->view->form = $graphs;
     }
