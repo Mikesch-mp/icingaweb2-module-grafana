@@ -1,5 +1,5 @@
 Name: Grafana
-Version: 1.2.1
+Version: Master
 Depends: monitoring
 Description: Grafana - A perfdata visualisation module
  Shows Grafana graphs for captured metrics.

@@ -264,6 +264,7 @@ class Grapher extends GrapherHook
             $curl_opts = array(
                 CURLOPT_URL => $this->pngUrl,
                 CURLOPT_CONNECTTIMEOUT => 2,
+                CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => $this->SSLVerifyPeer,
                 CURLOPT_SSL_VERIFYHOST => ($this->SSLVerifyHost) ? 2 : 0,
