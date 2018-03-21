@@ -1,7 +1,30 @@
 # Change Log
 
-## [1.2.0](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.2.0) (2018-03-06)
-[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.1.10...1.2.0)
+## [1.2.1](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.2.1) (2018-03-21)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.0...1.2.1)
+
+**Implemented enhancements:**
+
+- \[Feature request\] Indirect Proxy: Reserve space to prevent jumps when graphs appear [\#131](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/131)
+- Idea: How to speed up proxy mode [\#126](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/126)
+- Proposal: Issue Milestones, Labels, Styleguide, Contributing, Changelog [\#34](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/34)
+- add permission for enableLink [\#135](https://github.com/Mikesch-mp/icingaweb2-module-grafana/pull/135) ([xam-stephan](https://github.com/xam-stephan))
+
+**Fixed bugs:**
+
+- Undefined index: grafana\_version [\#134](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/134)
+- Print link has nasty &amp in url which causes timerange not honored [\#130](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/130)
+- Module does not load first graph \(panelId=1\) from dashboard [\#129](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/129)
+
+**Closed issues:**
+
+- Optional use host\_display\_name instead of host\_name in call to Grafana [\#133](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/133)
+- Scope of Custom Variables [\#132](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/132)
+- Indirect Proxy Mode: If one panel fails to render the previous gets duplicated [\#128](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/128)
+- Grafana 5 compatibility [\#116](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/116)
+
+## [v1.2.0](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.2.0) (2018-03-06)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.1.10...v1.2.0)
 
 **Implemented enhancements:**
 
