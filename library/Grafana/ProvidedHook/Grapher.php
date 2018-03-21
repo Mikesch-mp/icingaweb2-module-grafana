@@ -68,7 +68,7 @@ class Grapher extends GrapherHook
         }
         $this->protocol = $this->config->get('protocol', $this->protocol);
         $this->enableLink = $this->config->get('enableLink', $this->enableLink);
-        if ( $this->enableLink == "yes" ) {
+        if ( $this->enableLink == "yes" && $this->permission->hasPermission('grafana/enable-link')) {
             $this->usePublic = $this->config->get('usepublic', $this->usePublic);
             if ( $this->usePublic == "yes" ) {
                 $this->publicHost = $this->config->get('publichost', $this->publicHost);
@@ -511,7 +511,7 @@ class Grapher extends GrapherHook
             $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml);
 
             //do not render URLs on error or if disabled
-            if (!$res || $this->enableLink == "no") {
+            if (!$res || $this->enableLink == "no" || !$this->permission->hasPermission('grafana/enable-link')) {
                 $html .= $previewHtml;
             } else {
                 if ($this->grafanaVersion == "1")
