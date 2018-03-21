@@ -6,7 +6,7 @@ $auth = Auth::getInstance();
 $this->providePermission('grafana/graphconfig', $this->translate('Allow to configure graphs.'));
 $this->providePermission('grafana/debug', $this->translate('Allow to see module debug informations.'));
 $this->providePermission('grafana/showall', $this->translate('Allow access to see all graphs of a host.'));
-$this->providePermission('grafana/enable-link', $this->translate('Enable link to grafana'));
+$this->providePermission('grafana/enablelink', $this->translate('Allow to follow links to Grafana'));
 
 $this->provideConfigTab('config', array(
     'title' => 'Configuration',
