@@ -197,7 +197,7 @@ class GraphForm extends ConfigForm
             'repeatable'  => $this->getElement('repeatable')->getValue(),
             'nmetrics'    => $this->getElement('nmetrics')->getValue()
         );
-        if($this->grafanaVersion = "1")
+        if($this->grafanaVersion == "1")
         {
             $values['dashboarduid'] = $this->getElement('dashboarduid')->getValue();
         }
