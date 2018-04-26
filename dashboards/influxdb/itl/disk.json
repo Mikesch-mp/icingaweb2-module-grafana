@@ -131,7 +131,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "disk",
+              "measurement": "/^$command$/",
               "orderByTime": "ASC",
               "policy": "default",
               "refId": "A",
