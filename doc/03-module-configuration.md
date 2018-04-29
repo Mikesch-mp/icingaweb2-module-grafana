@@ -61,7 +61,7 @@ ssl_verifyhost = "0"
 
 |Setting                | Short description|
 |-----------------------|-----------------------|
-|version                | **Optional** If you want to use Grafana 5 with all features, enable this option. Defaults to `false`
+|version                | **Optional** If you want to use Grafana 5 with all features, enable this option with `1`(true). Defaults to `0` (false).
 |host                   | **Required.** Grafana server host name (and port).|
 |protocol               | **Optional.** Protocol used to access the Grafana server. Defaults to `http`.|
 |height                 | **Optional.** Global graph height in pixel. Defaults to `280`.|
@@ -83,6 +83,7 @@ ssl_verifyhost = "0"
 |password               | **Proxy with basic only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.|
 |apitoken               | **Proxy with token only** **Required** API token used to access Grafana.|
 |directrefresh          | **Direct Only** **Optional.** Refresh graphs on direct access. Defaults to `no`.|
+|indirectproxyrefresh   | **Indirect Proxy Only** **Optional.** Refresh graphs on indirect proxy mode. Defaults to `yes`.|
 |usepublic              | **Optional** Enable usage of publichost/protocol. Defaults to `no`.|
 |publichost             | **Optional** Use a diffrent host for the graph links.|
 |publicprotocol         | **Optional** Use a diffrent protocol for the graph links.|
@@ -206,6 +207,14 @@ The password used to authenticate to Grafana server.
 
 ### apitoken
 API token used to access Grafana. See [Create API Token](http://docs.grafana.org/http_api/auth/#create-api-token) for details how to create a API token.
+
+### directrefresh
+Only for `direct` access mode. Enables or disable graph refresh.
+Defaults to `no`.
+
+### indirectproxyrefresh
+Only for `indirectproxy` access mode. Enables or disable graph refresh with an interval of the service interval.
+Defaults to `yes`.
 
 ### usepublic
 Enables/Disables the usage of a `public` URL to the Grafana server.

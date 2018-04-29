@@ -45,6 +45,7 @@ class ImgController extends MonitoringAwareController
     protected $cacheTime;
     protected $grafanaVersion           = "0";
     protected $defaultdashboarduid;
+    protected $refresh                 = "yes";
 
 
     public function init()
@@ -86,6 +87,7 @@ class ImgController extends MonitoringAwareController
         $this->height = $this->myConfig->get('height', $this->height);
         $this->width = $this->myConfig->get('width', $this->width);
         $this->proxyTimeout = $this->myConfig->get('proxytimeout', $this->proxyTimeout);
+        $this->refresh = $this->myConfig->get('indirectproxyrefresh', $this->refresh);
         /**
          * Datasource needed to regex special chars
          */
@@ -174,8 +176,13 @@ class ImgController extends MonitoringAwareController
         $imageHtml = "";
         $res = $this->getMyimageHtml($serviceName, $this->getParam('host'), $imageHtml);
         header('Pragma: public');
-        header('Cache-Control: max-age=$this->cacheTime');
-        header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + $this->cacheTime));
+        if($this->refresh == "yes") {
+            header('Cache-Control: max-age='.$this->cacheTime);
+            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $this->cacheTime));
+        } else {
+            header('Cache-Control: max-age='. (365*86440));
+            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 365*86440));
+        }
         header("Content-type: image/png");
         if (! $res)
         {

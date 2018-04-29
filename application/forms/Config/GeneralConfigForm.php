@@ -289,6 +289,21 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
+        if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'indirectproxy') {
+            $this->addElement(
+                'select',
+                'grafana_indirectproxyrefresh',
+                array(
+                    'label' => $this->translate('Refresh on indirect proxy'),
+                    'value' => 'yes',
+                    'multiOptions' => array(
+                        'yes' => $this->translate('Yes'),
+                        'no' => $this->translate('No'),
+                    ),
+                    'description' => $this->translate('Refresh graphs on indirect proxy mode.')
+                )
+            );
+        }
 
         if (isset($formData['grafana_accessmode']) && ( $formData['grafana_accessmode'] != 'iframe' )) {
             $this->addElement(
