@@ -1,7 +1,7 @@
 # Change Log
 
-## [1.2.2](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.2.2) (2018-04-29)
-[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.1...1.2.2)
+## [v1.2.2](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.2.2) (2018-04-29)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.1...v1.2.2)
 
 **Implemented enhancements:**
 
@@ -12,6 +12,13 @@
 
 - indirectproxy mode - custom variables [\#145](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/145)
 - Error creating or updating Grafana Graphs on Icinga Web [\#138](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/138)
+
+**Closed issues:**
+
+- Passive checks performance counters not showed in grafana [\#144](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/144)
+- Error Integrating Grafana to Icinga2 Host Overview [\#143](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/143)
+- Group by value based on timeframe [\#139](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/139)
+- graphs are not saved -\> uncaught error [\#137](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/137)
 
 ## [v1.2.1](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.2.1) (2018-03-21)
 [Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.0...v1.2.1)
