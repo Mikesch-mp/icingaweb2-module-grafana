@@ -482,16 +482,17 @@ class Grapher extends GrapherHook
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
 
-        $customVars = $object->fetchCustomvars()->customvars;
-
-        // replace template to customVars from Icinga2
-        foreach ($customVars as $k => $v) {
-            $search[] = "\$$k\$";
-            $replace[] = is_string($v) ? $v  : null;
-            $this->customVars = str_replace($search, $replace, $this->customVars);
+        if (!empty($this->customVars)) {
+            // replace template to customVars from Icinga2
+            $customVars = $object->fetchCustomvars()->customvars;
+            foreach ($customVars as $k => $v) {
+                $search[] = "\$$k\$";
+                $replace[] = is_string($v) ? $v : null;
+                $this->customVars = str_replace($search, $replace, $this->customVars);
+            }
+            $this->customVars = explode('=', $this->customVars);
+            $this->customVars = $this->customVars[0] . '=' . rawurlencode($this->customVars[1]);
         }
-        $this->customVars = explode('=', $this->customVars);
-        $this->customVars = $this->customVars[0] . '=' . rawurlencode($this->customVars[1]);
 
         $return_html = "";
 
