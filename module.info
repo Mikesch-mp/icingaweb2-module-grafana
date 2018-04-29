@@ -1,16 +1,16 @@
 Name: Grafana
-Version: Master
+Version: 1.2.2
 Depends: monitoring
 Description: Grafana - A perfdata visualisation module
  Shows Grafana graphs for captured metrics.
 
  This module requires:
 
- * Grafana (>= 4.1.0 < 5.0) with basic auth enabled or anonymous access
+ * Grafana (>= 4.1.0) with basic auth enabled, anonymous access or api token.
 
  * InfluxDB or Graphite as datasource backend.
 
- * PHP 7 with curl enabled (for proxy mode)
+ * PHP 7 with curl enabled (for proxy modes)
 
 
  Thanks for bug reporting/fixing or enhancements goes to:
