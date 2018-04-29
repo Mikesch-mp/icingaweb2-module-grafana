@@ -154,6 +154,17 @@ class ImgController extends MonitoringAwareController
         } else {
             $this->setGraphConf($serviceName, $this->object->check_command);
         }
+
+        // replace template to customVars from Icinga2
+        $myCustomVars = $this->object->fetchCustomvars()->customvars;
+        foreach ($myCustomVars as $k => $v) {
+            $search[] = "\$$k\$";
+            $replace[] = is_string($v) ? $v  : null;
+            $this->customVars = str_replace($search, $replace, $this->customVars);
+        }
+        $this->customVars = explode('=', $this->customVars);
+        $this->customVars = $this->customVars[0] . '=' . rawurlencode($this->customVars[1]);
+
         // replace special chars for graphite
         if ($this->dataSource == "graphite") {
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
