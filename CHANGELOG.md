@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.2.4](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.2.4) (2018-04-30)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.3...1.2.4)
+
+**Fixed bugs:**
+
+- Module fails if no cutom variable is set to disable graph [\#151](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/151)
+
+## [v1.2.3](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.2.3) (2018-04-29)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.2...v1.2.3)
+
 ## [v1.2.2](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.2.2) (2018-04-29)
 [Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.1...v1.2.2)
 
