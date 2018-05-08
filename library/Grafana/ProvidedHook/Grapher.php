@@ -2,6 +2,7 @@
 
 namespace Icinga\Module\Grafana\ProvidedHook;
 
+use Icinga\Application\Icinga;
 use Icinga\Authentication\Auth;
 use Icinga\Application\Config;
 use Icinga\Exception\ConfigurationError;
@@ -467,7 +468,7 @@ class Grapher extends GrapherHook
             $this->cacheTime = $this->object->host_next_check - $this->object->host_last_check;
             $serviceName = $this->object->check_command;
             $hostName = $this->object->host_name;
-            $linkarray = array(
+            $parameters = array(
                 'host' => $this->object->host_name,
             );
             $link = 'monitoring/host/show';
@@ -475,11 +476,14 @@ class Grapher extends GrapherHook
             $this->cacheTime = $this->object->service_next_check - $this->object->service_last_check;
             $serviceName = $this->object->service_description;
             $hostName = $this->object->host->getName();
-            $linkarray = array(
+            $parameters = array(
                 'host' => $this->object->host->getName(),
                 'service' => $this->object->service_description,
             );
             $link = 'monitoring/service/show';
+
+            // Preserve timerange if set
+            $parameters['timerange'] = $this->timerange;
         }
 
         if (array_key_exists($this->custvarconfig,
@@ -520,7 +524,7 @@ class Grapher extends GrapherHook
         // Hide menu if in reporting or compact mode
         $menu = "";
         if ($report === false && !$this->getView()->compact) {
-            $timeranges = new Timeranges($linkarray, $link);
+            $timeranges = new Timeranges($parameters, $link);
             $menu = $timeranges->getTimerangeMenu();
         } else {
             $this->title = '';

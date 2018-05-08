@@ -84,7 +84,7 @@ class Timeranges
     private function buildTimerangeMenu()
     {
         $clockIcon = $this->view->qlink('', 'dashboard/new-dashlet',
-            ['url' => urlencode('grafana/dashboard?' . http_build_query($this->urlparams))],
+            ['url' => 'grafana/dashboard?' . http_build_query($this->urlparams)],
             ['icon' => 'clock', 'title' => 'Add graph to dashboard']);
 
         $menu = '<table class="grafana-table"><tr>';
