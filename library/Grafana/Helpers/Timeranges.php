@@ -75,7 +75,7 @@ class Timeranges
         );
     }
 
-    private function buildTimrangeMenu()
+    private function buildTimerangeMenu()
     {
         $menu = '<table class="grafana-table"><tr>';
         $menu .= '<td><div class="grafana-icon"><div class="grafana-clock"></div></div></td>';
@@ -95,7 +95,7 @@ class Timeranges
 
     public function getTimerangeMenu()
     {
-        return $this->buildTimrangeMenu();
+        return $this->buildTimerangeMenu();
     }
 
     public static function getTimeranges()

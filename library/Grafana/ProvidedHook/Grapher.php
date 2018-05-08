@@ -531,9 +531,9 @@ class Grapher extends GrapherHook
 
         $return_html = "";
 
-        // Menu only if we are not called from report
+        // Hide menu if in reporting or compact mode
         $menu = "";
-        if ($report === false) {
+        if ($report === false && !$this->getView()->compact) {
             $timeranges = new Timeranges($linkarray, $link);
             $menu = $timeranges->getTimerangeMenu();
         } else {
