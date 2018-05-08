@@ -59,13 +59,13 @@ class Grapher extends GrapherHook
             '12h' => '12 hours',
             '24h' => '24 hours'
         ),
-        'Days' => array (
+        'Days' => array(
             '2d' => '2 days',
             '7d' => '7 days',
             '14d' => '14 days',
             '30d' => '30 days',
         ),
-        'Months' => array (
+        'Months' => array(
             '2M' => '2 month',
             '6M' => '6 months',
             '9M' => '9 months'
@@ -92,14 +92,15 @@ class Grapher extends GrapherHook
         $this->protocol = $this->config->get('protocol', $this->protocol);
 
         // Check if there is a timerange in url params
-        $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->config->get('timerange', $this->timerange);
+        $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->config->get('timerange',
+            $this->timerange);
         $this->proxyTimeout = $this->config->get('proxytimeout', $this->proxyTimeout);
         $this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
         $this->enableLink = $this->config->get('enableLink', $this->enableLink);
-        if ( $this->enableLink == "yes" ) {
+        if ($this->enableLink == "yes") {
             $this->usePublic = $this->config->get('usepublic', $this->usePublic);
-            if ( $this->usePublic == "yes" ) {
+            if ($this->usePublic == "yes") {
                 $this->publicHost = $this->config->get('publichost', $this->publicHost);
                 if ($this->publicHost == null) {
                     throw new ConfigurationError(
@@ -137,22 +138,26 @@ class Grapher extends GrapherHook
 
         $this->graphConfig = Config::module('grafana', 'graphs');
 
-        if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) && ($this->graphConfig->hasSection($serviceName) == False)) {
+        if ($this->graphConfig->hasSection(strtok($serviceName,
+                ' ')) && ($this->graphConfig->hasSection($serviceName) == false)) {
             $serviceName = strtok($serviceName, ' ');
         }
-        if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphConfig->hasSection($serviceName) == False)) {
+        if ($this->graphConfig->hasSection(strtok($serviceName,
+                ' ')) == false && ($this->graphConfig->hasSection($serviceName) == false)) {
             $serviceName = $serviceCommand;
-            if($this->graphConfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
-                return NULL;
+            if ($this->graphConfig->hasSection($serviceCommand) == false && $this->defaultDashboard == 'none') {
+                return null;
             }
         }
 
         $this->dashboard = $this->getGraphConfigOption($serviceName, 'dashboard', $this->defaultDashboard);
-        $this->dashboardstore = $this->getGraphConfigOption($serviceName, 'dashboardstore', $this->defaultDashboardStore);
+        $this->dashboardstore = $this->getGraphConfigOption($serviceName, 'dashboardstore',
+            $this->defaultDashboardStore);
         $this->panelId = $this->getGraphConfigOption($serviceName, 'panelId', '1');
         $this->orgId = $this->getGraphConfigOption($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $this->getGraphConfigOption($serviceName, 'customVars', '');
-        $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->getGraphConfigOption($serviceName, 'timerange', $this->timerange);
+        $this->timerange = Url::fromRequest()->hasParam('timerange') ? Url::fromRequest()->getParam('timerange') : $this->getGraphConfigOption($serviceName,
+            'timerange', $this->timerange);
         $this->height = $this->getGraphConfigOption($serviceName, 'height', $this->height);
         $this->width = $this->getGraphConfigOption($serviceName, 'width', $this->width);
         $this->repeatable = $this->getGraphConfigOption($serviceName, 'repeatable', $this->repeatable);
@@ -161,36 +166,44 @@ class Grapher extends GrapherHook
         return $this;
     }
 
-    private function getGraphConfigOption($section, $option, $default = NULL) {
+    private function getGraphConfigOption($section, $option, $default = null)
+    {
         $value = $this->graphConfig->get($section, $option, $default);
-        if(empty($value)) {
+        if (empty($value)) {
             return $default;
         }
         return $value;
     }
 
+    private function getParameter($object, $timeRange)
+    {
+        $params = ['timerange' => $timeRange];
+
+        if ($object instanceof Host) {
+            $params['host'] = $object->host_name;
+        } else {
+            $params['host'] = $object->host->getName();
+            $params['service'] = $object->service_description;
+        }
+
+        return $params;
+    }
+
     private function getTimerangeLink($object, $rangeName, $timeRange)
     {
         $view = Icinga::app()->getViewRenderer()->view;
+        $params = $this->getParameter($object, $timeRange);
+
         if ($object instanceof Host) {
-            $array = array(
-                'host' => $object->host_name,
-                'timerange' => $timeRange
-            );
             $link = 'monitoring/host/show';
         } else {
-            $array = array(
-                'host' => $object->host->getName(),
-                'service' => $object->service_description,
-                'timerange' => $timeRange
-            );
             $link = 'monitoring/service/show';
         }
 
         return $view->qlink(
             $rangeName,
             $link,
-            $array,
+            $params,
             array(
                 'class' => 'action-link',
                 'data-base-target' => '_self',
@@ -238,7 +251,8 @@ class Grapher extends GrapherHook
                 CURLOPT_SSL_VERIFYHOST => 0, //TODO: config option
                 CURLOPT_TIMEOUT => $this->proxyTimeout,
                 CURLOPT_USERPWD => "$this->auth",
-                CURLOPT_HTTPAUTH, CURLAUTH_ANY
+                CURLOPT_HTTPAUTH,
+                CURLAUTH_ANY
             );
 
             curl_setopt_array($curl_handle, $curl_opts);
@@ -266,7 +280,7 @@ class Grapher extends GrapherHook
             curl_close($curl_handle);
 
             $img = 'data:image/png;base64,' . base64_encode($res);
-            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
+            $imghtml = '<img src="%s" alt="%s" width="%d" height="%d" class="' . $imgClass . '"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $img,
@@ -275,7 +289,7 @@ class Grapher extends GrapherHook
                 $this->height
             );
         } elseif ($this->accessMode == "direct") {
-            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" class="'. $imgClass .'"/>';
+            $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=now&trickrefresh=%s" alt="%s" width="%d" height="%d" class="' . $imgClass . '"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->protocol,
@@ -342,12 +356,13 @@ class Grapher extends GrapherHook
             $hostName = $object->host->getName();
         }
 
-        if($this->getGraphConf($serviceName, $object->check_command) == NULL) {
+        if ($this->getGraphConf($serviceName, $object->check_command) == null) {
             return;
         }
 
-        if($this->repeatable == "yes" ) {
-            $this->panelId = implode(',', range($this->panelId, ($this->panelId -1) + intval(substr_count($object->perfdata, '=')/$this->nmetrics)));
+        if ($this->repeatable == "yes") {
+            $this->panelId = implode(',', range($this->panelId,
+                ($this->panelId - 1) + intval(substr_count($object->perfdata, '=') / $this->nmetrics)));
         }
 
         if ($this->dataSource == "graphite") {
@@ -359,15 +374,22 @@ class Grapher extends GrapherHook
         // replace template to customVars from Icinga2
         foreach ($customVars as $k => $v) {
             $search[] = "\$$k\$";
-            $replace[] = is_string($v) ? rawurlencode($v)  : null;
+            $replace[] = is_string($v) ? rawurlencode($v) : null;
             $this->customVars = str_replace($search, $replace, $this->customVars);
         }
 
         $return_html = "";
         $menu = "";
         if (!$this->getView()->compact) {
+
+            $renderer = Icinga::app()->getViewRenderer()->view;
+            $link = http_build_query($this->getParameter($object, $this->timerange));
+            $addDashboardLink = $renderer->qlink('', 'dashboard/new-dashlet',
+                ['url' => urlencode('grafana/dashboard?' . $link)],
+                ['icon' => 'clock', 'title' => 'Add graph to dashboard']);
+
             $menu = '<table class="grafana-table"><tr>';
-            $menu .= '<td><div class="grafana-icon"><div class="grafana-clock"></div></div></td>';
+            $menu .= '<td>' . $addDashboardLink . '</td>';
             foreach ($this->timeRanges as $key => $mainValue) {
                 $menu .= '<td><ul class="grafana-menu-navigation"><a class="main" href="#">' . $key . '</a>';
                 $counter = 1;
@@ -422,6 +444,6 @@ class Grapher extends GrapherHook
             }
             $return_html .= $html;
         }
-        return '<div class="icinga-module module-grafana">'.$this->title.$menu.$return_html.'</div>';
+        return '<div class="icinga-module module-grafana">' . $this->title . $menu . $return_html . '</div>';
     }
 }
