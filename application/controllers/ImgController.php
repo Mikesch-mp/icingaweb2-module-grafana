@@ -175,7 +175,7 @@ class ImgController extends MonitoringAwareController
         }
 
         $imageHtml = "";
-        $res = $this->getMyimageHtml($serviceName, $this->getParam('host'), $imageHtml);
+        $res = $this->getMyimageHtml($serviceName, $hostName, $imageHtml);
         header('Pragma: public');
         if($this->refresh == "yes") {
             header('Cache-Control: max-age='.$this->cacheTime);
