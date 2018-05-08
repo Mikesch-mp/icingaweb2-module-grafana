@@ -171,7 +171,7 @@ class Grapher extends GrapherHook
 
     private function getTimerangeLink($object, $rangeName, $timeRange)
     {
-        $this->view = Icinga::app()->getViewRenderer()->view;
+        $view = Icinga::app()->getViewRenderer()->view;
         if ($object instanceof Host) {
             $array = array(
                 'host' => $object->host_name,
@@ -187,7 +187,7 @@ class Grapher extends GrapherHook
             $link = 'monitoring/service/show';
         }
 
-        return $this->view->qlink(
+        return $view->qlink(
             $rangeName,
             $link,
             $array,
@@ -364,18 +364,26 @@ class Grapher extends GrapherHook
         }
 
         $return_html = "";
-        $menu = '<table class="grafana-table"><tr>';
-        $menu .= '<td><div class="grafana-icon"><div class="grafana-clock"></div></div></td>';
-        foreach ($this->timeRanges as $key => $mainValue) {
-            $menu .= '<td><ul class="grafana-menu-navigation"><a class="main" href="#">' . $key . '</a>';
-            $counter = 1;
-            foreach ($mainValue as $subkey => $value) {
-                $menu .= '<li class="grafana-menu-n'. $counter .'">' . $this->getTimerangeLink($object, $value, $subkey) . '</li>';
-                $counter++;
+        $menu = "";
+        if (!$this->getView()->compact) {
+            $menu = '<table class="grafana-table"><tr>';
+            $menu .= '<td><div class="grafana-icon"><div class="grafana-clock"></div></div></td>';
+            foreach ($this->timeRanges as $key => $mainValue) {
+                $menu .= '<td><ul class="grafana-menu-navigation"><a class="main" href="#">' . $key . '</a>';
+                $counter = 1;
+                foreach ($mainValue as $subkey => $value) {
+                    $menu .= '<li class="grafana-menu-n' . $counter . '">' . $this->getTimerangeLink($object, $value,
+                            $subkey) . '</li>';
+                    $counter++;
+                }
+                $menu .= '</ul></td>';
             }
-            $menu .= '</ul></td>';
+            $menu .= '</tr></table>';
+        } else {
+            // If in compact mode (dashboard element), remove headline
+            $this->title = "";
         }
-        $menu .= '</tr></table>';
+
 
         foreach (explode(',', $this->panelId) as $panelid) {
 

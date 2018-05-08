@@ -1,0 +1,14 @@
+<div class="controls">
+    <?php if (!$this->compact && !$this->fullscreen): ?>
+        <?= $this->tabs ?>
+    <?php endif ?>
+</div>
+<div class="content">
+    <?= $this->graph ?>
+
+    <!--    <div --><? //= ($this->compact ? 'style="height:' . $this->dashletHeight . 'px;" ' : ""); ?><!--id="map--->
+    <? //= $this->id ?><!--"-->
+    <!--         class="map--><?php //if ($this->compact): ?>
+    <!-- compact-->
+    <?php //endif ?><!--"></div>-->
+</div>
