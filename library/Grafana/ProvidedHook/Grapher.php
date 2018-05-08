@@ -440,7 +440,7 @@ class Grapher extends GrapherHook
     {
         $this->object = $object;
         // enable_perfdata = true ?  || disablevar == true
-        if ((!$this->object->process_perfdata || isset($this->object->customvars[$this->custvardisable])) && (isset($this->object->customvars[$this->custvardisable]) && $this->object->customvars[$this->custvardisable] != 'false')) {
+        if ((!$this->object->process_perfdata || isset($this->object->customvars[$this->custvardisable])) && $this->object->customvars[$this->custvardisable] != 'false') {
             return '';
         }
 
@@ -477,7 +477,7 @@ class Grapher extends GrapherHook
         }
 
         // replace special chars for graphite
-        if ($this->dataSource == "graphite") {
+        if ($this->dataSource == "graphite" && $this->accessMode != "indirectproxy") {
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
