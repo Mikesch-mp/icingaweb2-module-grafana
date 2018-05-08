@@ -481,10 +481,10 @@ class Grapher extends GrapherHook
                 'service' => $this->object->service_description,
             );
             $link = 'monitoring/service/show';
-
-            // Preserve timerange if set
-            $parameters['timerange'] = $this->timerange;
         }
+
+        // Preserve timerange if set
+        $parameters['timerange'] = $this->timerange;
 
         if (array_key_exists($this->custvarconfig,
                 $this->object->customvars) && !empty($this->object->customvars[$this->custvarconfig])) {
