@@ -70,7 +70,7 @@ class Grapher extends GrapherHook
         $this->enableLink = $this->config->get('enableLink', $this->enableLink);
         if ( $this->enableLink == "yes" && $this->permission->hasPermission('grafana/enablelink')) {
             $this->usePublic = $this->config->get('usepublic', $this->usePublic);
-            if ( $this->usePublic == "yes" ) {
+            if ($this->usePublic == "yes") {
                 $this->publicHost = $this->config->get('publichost', $this->publicHost);
                 if ($this->publicHost == null) {
                     throw new ConfigurationError(
@@ -169,13 +169,15 @@ class Grapher extends GrapherHook
 
         $this->graphConfig = Config::module('grafana', 'graphs');
 
-        if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) && ($this->graphConfig->hasSection($serviceName) == False)) {
+        if ($this->graphConfig->hasSection(strtok($serviceName,
+                ' ')) && ($this->graphConfig->hasSection($serviceName) == false)) {
             $serviceName = strtok($serviceName, ' ');
         }
-        if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphConfig->hasSection($serviceName) == False)) {
+        if ($this->graphConfig->hasSection(strtok($serviceName,
+                ' ')) == false && ($this->graphConfig->hasSection($serviceName) == false)) {
             $serviceName = $serviceCommand;
-            if($this->graphConfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
-                return NULL;
+            if ($this->graphConfig->hasSection($serviceCommand) == false && $this->defaultDashboard == 'none') {
+                return null;
             }
         }
 
@@ -191,6 +193,7 @@ class Grapher extends GrapherHook
         $this->customVars = $this->getGraphConfigOption($serviceName, 'customVars', '');
         $this->timerange = Url::fromRequest()->hasParam('timerange') ? urldecode(Url::fromRequest()->getParam('timerange')) : $this->getGraphConfigOption($serviceName, 'timerange', $this->timerange);
         $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : $this->timerangeto;
+
         $this->height = $this->getGraphConfigOption($serviceName, 'height', $this->height);
         $this->width = $this->getGraphConfigOption($serviceName, 'width', $this->width);
         $this->repeatable = $this->getGraphConfigOption($serviceName, 'repeatable', $this->repeatable);
@@ -199,12 +202,27 @@ class Grapher extends GrapherHook
         return $this;
     }
 
-    private function getGraphConfigOption($section, $option, $default = NULL) {
+    private function getGraphConfigOption($section, $option, $default = null)
+    {
         $value = $this->graphConfig->get($section, $option, $default);
-        if(empty($value)) {
+        if (empty($value)) {
             return $default;
         }
         return $value;
+    }
+
+    private function getParameter($object, $timeRange)
+    {
+        $params = ['timerange' => $timeRange];
+
+        if ($object instanceof Host) {
+            $params['host'] = $object->host_name;
+        } else {
+            $params['host'] = $object->host->getName();
+            $params['service'] = $object->service_description;
+        }
+
+        return $params;
     }
 
     //returns false on error, previewHTML is passed as reference
@@ -269,6 +287,9 @@ class Grapher extends GrapherHook
                 CURLOPT_SSL_VERIFYPEER => $this->SSLVerifyPeer,
                 CURLOPT_SSL_VERIFYHOST => ($this->SSLVerifyHost) ? 2 : 0,
                 CURLOPT_TIMEOUT => $this->proxyTimeout,
+                CURLOPT_USERPWD => "$this->auth",
+                CURLOPT_HTTPAUTH,
+                CURLAUTH_ANY
             );
 
             if ($this->authentication == "token") {
