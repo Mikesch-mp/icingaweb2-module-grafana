@@ -5,6 +5,7 @@
  * Date: 19.02.2018
  * Time: 19:05
  */
+
 namespace Icinga\Module\Grafana\Helpers;
 
 use Icinga\Application\Icinga;
@@ -12,7 +13,11 @@ use Icinga\Application\Icinga;
 
 class Timeranges
 {
-     static $timeRanges = array(
+    private $urlparams;
+    private $link;
+    private $view;
+
+    static $timeRanges = array(
         'Minutes' => array(
             '5m' => '5 minutes',
             '15m' => '15 minutes',
@@ -27,13 +32,13 @@ class Timeranges
             '12h' => '12 hours',
             '24h' => '24 hours'
         ),
-        'Days' => array (
+        'Days' => array(
             '2d' => '2 days',
             '7d' => '7 days',
             '14d' => '14 days',
             '30d' => '30 days',
         ),
-        'Months' => array (
+        'Months' => array(
             '2M' => '2 month',
             '6M' => '6 months',
             '9M' => '9 months'
@@ -52,21 +57,22 @@ class Timeranges
         )
     );
 
-
     public function __construct(array $array = array(), $link = "")
     {
-        $this->array = $array;
+        $this->urlparams = $array;
         $this->link = $link;
+
+        $this->view = Icinga::app()->getViewRenderer()->view;
     }
+
     private function getTimerangeLink($rangeName, $timeRange)
     {
-        $this->view = Icinga::app()->getViewRenderer()->view;
-        $this->array['timerange'] = $timeRange;
+        $this->urlparams['timerange'] = $timeRange;
 
         return $this->view->qlink(
             $rangeName,
             $this->link,
-            $this->array,
+            $this->urlparams,
             array(
                 'class' => 'action-link',
                 'data-base-target' => '_self',
@@ -77,13 +83,18 @@ class Timeranges
 
     private function buildTimerangeMenu()
     {
+        $clockIcon = $this->view->qlink('', 'dashboard/new-dashlet',
+            ['url' => urlencode('grafana/dashboard?' . http_build_query($this->urlparams))],
+            ['icon' => 'clock', 'title' => 'Add graph to dashboard']);
+
         $menu = '<table class="grafana-table"><tr>';
-        $menu .= '<td><div class="grafana-icon"><div class="grafana-clock"></div></div></td>';
+        $menu .= '<td>' . $clockIcon . '</td>';
         foreach (self::$timeRanges as $key => $mainValue) {
             $menu .= '<td><ul class="grafana-menu-navigation"><a class="main" href="#">' . $key . '</a>';
             $counter = 1;
             foreach ($mainValue as $subkey => $value) {
-                $menu .= '<li class="grafana-menu-n'. $counter .'">' . $this->getTimerangeLink($value, $subkey) . '</li>';
+                $menu .= '<li class="grafana-menu-n' . $counter . '">' . $this->getTimerangeLink($value,
+                        $subkey) . '</li>';
                 $counter++;
             }
             $menu .= '</ul></td>';
@@ -100,6 +111,6 @@ class Timeranges
 
     public static function getTimeranges()
     {
-        return call_user_func_array('array_merge',self::$timeRanges);
+        return call_user_func_array('array_merge', self::$timeRanges);
     }
 }

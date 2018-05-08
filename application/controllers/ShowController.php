@@ -57,6 +57,7 @@ class ShowController extends MonitoringAwareController
             );
         }
         /* The timerange menu */
+        $urlparams = http_build_query();
         $menu = new Timeranges(array( 'host' => $this->host), 'grafana/show');
         $this->view->menu = $menu->getTimerangeMenu();
 

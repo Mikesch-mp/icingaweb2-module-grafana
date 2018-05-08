@@ -212,20 +212,6 @@ class Grapher extends GrapherHook
         return $value;
     }
 
-    private function getParameter($object, $timeRange)
-    {
-        $params = ['timerange' => $timeRange];
-
-        if ($object instanceof Host) {
-            $params['host'] = $object->host_name;
-        } else {
-            $params['host'] = $object->host->getName();
-            $params['service'] = $object->service_description;
-        }
-
-        return $params;
-    }
-
     //returns false on error, previewHTML is passed as reference
     private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
     {
