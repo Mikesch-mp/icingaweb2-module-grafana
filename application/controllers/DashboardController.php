@@ -12,6 +12,7 @@ class DashboardController extends Controller
     public function init()
     {
         $this->assertPermission('grafana/graph');
+        $this->setAutorefreshInterval(15);
     }
 
     public function indexAction()
