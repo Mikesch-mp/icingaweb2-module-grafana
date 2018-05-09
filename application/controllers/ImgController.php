@@ -60,7 +60,7 @@ class ImgController extends MonitoringAwareController
         /* save timerange from params for later use */
         $this->timerange = $this->hasParam('timerange') ? urldecode($this->getParam('timerange')) : null;
         $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : "now";
-        $this->cacheTime = $this->hasParam('cachetime') ? $this->getParam('cachtime') : 300;
+        $this->cacheTime = $this->getParam('cachetime', 300);
 
         /* load global configuration */
         $this->myConfig = Config::module('grafana')->getSection('grafana');
