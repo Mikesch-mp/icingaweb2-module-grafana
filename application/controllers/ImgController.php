@@ -60,7 +60,7 @@ class ImgController extends MonitoringAwareController
         /* save timerange from params for later use */
         $this->timerange = $this->hasParam('timerange') ? urldecode($this->getParam('timerange')) : null;
         $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : "now";
-        $this->cacheTime = $this->hasParam('cachetime') ? $this->getParam('cachtime') : 300;
+        $this->cacheTime = $this->hasParam('cachetime') ? $this->getParam('cachetime') : 300;
 
         /* load global configuration */
         $this->myConfig = Config::module('grafana')->getSection('grafana');
@@ -178,11 +178,12 @@ class ImgController extends MonitoringAwareController
         $res = $this->getMyimageHtml($serviceName, $hostName, $imageHtml);
         header('Pragma: public');
         if($this->refresh == "yes") {
-            header('Cache-Control: max-age='.$this->cacheTime);
-            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $this->cacheTime));
+            header('Pragma: public');
+            header("Expires: ".gmdate("D, d M Y H:i:s", time() + $this->cacheTime)." GMT");
+            header('Cache-Control: max-age='.$this->cacheTime).', public';
         } else {
+            header("Expires: ".gmdate("D, d M Y H:i:s", time() + 365*86440)." GMT");
             header('Cache-Control: max-age='. (365*86440));
-            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 365*86440));
         }
         header("Content-type: image/png");
         if (! $res)
