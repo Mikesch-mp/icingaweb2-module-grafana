@@ -312,15 +312,16 @@ class Grapher extends GrapherHook
             );
         } elseif ($this->accessMode == "indirectproxy") {
             if ($this->object instanceof Service) {
-                $link = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'service' => rawurlencode($serviceName), 'panelid' => $this->panelId, 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
+                $this->pngUrl = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'service' => rawurlencode($serviceName), 'panelid' => $this->panelId, 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
             } else {
-                $link = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
+                $this->pngUrl = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
             }
+
             $imghtml = '<img src="%s%s" alt="%s" width="%spx" height="%spx" class="'. $imgClass .'" style="min-height: %spx;"/>';
             $previewHtml = sprintf(
                 $imghtml,
                 $this->getView()->serverUrl(),
-                $link,
+                $this->pngUrl,
                 $serviceName,
                 $this->width,
                 $this->height,
@@ -528,8 +529,8 @@ class Grapher extends GrapherHook
                         $this->publicHost,
                         $this->dashboarduid,
                         $this->dashboard,
-                        urlencode($hostName),
-                        rawurlencode($serviceName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName)) : urlencode($hostName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName)) : rawurlencode($serviceName),
                         $this->object->check_command,
                         $this->customVars,
                         urlencode($this->timerange),
@@ -547,8 +548,8 @@ class Grapher extends GrapherHook
                         $this->publicHost,
                         $this->dashboardstore,
                         $this->dashboard,
-                        urlencode($hostName),
-                        rawurlencode($serviceName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName)) : urlencode($hostName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName)) : rawurlencode($serviceName),
                         $this->object->check_command,
                         $this->customVars,
                         urlencode($this->timerange),
@@ -563,7 +564,7 @@ class Grapher extends GrapherHook
         }
         if($this->debug && $this->permission->hasPermission('grafana/debug') && $report === false) {
             $usedUrl = "";
-            if ($this->accessMode == "proxy") {
+            if ($this->accessMode == "proxy" || $this->accessMode == "indirectproxy" ) {
                 $usedUrl = $this->pngUrl;
             } else {
                 $usedUrl = $m[preg_match('/.*?src\s*=\s*[\'\"](.*?)[\'\"].*/', $previewHtml, $m)];
