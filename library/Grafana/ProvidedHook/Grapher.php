@@ -441,7 +441,7 @@ class Grapher extends GrapherHook
     {
         $this->object = $object;
         // enable_perfdata = true ?  || disablevar == true
-        if ((!$this->object->process_perfdata || isset($this->object->customvars[$this->custvardisable])) && $this->object->customvars[$this->custvardisable] != 'false') {
+        if ((!$this->object->process_perfdata || isset($this->object->customvars[$this->custvardisable])) && (isset($this->object->customvars[$this->custvardisable]) && $this->object->customvars[$this->custvardisable] != 'false')) {
             return '';
         }
 
