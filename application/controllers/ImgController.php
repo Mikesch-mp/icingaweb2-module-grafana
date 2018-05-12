@@ -80,7 +80,7 @@ class ImgController extends MonitoringAwareController
                 'Usage of Grafana 5 is configured but no UID for default dashboard found!'
             );
         }
-        $this->defaultdashboardpanelid = $this->myConfig->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
+        $this->defaultDashboardPanelId = $this->myConfig->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
         $this->defaultOrgId = $this->myConfig->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->myConfig->get('theme', $this->grafanaTheme);
         $this->defaultDashboardStore = $this->myConfig->get('defaultdashboardstore', $this->defaultDashboardStore);
