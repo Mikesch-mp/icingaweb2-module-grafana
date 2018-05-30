@@ -229,7 +229,8 @@ Used with 'usepublic = yes'.
 The protocol used for the links to graphs.
 
 ### custvardisable
-Name of the custom variable (vars.idontwanttoseeagraph for example) that will disable graphs if set to true. Defaults to `grafana_graph_disable`.
+Name of the custom variable (vars.idontwanttoseeagraph for example) that will disable graphs if set to anything else then false (bool or string). Defaults to `grafana_graph_disable`.
+For example `vars.idontwanttoseeagraph = true` or `vars.idontwanttoseeagraph = "true"` or `vars.idontwanttoseeagraph = "whatever"` will disable graphs, while `vars.idontwanttoseeagraph = false` or `vars.idontwanttoseeagraph = "false"` will still show the graphs. This is for Director, because you cant delete vars in Director.
 
 ### custvarconfig
 Name of the custom variable (vars.usegraphconfig for example) that will be used as graph config name. Defaults to `grafana_graph_config`.
