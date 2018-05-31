@@ -1,7 +1,23 @@
 # Change Log
 
-## [1.2.4](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.2.4) (2018-04-30)
-[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.3...1.2.4)
+## [1.2.5](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.2.5) (2018-05-31)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.4...1.2.5)
+
+**Fixed bugs:**
+
+- failure if grafana\_graph\_disable is not set [\#157](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/157)
+- Indirect-proxy-mode not working when using FQDN as hostname [\#156](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/156)
+- "Disable Graph" feature seems broken [\#111](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/111)
+
+**Closed issues:**
+
+- Config parsing inconsistency regarding 'indirectproxyrefresh'  [\#153](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/153)
+- indirectproxy mode - default dashboard [\#152](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/152)
+- indirect proxy mode uses http:// links [\#136](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/136)
+- Indirect-Proxy mode crops redered images [\#127](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/127)
+
+## [v1.2.4](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.2.4) (2018-04-30)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.3...v1.2.4)
 
 **Fixed bugs:**
 
