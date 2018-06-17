@@ -108,7 +108,7 @@ class GraphForm extends ConfigForm
             'timerange',
             array(
                 'label'         => $this->translate('Timerange'),
-                'multiOptions'  => array_merge(array('' => 'Use default (6h)'), Timeranges::getTimeranges()),
+                'multiOptions'  => array_merge(array('' => 'Use default'), Timeranges::getTimeranges()),
                 'description'  => $this->translate('Timerange to use for the graph.'),
                 'required'     => false
             )

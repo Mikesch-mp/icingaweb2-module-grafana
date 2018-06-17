@@ -101,18 +101,19 @@ class Grapher extends GrapherHook
 
         $this->accessMode = $this->config->get('accessmode', $this->accessMode);
         $this->proxyTimeout = $this->config->get('proxytimeout', $this->proxyTimeout);
-
+        /**
+         * Read the global default timerange
+         */
+        $this->timerange = $this->config->get('timerange', $this->timerange);
         /**
          * Direct mode refresh graphs trick
          */
         $this->refresh = $this->config->get('directrefresh', $this->refresh);
         $this->refresh = ($this->refresh == "yes" && $this->accessMode == "direct" ? time() : 'now');
-
         /**
          * Datasource needed to regex special chars
          */
         $this->dataSource = $this->config->get('datasource', $this->dataSource);
-
         /**
          * Display shadows around graph
          */

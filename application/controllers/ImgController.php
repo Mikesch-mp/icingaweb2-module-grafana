@@ -89,10 +89,15 @@ class ImgController extends MonitoringAwareController
         $this->proxyTimeout = $this->myConfig->get('proxytimeout', $this->proxyTimeout);
         $this->refresh = $this->myConfig->get('indirectproxyrefresh', $this->refresh);
         /**
+         * Read the global default timerange
+         */
+        if($this->timerange == null) {
+            $this->timerange = $this->config->get('timerange', $this->timerange);
+        }
+        /**
          * Datasource needed to regex special chars
          */
         $this->dataSource = $this->myConfig->get('datasource', $this->dataSource);
-
         /**
          * Display shadows around graph
          */
