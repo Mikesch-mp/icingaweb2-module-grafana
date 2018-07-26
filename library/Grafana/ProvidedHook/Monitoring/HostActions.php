@@ -7,6 +7,7 @@
  */
 namespace Icinga\Module\Grafana\ProvidedHook\Monitoring;
 
+use Icinga\Authentication\Auth;
 use Icinga\Module\Monitoring\Hook\HostActionsHook;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Web\Navigation\Navigation;
@@ -22,6 +23,10 @@ class HostActions extends HostActionsHook
 
     public function getActionsForHost(Host $host)
     {
+        if (! Auth::getInstance()->hasPermission('grafana/showall')) {
+            return [];
+        }
+
         $config = Config::module('grafana')->getSection('grafana');
         $timerange = $config->get('timerangeAll', $this->defaultTimerange);
         $nav = new Navigation();
