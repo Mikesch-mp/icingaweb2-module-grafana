@@ -36,6 +36,7 @@ class Grapher extends GrapherHook
     protected $enableLink              = true;
     protected $defaultDashboard        = "icinga2-default";
     protected $defaultDashboardPanelId = "1";
+    protected $defaultGraph            = null;
     protected $defaultOrgId            = "1";
     protected $shadows                 = false;
     protected $defaultDashboardStore   = "db";
@@ -93,6 +94,7 @@ class Grapher extends GrapherHook
             );
         }
         $this->defaultDashboardPanelId = $this->config->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
+        $this->defaultGraph = $this->config->get('defaultgraph', $this->defaultGraph);
         $this->defaultOrgId = $this->config->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->config->get('theme', $this->grafanaTheme);
         $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
@@ -175,9 +177,10 @@ class Grapher extends GrapherHook
         }
         if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) == False && ($this->graphConfig->hasSection($serviceName) == False)) {
             $serviceName = $serviceCommand;
-            if($this->graphConfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
-                return NULL;
-            }
+            if ($this->graphConfig->hasSection($serviceCommand) == False) {
+                if ($this->defaultDashboard == 'none' && $this->defaultGraph == null) return NULL;
+                if ($this->defaultGraph != null) $serviceName = $this->defaultGraph;
+            } 
         }
 
         $this->dashboard = $this->getGraphConfigOption($serviceName, 'dashboard', $this->defaultDashboard);

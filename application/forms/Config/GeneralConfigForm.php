@@ -142,6 +142,15 @@ class GeneralConfigForm extends ConfigForm
             )
         );
         $this->addElement(
+            'text',
+            'grafana_defaultgraph',
+            array(
+                'label' => $this->translate('Default graph'),
+                'description' => $this->translate('Name of the grafana graph which should be used when no service matches the graph names.'),
+                'required' => false,
+            )
+        );
+        $this->addElement(
             'number',
             'grafana_defaultorgid',
             array(

@@ -35,6 +35,7 @@ class ImgController extends MonitoringAwareController
     protected $defaultDashboard        = "icinga2-default";
     protected $defaultDashboardPanelId = "1";
     protected $defaultOrgId            = "1";
+    protected $defaultGraph            = null;
     protected $shadows                 = false;
     protected $defaultDashboardStore   = "db";
     protected $dataSource              = null;
@@ -81,6 +82,7 @@ class ImgController extends MonitoringAwareController
             );
         }
         $this->defaultDashboardPanelId = $this->myConfig->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
+        $this->defaultGraph = $this->myConfig->get('defaultgraph', $this->defaultGraph);
         $this->defaultOrgId = $this->myConfig->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->myConfig->get('theme', $this->grafanaTheme);
         $this->defaultDashboardStore = $this->myConfig->get('defaultdashboardstore', $this->defaultDashboardStore);
@@ -252,9 +254,10 @@ class ImgController extends MonitoringAwareController
         }
         if ($graphConfig->hasSection(strtok($serviceName, ' ')) == False && ($graphConfig->hasSection($serviceName) == False)) {
             $serviceName = $serviceCommand;
-            if($graphConfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
-                return NULL;
-            }
+            if ($this->graphConfig->hasSection($serviceCommand) == False) {
+                if ($this->defaultDashboard == 'none' && $this->defaultGraph == null) return NULL;
+                if ($this->defaultGraph != null) $serviceName = $this->defaultGraph;
+            } 
         }
 
         $this->dashboard = $graphConfig->get($serviceName, 'dashboard', $this->defaultDashboard);

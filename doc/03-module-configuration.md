@@ -71,14 +71,15 @@ ssl_verifyhost = "0"
 |enableLink             | **Optional.** Enable/disable graph with a rendered URL to the Grafana dashboard. Defaults to `yes`.|
 |datasource             | **Required for Grafana 4.x only.** Type of the Grafana datasource (`influxdb`, `graphite` or `pnp`). Defaults to `influxdb`.|
 |defaultdashboard       | **Required.** Name of the default dashboard which will be shown for unconfigured graphs. Set to `none` to hide the module output. Defaults to `icinga2-default`.|
-|defaultdashboarduid    | **Required for Grafana 5** The UID of the default dashbaoard for **Grafana 5**.
-|defaultdashboardpanelid| **Required** ID of the panel used in the default dashboard. Defaults to `1`.
+|defaultdashboarduid    | **Required for Grafana 5** The UID of the default dashbaoard for **Grafana 5**.|
+|defaultdashboardpanelid| **Required** ID of the panel used in the default dashboard. Defaults to `1`.|
+|defaultgraph           | **Optional** Name of the grafana graph which should be used when no service matches the graph names.|
 |shadows                | **Optional.** Show shadows around the graphs. ** Defaults to `false`.|
-|defaultorgid           | **Required.** Number of the default organization id where dashboards are located. Defaults to `1`.
+|defaultorgid           | **Required.** Number of the default organization id where dashboards are located. Defaults to `1`.|
 |defaultdashboardstore  | **Optional.** Grafana backend (file or database). Defaults to `Database`.|
 |accessmode             | **Optional.** Controls whether graphs are fetched with curl (`proxy` & `indirectproxy`), are embedded (`direct`) or in iframe ('iframe'). Direct access & iframe needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.|
 |timeout                | **Proxy only** **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.|
-|authentication         | **Proxy only** Authentication type used to acccess Grafana. Can be set to `anon`,`token` or `basic`. Defaults to `anon`.
+|authentication         | **Proxy only** Authentication type used to acccess Grafana. Can be set to `anon`,`token` or `basic`. Defaults to `anon`.|
 |username               | **Proxy with basic only** **Required** HTTP Basic Auth user name to access Grafana.|
 |password               | **Proxy with basic only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.|
 |apitoken               | **Proxy with token only** **Required** API token used to access Grafana.|
@@ -146,6 +147,9 @@ For example the URL is 'https://192.168.178.52:3000/d/FxAre-ekz/icinga2-default?
 ### defaultdashboardpanelid
 The id of the panel used in the defaul dashboard. Defaults to `1`.
 This is needed if you use **Grafana 5** and imported or created a new default dashboard, because the first useable panel id is now `2`.
+
+### defaultgraph
+The name of the graph in the grafana graphs list.
 
 ### defaultdashboardstore
 The dashboard store, `database`or `file`, that is used by Grafana server. Defaults to `database`
