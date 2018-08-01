@@ -59,7 +59,11 @@ class ImgController extends MonitoringAwareController
 
         /* save timerange from params for later use */
         $this->timerange = $this->hasParam('timerange') ? urldecode($this->getParam('timerange')) : null;
-        $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : "now";
+        if($this->hasParam('timerangeto')) {
+            $this->timerangeto = urldecode($this->getParam('timerangeto'));
+        } else {
+            $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : "now";
+        }
         $this->cacheTime = $this->hasParam('cachetime') ? $this->getParam('cachetime') : 300;
 
         /* load global configuration */
@@ -282,7 +286,7 @@ class ImgController extends MonitoringAwareController
         if ($this->grafanaVersion == "1")
         {
             $this->pngUrl = sprintf(
-                '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboarduid,
@@ -302,7 +306,7 @@ class ImgController extends MonitoringAwareController
         } else {
 
             $this->pngUrl = sprintf(
-                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
