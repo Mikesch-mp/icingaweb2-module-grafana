@@ -75,7 +75,14 @@ class Timeranges
         );
     }
 
-    private function buildTimrangeMenu()
+    protected function isValidTimeStamp($timestamp)
+    {
+        return ((string) (int) $timestamp === $timestamp)
+            && ($timestamp <= PHP_INT_MAX)
+            && ($timestamp >= ~PHP_INT_MAX);
+    }
+
+    private function buildTimrangeMenu($timerange = "", $timerangeto = "")
     {
         $menu = '<table class="grafana-table"><tr>';
         $menu .= '<td><div class="grafana-icon"><div class="grafana-clock"></div></div></td>';
@@ -88,14 +95,61 @@ class Timeranges
             }
             $menu .= '</ul></td>';
         }
+
+        $timerange = urldecode($timerange);
+        $timerangeto = urldecode($timerangeto);
+
+        if($this->isValidTimeStamp($timerange)) {
+            $d = new \DateTime();
+            $d->setTimestamp($timerange/1000);
+            $timerange = $d->format("Y-m-d H:i:s");
+        }
+
+        if($this->isValidTimeStamp($timerangeto)) {
+            $d = new \DateTime();
+            $d->setTimestamp($timerangeto/1000);
+            $timerangeto = $d->format("Y-m-d H:i:s");
+        }
+
+        unset($this->array['timerange']);
+        $form_link = $this->view->url($this->link, $this->array);
+        $menu .= '<td>
+                    <form method="get" class="grafana-module-tr-form" action="'.$form_link.'">
+                        <input type="text" value="'.$timerange.'" placeholder="from" name="tr-from" />
+                        <input type="text" value="'.$timerangeto.'" placeholder="to" name="tr-to" />
+                        <a href="'.$form_link.'" data-base-target="_self" class="action-link grafana-module-tr-apply">Apply</a>
+                    </form>
+                  </td>';
+        $menu .= '<script type="text/javascript">
+$( document ).ready(function() {
+    $("a.grafana-module-tr-apply").click(function() {
+        var old_href = $(this).attr("href");
+        var tr_from = $("input[name=tr-from]").val();
+        var tr_to = $("input[name=tr-to]").val();
+        
+        var d_tr_from = new Date(tr_from);
+        var d_tr_to = new Date(tr_to);
+                
+        if(d_tr_from != "Invalid Date") {
+            tr_from = d_tr_from.getTime();
+        }
+        if(d_tr_to != "Invalid Date") {
+            tr_to = d_tr_to.getTime();
+        }
+        
+        var new_href = old_href + "&tr-from=" + encodeURIComponent(tr_from) + "&tr-to=" + encodeURIComponent(tr_to);
+        $(this).attr("href", new_href);
+    });    
+});
+</script>';
         $menu .= '</tr></table>';
 
         return $menu;
     }
 
-    public function getTimerangeMenu()
+    public function getTimerangeMenu($timerange = "", $timerangeto = "")
     {
-        return $this->buildTimrangeMenu();
+        return $this->buildTimrangeMenu($timerange, $timerangeto);
     }
 
     public static function getTimeranges()

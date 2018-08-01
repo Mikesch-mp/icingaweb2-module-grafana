@@ -190,8 +190,15 @@ class Grapher extends GrapherHook
         $this->panelId = $this->getGraphConfigOption($serviceName, 'panelId', $this->defaultDashboardPanelId);
         $this->orgId = $this->getGraphConfigOption($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $this->getGraphConfigOption($serviceName, 'customVars', '');
-        $this->timerange = Url::fromRequest()->hasParam('timerange') ? urldecode(Url::fromRequest()->getParam('timerange')) : $this->getGraphConfigOption($serviceName, 'timerange', $this->timerange);
-        $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : $this->timerangeto;
+
+        if(Url::fromRequest()->hasParam('tr-from') && Url::fromRequest()->hasParam('tr-to')) {
+            $this->timerange = urldecode(Url::fromRequest()->getParam('tr-from'));
+            $this->timerangeto = urldecode(Url::fromRequest()->getParam('tr-to'));
+        } else {
+            $this->timerange = Url::fromRequest()->hasParam('timerange') ?  'now-' . urldecode(Url::fromRequest()->getParam('timerange')) : 'now-' . $this->getGraphConfigOption($serviceName, 'timerange', $this->timerange);
+            $this->timerangeto = strpos($this->timerange, '/') ? $this->timerange : $this->timerangeto;
+        }
+
         $this->height = $this->getGraphConfigOption($serviceName, 'height', $this->height);
         $this->width = $this->getGraphConfigOption($serviceName, 'width', $this->width);
         $this->repeatable = $this->getGraphConfigOption($serviceName, 'repeatable', $this->repeatable);
@@ -222,7 +229,7 @@ class Grapher extends GrapherHook
             if ($this->grafanaVersion == "1")
             {
                 $this->pngUrl = sprintf(
-                    '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                    '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
                     $this->protocol,
                     $this->grafanaHost,
                     $this->dashboarduid,
@@ -242,7 +249,7 @@ class Grapher extends GrapherHook
             } else {
 
                 $this->pngUrl = sprintf(
-                    '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                    '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
                     $this->protocol,
                     $this->grafanaHost,
                     $this->dashboardstore,
@@ -313,9 +320,9 @@ class Grapher extends GrapherHook
             );
         } elseif ($this->accessMode == "indirectproxy") {
             if ($this->object instanceof Service) {
-                $this->pngUrl = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'service' => rawurlencode($serviceName), 'panelid' => $this->panelId, 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
+                $this->pngUrl = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'service' => rawurlencode($serviceName), 'panelid' => $this->panelId, 'timerange' => $this->timerange, 'timerangeto' => $this->timerangeto, 'cachetime' => $this->cacheTime));
             } else {
-                $this->pngUrl = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'timerange' => $this->timerange, 'cachetime' => $this->cacheTime));
+                $this->pngUrl = Url::frompath('grafana/img', array('host' => urlencode($hostName), 'timerange' => $this->timerange, 'timerangeto' => $this->timerangeto, 'cachetime' => $this->cacheTime));
             }
 
             $imghtml = '<img src="%s%s" alt="%s" width="%spx" height="%spx" class="'. $imgClass .'" style="min-height: %spx;"/>';
@@ -332,7 +339,7 @@ class Grapher extends GrapherHook
         } elseif ($this->accessMode == "direct") {
             if ($this->grafanaVersion == "1")
             {
-                $imghtml = '<img src="%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" style="min-height: %spx;"/>';
+                $imghtml = '<img src="%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" style="min-height: %spx;"/>';
                 $previewHtml = sprintf(
                     $imghtml,
                     $this->protocol,
@@ -357,7 +364,7 @@ class Grapher extends GrapherHook
                     $this->height
                 );
             } else {
-                $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" style="min-height: %spx;"/>';
+                $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" style="min-height: %spx;"/>';
                 $previewHtml = sprintf(
                     $imghtml,
                     $this->protocol,
@@ -385,7 +392,7 @@ class Grapher extends GrapherHook
         } elseif ($this->accessMode == "iframe") {
             if ($this->grafanaVersion == "1")
             {
-                $iframehtml = '<iframe src="%s://%s/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+                $iframehtml = '<iframe src="%s://%s/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
                 $previewHtml = sprintf(
                     $iframehtml,
                     $this->protocol,
@@ -405,7 +412,7 @@ class Grapher extends GrapherHook
                     $this->height
                 );
             } else {
-                $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+                $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
                 $previewHtml = sprintf(
                     $iframehtml,
                     $this->protocol,
@@ -502,7 +509,7 @@ class Grapher extends GrapherHook
         $menu = "";
         if ($report === false) {
             $timeranges = new Timeranges($linkarray, $link);
-            $menu = $timeranges->getTimerangeMenu();
+            $menu = $timeranges->getTimerangeMenu($this->timerange, $this->timerangeto);
         } else {
             $this->title = '';
         }
@@ -522,7 +529,7 @@ class Grapher extends GrapherHook
             } else {
                 if ($this->grafanaVersion == "1")
                 {
-                    $html .= '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=now-%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
+                    $html .= '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
 
                     $html = sprintf(
                         $html,
@@ -541,7 +548,7 @@ class Grapher extends GrapherHook
                         $previewHtml
                     );
                 } else {
-                    $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=now-%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
+                    $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
 
                     $html = sprintf(
                         $html,
