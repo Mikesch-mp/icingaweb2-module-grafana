@@ -59,8 +59,12 @@ class ImgController extends MonitoringAwareController
 
         /* save timerange from params for later use */
         $this->timerange = $this->hasParam('timerange') ? urldecode($this->getParam('timerange')) : null;
-        $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : "now";
-        $this->cacheTime = $this->hasParam('cachetime') ? $this->getParam('cachtime') : 300;
+        if($this->hasParam('timerangeto')) {
+            $this->timerangeto = urldecode($this->getParam('timerangeto'));
+        } else {
+            $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : "now";
+        }
+        $this->cacheTime = $this->hasParam('cachetime') ? $this->getParam('cachetime') : 300;
 
         /* load global configuration */
         $this->myConfig = Config::module('grafana')->getSection('grafana');
@@ -80,7 +84,7 @@ class ImgController extends MonitoringAwareController
                 'Usage of Grafana 5 is configured but no UID for default dashboard found!'
             );
         }
-        $this->defaultdashboardpanelid = $this->myConfig->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
+        $this->defaultDashboardPanelId = $this->myConfig->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
         $this->defaultOrgId = $this->myConfig->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->myConfig->get('theme', $this->grafanaTheme);
         $this->defaultDashboardStore = $this->myConfig->get('defaultdashboardstore', $this->defaultDashboardStore);
@@ -89,10 +93,15 @@ class ImgController extends MonitoringAwareController
         $this->proxyTimeout = $this->myConfig->get('proxytimeout', $this->proxyTimeout);
         $this->refresh = $this->myConfig->get('indirectproxyrefresh', $this->refresh);
         /**
+         * Read the global default timerange
+         */
+        if($this->timerange == null) {
+            $this->timerange = $this->config->get('timerange', $this->timerange);
+        }
+        /**
          * Datasource needed to regex special chars
          */
         $this->dataSource = $this->myConfig->get('datasource', $this->dataSource);
-
         /**
          * Display shadows around graph
          */
@@ -175,14 +184,15 @@ class ImgController extends MonitoringAwareController
         }
 
         $imageHtml = "";
-        $res = $this->getMyimageHtml($serviceName, $this->getParam('host'), $imageHtml);
+        $res = $this->getMyimageHtml($serviceName, $hostName, $imageHtml);
         header('Pragma: public');
         if($this->refresh == "yes") {
-            header('Cache-Control: max-age='.$this->cacheTime);
-            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $this->cacheTime));
+            header('Pragma: public');
+            header("Expires: ".gmdate("D, d M Y H:i:s", time() + $this->cacheTime)." GMT");
+            header('Cache-Control: max-age='.$this->cacheTime).', public';
         } else {
+            header("Expires: ".gmdate("D, d M Y H:i:s", time() + 365*86440)." GMT");
             header('Cache-Control: max-age='. (365*86440));
-            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 365*86440));
         }
         header("Content-type: image/png");
         if (! $res)
@@ -276,7 +286,7 @@ class ImgController extends MonitoringAwareController
         if ($this->grafanaVersion == "1")
         {
             $this->pngUrl = sprintf(
-                '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboarduid,
@@ -296,7 +306,7 @@ class ImgController extends MonitoringAwareController
         } else {
 
             $this->pngUrl = sprintf(
-                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,

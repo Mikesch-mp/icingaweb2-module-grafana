@@ -102,18 +102,19 @@ class Grapher extends GrapherHook
 
         $this->accessMode = $this->config->get('accessmode', $this->accessMode);
         $this->proxyTimeout = $this->config->get('proxytimeout', $this->proxyTimeout);
-
+        /**
+         * Read the global default timerange
+         */
+        $this->timerange = $this->config->get('timerange', $this->timerange);
         /**
          * Direct mode refresh graphs trick
          */
         $this->refresh = $this->config->get('directrefresh', $this->refresh);
         $this->refresh = ($this->refresh == "yes" && $this->accessMode == "direct" ? time() : 'now');
-
         /**
          * Datasource needed to regex special chars
          */
         $this->dataSource = $this->config->get('datasource', $this->dataSource);
-
         /**
          * Display shadows around graph
          */
@@ -192,9 +193,14 @@ class Grapher extends GrapherHook
         $this->panelId = $this->getGraphConfigOption($serviceName, 'panelId', $this->defaultDashboardPanelId);
         $this->orgId = $this->getGraphConfigOption($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $this->getGraphConfigOption($serviceName, 'customVars', '');
-        $this->timerange = Url::fromRequest()->hasParam('timerange') ? urldecode(Url::fromRequest()->getParam('timerange')) : $this->getGraphConfigOption($serviceName,
-            'timerange', $this->timerange);
-        $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : $this->timerangeto;
+
+        if(Url::fromRequest()->hasParam('tr-from') && Url::fromRequest()->hasParam('tr-to')) {
+            $this->timerange = urldecode(Url::fromRequest()->getParam('tr-from'));
+            $this->timerangeto = urldecode(Url::fromRequest()->getParam('tr-to'));
+        } else {
+            $this->timerange = Url::fromRequest()->hasParam('timerange') ?  'now-' . urldecode(Url::fromRequest()->getParam('timerange')) : 'now-' . $this->getGraphConfigOption($serviceName, 'timerange', $this->timerange);
+            $this->timerangeto = strpos($this->timerange, '/') ? $this->timerange : $this->timerangeto;
+        }
 
         $this->height = $this->getGraphConfigOption($serviceName, 'height', $this->height);
         $this->width = $this->getGraphConfigOption($serviceName, 'width', $this->width);
@@ -226,7 +232,7 @@ class Grapher extends GrapherHook
             }
             if ($this->grafanaVersion == "1") {
                 $this->pngUrl = sprintf(
-                    '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                    '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
                     $this->protocol,
                     $this->grafanaHost,
                     $this->dashboarduid,
@@ -246,7 +252,7 @@ class Grapher extends GrapherHook
             } else {
 
                 $this->pngUrl = sprintf(
-                    '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s',
+                    '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
                     $this->protocol,
                     $this->grafanaHost,
                     $this->dashboardstore,
@@ -342,7 +348,7 @@ class Grapher extends GrapherHook
             $previewHtml = sprintf(
                 $imghtml,
                 $this->getView()->serverUrl(),
-                $link,
+                $this->pngUrl,
                 $serviceName,
                 $this->width,
                 $this->height,
@@ -376,7 +382,7 @@ class Grapher extends GrapherHook
                     $this->height
                 );
             } else {
-                $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=now-%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" style="min-height: %spx;"/>';
+                $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" style="min-height: %spx;"/>';
                 $previewHtml = sprintf(
                     $imghtml,
                     $this->protocol,
@@ -423,7 +429,7 @@ class Grapher extends GrapherHook
                     $this->height
                 );
             } else {
-                $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=now-%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+                $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
                 $previewHtml = sprintf(
                     $iframehtml,
                     $this->protocol,
@@ -460,7 +466,7 @@ class Grapher extends GrapherHook
     {
         $this->object = $object;
         // enable_perfdata = true ?  || disablevar == true
-        if ((!$this->object->process_perfdata || isset($this->object->customvars[$this->custvardisable])) && (isset($this->object->customvars[$this->custvardisable]) && $this->object->customvars[$this->custvardisable] != 'false')) {
+        if (!$object->perfdata || !$this->object->process_perfdata || (( isset($this->object->customvars[$this->custvardisable]) && json_decode(strtolower($this->object->customvars[$this->custvardisable])) !== false)) ) {
             return '';
         }
 
@@ -502,7 +508,7 @@ class Grapher extends GrapherHook
         }
 
         // replace special chars for graphite
-        if ($this->dataSource == "graphite") {
+        if ($this->dataSource == "graphite" && $this->accessMode != "indirectproxy") {
             $serviceName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName);
             $hostName = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName);
         }
@@ -525,7 +531,7 @@ class Grapher extends GrapherHook
         $menu = "";
         if ($report === false && !$this->getView()->compact) {
             $timeranges = new Timeranges($parameters, $link);
-            $menu = $timeranges->getTimerangeMenu();
+            $menu = $timeranges->getTimerangeMenu($this->timerange, $this->timerangeto);
         } else {
             $this->title = '';
         }
@@ -552,8 +558,8 @@ class Grapher extends GrapherHook
                         $this->publicHost,
                         $this->dashboarduid,
                         $this->dashboard,
-                        urlencode($hostName),
-                        rawurlencode($serviceName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName)) : urlencode($hostName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName)) : rawurlencode($serviceName),
                         $this->object->check_command,
                         $this->customVars,
                         urlencode($this->timerange),
@@ -563,7 +569,7 @@ class Grapher extends GrapherHook
                         $previewHtml
                     );
                 } else {
-                    $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=now-%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
+                    $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
 
                     $html = sprintf(
                         $html,
@@ -571,8 +577,8 @@ class Grapher extends GrapherHook
                         $this->publicHost,
                         $this->dashboardstore,
                         $this->dashboard,
-                        urlencode($hostName),
-                        rawurlencode($serviceName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName)) : urlencode($hostName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName)) : rawurlencode($serviceName),
                         $this->object->check_command,
                         $this->customVars,
                         urlencode($this->timerange),
@@ -587,7 +593,7 @@ class Grapher extends GrapherHook
         }
         if ($this->debug && $this->permission->hasPermission('grafana/debug') && $report === false) {
             $usedUrl = "";
-            if ($this->accessMode == "proxy") {
+            if ($this->accessMode == "proxy" || $this->accessMode == "indirectproxy" ) {
                 $usedUrl = $this->pngUrl;
             } else {
                 $usedUrl = preg_replace('/.*?src\s*=\s*[\'\"](.*?)[\'\"].*/', "$1", $previewHtml);
