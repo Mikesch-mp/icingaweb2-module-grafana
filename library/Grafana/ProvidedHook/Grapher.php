@@ -332,7 +332,7 @@ class Grapher extends GrapherHook
             );
         } elseif ($this->accessMode == "indirectproxy") {
             if ($this->object instanceof Service) {
-                $link = Url::frompath('grafana/img', array(
+                $this->pngUrl = Url::frompath('grafana/img', array(
                     'host' => urlencode($hostName),
                     'service' => rawurlencode($serviceName),
                     'panelid' => $this->panelId,
@@ -340,7 +340,7 @@ class Grapher extends GrapherHook
                     'cachetime' => $this->cacheTime
                 ));
             } else {
-                $link = Url::frompath('grafana/img', array(
+                $this->pngUrl = Url::frompath('grafana/img', array(
                     'host' => urlencode($hostName),
                     'timerange' => $this->timerange,
                     'cachetime' => $this->cacheTime
