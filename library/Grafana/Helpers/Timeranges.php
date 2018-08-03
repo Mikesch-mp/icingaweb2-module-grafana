@@ -89,7 +89,7 @@ class Timeranges
             && ($timestamp >= ~PHP_INT_MAX);
     }
 
-    private function buildTimrangeMenu($timerange = "", $timerangeto = "")
+    private function buildTimerangeMenu($timerange = "", $timerangeto = "")
     {
         $clockIcon = $this->view->qlink('', 'dashboard/new-dashlet',
             ['url' => 'grafana/dashboard?' . http_build_query($this->urlparams)],
@@ -161,7 +161,7 @@ $( document ).ready(function() {
 
     public function getTimerangeMenu($timerange = "", $timerangeto = "")
     {
-        return $this->buildTimrangeMenu($timerange, $timerangeto);
+        return $this->buildTimerangeMenu($timerange, $timerangeto);
     }
 
     public static function getTimeranges()
