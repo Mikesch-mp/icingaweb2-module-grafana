@@ -16,7 +16,6 @@ use Icinga\Web\Hook;
 use Icinga\Module\Grafana\Helpers\Timeranges;
 
 
-
 class ShowController extends MonitoringAwareController
 {
     /** @var bool */
@@ -37,16 +36,17 @@ class ShowController extends MonitoringAwareController
         $this->disableAutoRefresh();
         $this->view->host = $this->host;
 
-        if (! $this->showFullscreen) {
+        if (!$this->showFullscreen) {
             $tabs = $this->getTabs();
             $tabs->add('graphs', array(
                 'label' => $this->translate('Grafana Graphs'),
-                'url' => $this->getRequest()->getUrl()))->activate('graphs');
+                'url' => $this->getRequest()->getUrl()
+            ))->activate('graphs');
 
             $fullscreen = new Tab(array(
                 'title' => $this->translate('Print'),
-                'icon'  => 'print',
-                'url'   => ((string) htmlspecialchars_decode($this->getRequest()->getUrl())) . '&showFullscreen'
+                'icon' => 'print',
+                'url' => ((string)htmlspecialchars_decode($this->getRequest()->getUrl())) . '&showFullscreen'
             ));
             $fullscreen->setTargetBlank();
             $tabs->addAsDropdown('fullscreen', $fullscreen);
@@ -56,8 +56,15 @@ class ShowController extends MonitoringAwareController
                 $this->host
             );
         }
+
+        // Preserve timerange if selected
+        $parameters = ['host' => $this->host];
+        if ($this->hasParam('timerange')) {
+            $parameters['timerange'] = $this->getParam('timerange');
+        }
+
         /* The timerange menu */
-        $menu = new Timeranges(array( 'host' => $this->host), 'grafana/show');
+        $menu = new Timeranges($parameters, 'grafana/show');
         $this->view->menu = $menu->getTimerangeMenu();
 
         /* first host object for host graph */
@@ -69,7 +76,7 @@ class ShowController extends MonitoringAwareController
         ]);
         $this->applyRestriction('monitoring/filter/objects', $query);
 
-        foreach ($query->where('host_name', $this->host) as $service){
+        foreach ($query->where('host_name', $this->host) as $service) {
             $objects[] = $this->getServiceObject($service->service_description, $this->host);
         }
         $this->view->objects = $objects;
