@@ -93,6 +93,8 @@ class ShowController extends MonitoringAwareController
                 $objects[] = $this->object;
             }
         }
+        unset($this->object);
+        unset($customvars);
         $this->view->objects = $objects;
         $this->view->grapher = Hook::first('grapher');
     }
