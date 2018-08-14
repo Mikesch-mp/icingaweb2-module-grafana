@@ -1,6 +1,13 @@
 # Change Log
 
-## [1.3.0](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.3.0) (2018-08-14)
+## [v1.3.1](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.3.1) (2018-08-14)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.0...v1.3.1)
+
+**Fixed bugs:**
+
+- Indirectproxy multiple panels show one panel multiple times [\#178](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/178)
+
+## [v1.3.0](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.3.0) (2018-08-14)
 [Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.5...v1.3.0)
 
 **Implemented enhancements:**
