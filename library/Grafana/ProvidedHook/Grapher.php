@@ -342,6 +342,7 @@ class Grapher extends GrapherHook
             } else {
                 $this->pngUrl = Url::frompath('grafana/img', array(
                     'host' => urlencode($hostName),
+                    'panelid' => $this->panelId,
                     'timerange' => $this->timerange,
                     'cachetime' => $this->cacheTime
                 ));
@@ -468,7 +469,7 @@ class Grapher extends GrapherHook
     {
         $this->object = $object;
         // enable_perfdata = true ?  || disablevar == true
-        if (!$object->perfdata || !$this->object->process_perfdata || (( isset($this->object->customvars[$this->custvardisable]) && json_decode(strtolower($this->object->customvars[$this->custvardisable])) !== false)) ) {
+        if (!$this->object->process_perfdata || (( isset($this->object->customvars[$this->custvardisable]) && json_decode(strtolower($this->object->customvars[$this->custvardisable])) !== false)) ) {
             return '';
         }
 
