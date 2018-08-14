@@ -1,7 +1,31 @@
 # Change Log
 
-## [1.2.5](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.2.5) (2018-05-31)
-[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.4...1.2.5)
+## [1.3.0](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.3.0) (2018-08-14)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.5...1.3.0)
+
+**Implemented enhancements:**
+
+- added field to configure timeranges by hand [\#176](https://github.com/Mikesch-mp/icingaweb2-module-grafana/pull/176) ([neubi4](https://github.com/neubi4))
+- Move permission test to the HostActions Hook [\#173](https://github.com/Mikesch-mp/icingaweb2-module-grafana/pull/173) ([lippserd](https://github.com/lippserd))
+
+**Fixed bugs:**
+
+- View all graphs and grafana\_graph\_disable [\#172](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/172)
+- The default timerange for graphs does not work [\#164](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/164)
+
+**Closed issues:**
+
+- Host Action "Show all Graphs" - No Data Ppoints [\#175](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/175)
+- How to with "check\_by\_ssh" ???? [\#174](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/174)
+- No data points even performance\_data shows data [\#169](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/169)
+- Same graph for all checks with same name [\#163](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/163)
+
+**Merged pull requests:**
+
+- Graphs on dashboard [\#154](https://github.com/Mikesch-mp/icingaweb2-module-grafana/pull/154) ([nbuchwitz](https://github.com/nbuchwitz))
+
+## [v1.2.5](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.2.5) (2018-05-31)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.2.4...v1.2.5)
 
 **Fixed bugs:**
 
