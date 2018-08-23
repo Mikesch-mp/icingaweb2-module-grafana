@@ -123,8 +123,8 @@ class Timeranges
             $timerangeto = $d->format("Y-m-d H:i:s");
         }
 
-        unset($this->array['timerange']);
-        $form_link = $this->view->url($this->link, $this->array);
+        unset($this->urlparams['timerange']);
+        $form_link = $this->view->url($this->link, $this->urlparams);
         $menu .= '<td>
                     <form method="get" class="grafana-module-tr-form" action="'.$form_link.'">
                         <input type="text" value="'.$timerange.'" placeholder="from" name="tr-from" />
@@ -132,6 +132,7 @@ class Timeranges
                         <a href="'.$form_link.'" data-base-target="_self" class="action-link grafana-module-tr-apply">Apply</a>
                     </form>
                   </td>';
+        $menu .= '</tr></table>';
         $menu .= '<script type="text/javascript">
 $( document ).ready(function() {
     $("a.grafana-module-tr-apply").click(function() {
@@ -154,8 +155,6 @@ $( document ).ready(function() {
     });    
 });
 </script>';
-        $menu .= '</tr></table>';
-
         return $menu;
     }
 
