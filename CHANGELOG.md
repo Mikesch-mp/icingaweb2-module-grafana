@@ -1,5 +1,19 @@
 # Change Log
 
+## [1.3.2](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.3.2) (2018-09-14)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.1...1.3.2)
+
+**Fixed bugs:**
+
+- Selecting any "Special" timerange breaks graph in module but following link to Grafana works [\#182](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/182)
+- Variable timerange is missing host on post request. [\#180](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/180)
+- No graphs for unavailable services [\#177](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/177)
+
+**Closed issues:**
+
+- Changing timerange is missing the parameter host. [\#181](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/181)
+- Is it possible to use Regex in Grafana Config [\#179](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/179)
+
 ## [v1.3.1](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.3.1) (2018-08-14)
 [Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.0...v1.3.1)
 
