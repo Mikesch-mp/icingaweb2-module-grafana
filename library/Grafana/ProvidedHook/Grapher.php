@@ -336,14 +336,16 @@ class Grapher extends GrapherHook
                     'host' => urlencode($hostName),
                     'service' => rawurlencode($serviceName),
                     'panelid' => $this->panelId,
-                    'timerange' => $this->timerange,
+                    'timerange' => urlencode($this->timerange),
+                    'timerangeto' => urlencode($this->timerangeto),
                     'cachetime' => $this->cacheTime
                 ));
             } else {
                 $this->pngUrl = Url::frompath('grafana/img', array(
                     'host' => urlencode($hostName),
                     'panelid' => $this->panelId,
-                    'timerange' => $this->timerange,
+                    'timerange' => urlencode($this->timerange),
+                    'timerangeto' => urlencode($this->timerangeto),
                     'cachetime' => $this->cacheTime
                 ));
             }
