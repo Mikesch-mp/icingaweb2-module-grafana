@@ -268,6 +268,20 @@
         ],
         "query": "${VAR_COMMAND}",
         "type": "constant"
+      },
+      {
+        "current": {
+          "value": "default",
+          "text": "default"
+        },
+        "hide": 0,
+        "label": null,
+        "name": "DS_ICINGA2",
+        "options": [],
+        "query": "influxdb",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
       }
     ]
   },
