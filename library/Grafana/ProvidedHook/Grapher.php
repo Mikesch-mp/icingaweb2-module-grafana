@@ -527,18 +527,18 @@ class Grapher extends GrapherHook
                 $this->customVars = str_replace($search, $replace, $this->customVars);
             }
 
-			// urlencodee values
-			$customVars = "";
-			foreach (explode('&', $this->customVars) as $param) {
-				$arr = explode("=", $param);
-				$k = $arr[0];
-				$customVars = $customVars . '&' . $k;
-				if (count($arr) > 1) {
-					$v = $arr[1];
-					$customVars = $customVars . "=" . rawurlencode($v);
-				}
-			}
-			$this->customVars = $customVars;
+            // urlencodee values
+            $customVars = "";
+            foreach (explode('&', $this->customVars) as $param) {
+                $arr = explode("=", $param);
+                $k = $arr[0];
+                $customVars = $customVars . '&' . $k;
+                if (count($arr) > 1) {
+                    $v = $arr[1];
+                    $customVars = $customVars . "=" . rawurlencode($v);
+                }
+            }
+            $this->customVars = $customVars;
         }
 
         $return_html = "";
