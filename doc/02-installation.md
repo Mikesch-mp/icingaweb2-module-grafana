@@ -23,7 +23,7 @@ name MUST be `grafana` and not `icingaweb2-module-grafana` or anything else.
 
 ### Git clone
 
-Use this only if you want tu use/test the latest developer version of the module.
+Use this only if you want to use/test the latest developer version of the module.
 
 ```
 ICINGAWEB_MODULEPATH="/usr/share/icingaweb2/modules"
