@@ -527,7 +527,7 @@ class Grapher extends GrapherHook
                 $this->customVars = str_replace($search, $replace, $this->customVars);
             }
             $this->customVars = explode('=', $this->customVars);
-            $this->customVars = $this->customVars[0] . '=' . rawurlencode($this->customVars[1]);
+            $this->customVars = $this->customVars[0] . '=' . $this->customVars[1];
         }
 
         $return_html = "";
@@ -563,11 +563,12 @@ class Grapher extends GrapherHook
                         $this->publicHost,
                         $this->dashboarduid,
                         $this->dashboard,
-                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName)) : urlencode($hostName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
+                            $hostName)) : rawurlencode($hostName),
                         ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName)) : rawurlencode($serviceName),
                         $this->object->check_command,
                         ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
-                            $this->customVars)) : urlencode($this->customVars),
+                            $this->customVars)) : rawurlencode($this->customVars),
                         $this->customVars,
                         urlencode($this->timerange),
                         urlencode($this->timerangeto),
@@ -584,11 +585,12 @@ class Grapher extends GrapherHook
                         $this->publicHost,
                         $this->dashboardstore,
                         $this->dashboard,
-                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName)) : urlencode($hostName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
+                            $hostName)) : rawurlencode($hostName),
                         ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName)) : rawurlencode($serviceName),
                         $this->object->check_command,
                         ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
-                            $this->customVars)) : urlencode($this->customVars),
+                            $this->customVars)) : rawurlencode($this->customVars),
                         urlencode($this->timerange),
                         urlencode($this->timerangeto),
                         $this->orgId,
