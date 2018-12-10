@@ -207,7 +207,7 @@ class Grapher extends GrapherHook
         $this->height = $this->getGraphConfigOption($serviceName, 'height', $this->height);
         $this->width = $this->getGraphConfigOption($serviceName, 'width', $this->width);
         $this->repeatable = $this->getGraphConfigOption($serviceName, 'repeatable', $this->repeatable);
-        $this->numberMetrics = $this->getGraphConfigOption($serviceName, 'numberMetrics', $this->numberMetrics);
+        $this->numberMetrics = $this->getGraphConfigOption($serviceName, 'nmetrics', $this->numberMetrics);
 
         return $this;
     }
