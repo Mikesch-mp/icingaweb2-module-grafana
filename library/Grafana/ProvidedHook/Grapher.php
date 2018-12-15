@@ -349,22 +349,24 @@ class Grapher extends GrapherHook
                     'cachetime' => $this->cacheTime
                 ));
             }
-            $imghtml = '<img src="%s%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" style="min-height: %spx;"/>';
+            $imghtml = '<div style="min-height: %spx;"><img src="%s%s" alt="%s" width="%spx" height="%spx" class="' .
+                $imgClass . '" /></div>';
             $previewHtml = sprintf(
                 $imghtml,
+                $this->height,
                 $this->getView()->serverUrl(),
                 $this->pngUrl,
                 $serviceName,
                 $this->width,
-                $this->height,
                 $this->height
 
             );
         } elseif ($this->accessMode == "direct") {
             if ($this->grafanaVersion == "1") {
-                $imghtml = '<img src="%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" style="min-height: %spx;"/>';
+                $imghtml = '<div style="min-height: %spx;"><img src="%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" /></div>';
                 $previewHtml = sprintf(
                     $imghtml,
+                    $this->height,
                     $this->protocol,
                     $this->grafanaHost,
                     $this->dashboarduid,
@@ -383,13 +385,13 @@ class Grapher extends GrapherHook
                     $this->refresh,
                     rawurlencode($serviceName),
                     $this->width,
-                    $this->height,
                     $this->height
                 );
             } else {
-                $imghtml = '<img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" style="min-height: %spx;"/>';
+                $imghtml = '<div style="min-height: %spx;"><img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" /></div>';
                 $previewHtml = sprintf(
                     $imghtml,
+                    $this->height,
                     $this->protocol,
                     $this->grafanaHost,
                     $this->dashboardstore,
@@ -408,7 +410,6 @@ class Grapher extends GrapherHook
                     $this->refresh,
                     rawurlencode($serviceName),
                     $this->width,
-                    $this->height,
                     $this->height
                 );
             }
