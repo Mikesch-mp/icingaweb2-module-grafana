@@ -127,8 +127,8 @@ class Timeranges
         $form_link = $this->view->url($this->link, $this->urlparams);
         $menu .= '<td>
                     <form method="get" class="grafana-module-tr-form" action="'.$form_link.'">
-                        <input type="text" value="'.$timerange.'" placeholder="from" name="tr-from" />
-                        <input type="text" value="'.$timerangeto.'" placeholder="to" name="tr-to" />
+                        <input type="text" value="'.$timerange.'" placeholder="from" name="tr-from" style="width: 8em;"/><br />
+                        <input type="text" value="'.$timerangeto.'" placeholder="to" name="tr-to" style="width: 8em;"/>
                         <a href="'.$form_link.'" data-base-target="_self" class="action-link grafana-module-tr-apply">Apply</a>
                     </form>
                   </td>';

@@ -207,7 +207,7 @@ class Grapher extends GrapherHook
         $this->height = $this->getGraphConfigOption($serviceName, 'height', $this->height);
         $this->width = $this->getGraphConfigOption($serviceName, 'width', $this->width);
         $this->repeatable = $this->getGraphConfigOption($serviceName, 'repeatable', $this->repeatable);
-        $this->numberMetrics = $this->getGraphConfigOption($serviceName, 'numberMetrics', $this->numberMetrics);
+        $this->numberMetrics = $this->getGraphConfigOption($serviceName, 'nmetrics', $this->numberMetrics);
 
         return $this;
     }
@@ -535,7 +535,7 @@ class Grapher extends GrapherHook
                 $customVars = $customVars . '&' . $k;
                 if (count($arr) > 1) {
                     $v = $arr[1];
-                    $customVars = $customVars . "=" . rawurlencode($v);
+                    $customVars = $customVars . "=" . $v;
                 }
             }
             $this->customVars = $customVars;
@@ -574,9 +574,12 @@ class Grapher extends GrapherHook
                         $this->publicHost,
                         $this->dashboarduid,
                         $this->dashboard,
-                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName)) : urlencode($hostName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
+                            $hostName)) : rawurlencode($hostName),
                         ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName)) : rawurlencode($serviceName),
                         $this->object->check_command,
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
+                            $this->customVars)) : rawurlencode($this->customVars),
                         $this->customVars,
                         urlencode($this->timerange),
                         urlencode($this->timerangeto),
@@ -593,10 +596,12 @@ class Grapher extends GrapherHook
                         $this->publicHost,
                         $this->dashboardstore,
                         $this->dashboard,
-                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $hostName)) : urlencode($hostName),
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
+                            $hostName)) : rawurlencode($hostName),
                         ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName)) : rawurlencode($serviceName),
                         $this->object->check_command,
-                        $this->customVars,
+                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
+                            $this->customVars)) : rawurlencode($this->customVars),
                         urlencode($this->timerange),
                         urlencode($this->timerangeto),
                         $this->orgId,
