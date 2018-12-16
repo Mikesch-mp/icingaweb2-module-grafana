@@ -1,7 +1,29 @@
 # Change Log
 
-## [1.3.2](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.3.2) (2018-09-14)
-[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.1...1.3.2)
+## [1.3.3](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.3.3) (2018-12-16)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.2...1.3.3)
+
+**Implemented enhancements:**
+
+- support multiple custom vars [\#189](https://github.com/Mikesch-mp/icingaweb2-module-grafana/pull/189) ([cxcv](https://github.com/cxcv))
+
+**Fixed bugs:**
+
+- Custom Vars don't get escaped when send over to grafana [\#186](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/186)
+
+**Closed issues:**
+
+- No Graph shown on master since commits from 10.12.2018 [\#192](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/192)
+- support multiple custom variables [\#188](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/188)
+- Help creating dashboard template parsing metrics [\#185](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/185)
+- Time used by graphs in Icingaweb2 [\#107](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/107)
+
+**Merged pull requests:**
+
+- Update 02-installation.md [\#190](https://github.com/Mikesch-mp/icingaweb2-module-grafana/pull/190) ([Eifoen](https://github.com/Eifoen))
+
+## [v1.3.2](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.3.2) (2018-09-14)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.1...v1.3.2)
 
 **Fixed bugs:**
 
