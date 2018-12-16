@@ -9,6 +9,7 @@
 
 **Fixed bugs:**
 
+- Icingaweb2-Dashlet with Grafana-Graphs needs permisison for grafana/graph, which doesn't exists [\#191](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/191)
 - Custom Vars don't get escaped when send over to grafana [\#186](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/186)
 
 **Closed issues:**
