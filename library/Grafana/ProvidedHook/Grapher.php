@@ -581,7 +581,6 @@ class Grapher extends GrapherHook
                         $this->object->check_command,
                         ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
                             $this->customVars)) : rawurlencode($this->customVars),
-                        $this->customVars,
                         urlencode($this->timerange),
                         urlencode($this->timerangeto),
                         $this->orgId,
