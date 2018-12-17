@@ -1,7 +1,18 @@
 # Change Log
 
-## [1.3.3](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.3.3) (2018-12-16)
-[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.2...1.3.3)
+## [1.3.4](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.3.4) (2018-12-17)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.3...1.3.4)
+
+**Fixed bugs:**
+
+- Icingaweb2-Dashlet with Grafana-Graphs needs permisison for grafana/graph, which doesn't exists [\#191](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/191)
+
+**Closed issues:**
+
+- Graphs broken with 1.3.3 version together with Grafana 5 and Enable link = Yes  [\#194](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/194)
+
+## [v1.3.3](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.3.3) (2018-12-16)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.2...v1.3.3)
 
 **Implemented enhancements:**
 
@@ -9,7 +20,6 @@
 
 **Fixed bugs:**
 
-- Icingaweb2-Dashlet with Grafana-Graphs needs permisison for grafana/graph, which doesn't exists [\#191](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/191)
 - Custom Vars don't get escaped when send over to grafana [\#186](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/186)
 
 **Closed issues:**
