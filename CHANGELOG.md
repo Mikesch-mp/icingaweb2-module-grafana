@@ -45,7 +45,7 @@
 **Closed issues:**
 
 - Changing timerange is missing the parameter host. [\#181](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/181)
-- Is it possible to use Regex in Grafana Config [\#179](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/179)
+- It is possible to use Regex in Grafana Config [\#179](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/179)
 
 ## [v1.3.1](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.3.1) (2018-08-14)
 [Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.0...v1.3.1)
