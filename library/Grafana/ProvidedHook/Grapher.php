@@ -532,11 +532,19 @@ class Grapher extends GrapherHook
             $customVars = "";
             foreach (explode('&', $this->customVars) as $param) {
                 $arr = explode("=", $param);
-                $k = $arr[0];
-                $customVars = $customVars . '&' . $k;
+                if ($this->dataSource == "graphite") {
+                    $k = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $arr[0]);
+                } else {
+                    $k = $arr[0];
+                }
+                $customVars = $customVars . '&' . rawurlencode($k);
                 if (count($arr) > 1) {
-                    $v = $arr[1];
-                    $customVars = $customVars . "=" . $v;
+                    if ($this->dataSource == "graphite") {
+                        $v = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $arr[1]);
+                    } else {
+                        $v = $arr[1];
+                    }
+                    $customVars = $customVars . "=" . rawurlencode($v);
                 }
             }
             $this->customVars = $customVars;
@@ -579,8 +587,7 @@ class Grapher extends GrapherHook
                             $hostName)) : rawurlencode($hostName),
                         ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName)) : rawurlencode($serviceName),
                         $this->object->check_command,
-                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
-                            $this->customVars)) : rawurlencode($this->customVars),
+                        $this->customVars,
                         urlencode($this->timerange),
                         urlencode($this->timerangeto),
                         $this->orgId,
@@ -600,8 +607,7 @@ class Grapher extends GrapherHook
                             $hostName)) : rawurlencode($hostName),
                         ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $serviceName)) : rawurlencode($serviceName),
                         $this->object->check_command,
-                        ($this->dataSource == "graphite") ? rawurlencode(preg_replace('/[^a-zA-Z0-9\*\-:]/', '_',
-                            $this->customVars)) : rawurlencode($this->customVars),
+                        $this->customVars,
                         urlencode($this->timerange),
                         urlencode($this->timerangeto),
                         $this->orgId,
@@ -642,7 +648,7 @@ class Grapher extends GrapherHook
             $return_html .= "<tr><th>Timerangeto</th><td>" . $this->timerangeto . "</td>";
             $return_html .= "<tr><th>Height</th><td>" . $this->height . "</td>";
             $return_html .= "<tr><th>Width</th><td>" . $this->width . "</td>";
-            $return_html .= "<tr><th>Custom Variables</th><td>" . $this->customVars . "</td>";
+            $return_html .= "<tr><th>Custom Variables</th><td>" . rawurldecode($this->customVars) . "</td>";
             $return_html .= "<tr><th>Graph URL</th><td>" . $usedUrl . "</td>";
             $return_html .= "<tr><th>Disable graph custom variable</th><td>" . $this->custvardisable . "</td>";
             $return_html .= "<tr><th>Graph config custom variable</th><td>" . $this->custvarconfig . "</td>";
