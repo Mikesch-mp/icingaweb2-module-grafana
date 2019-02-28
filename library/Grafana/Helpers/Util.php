@@ -5,6 +5,12 @@ namespace Icinga\Module\Grafana\Helpers;
 class Util
 {
 
+    public static function graphiteReplace($string = "")
+    {
+        $tring = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $string);
+
+        return $string;
+    }
     public static function httpStatusCodetoString($code = 0)
     {
         $statuscodes = array(
