@@ -7,7 +7,7 @@ class Util
 
     public static function graphiteReplace($string = "")
     {
-        $tring = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $string);
+        $string = preg_replace('/[^a-zA-Z0-9\*\-:]/', '_', $string);
 
         return $string;
     }
