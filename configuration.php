@@ -24,3 +24,5 @@ if ($auth->hasPermission('grafana/graphconfig'))
        'url' => 'graph'
    ));
 }
+
+$this->provideJsFile('behavior/iframe.js');
