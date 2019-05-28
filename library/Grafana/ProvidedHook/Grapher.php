@@ -535,7 +535,7 @@ class Grapher extends GrapherHook
                 if (preg_match('/^\$.*\$$/', $arr[1])) {
                     $arr[1] = '';
                 }
-                if ($this->$dataSource == "graphite") {
+                if ($this->dataSource == "graphite") {
                     $arr[1] = Util::graphiteReplace($arr[1]);
                 }
                 $customVars .= '&' . $arr[0] . '=' . rawurlencode($arr[1]);
