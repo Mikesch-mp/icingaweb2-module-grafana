@@ -467,6 +467,16 @@ class Grapher extends GrapherHook
             return false;
         }
     }
+    
+    // see: https://icinga.com/docs/icinga2/latest/doc/14-features/#graphite-schema
+    private function escapeVarToGraphiteSchema($variable)
+    {
+        $variable = str_replace(' ', '_', $variable);
+        $variable = str_replace('.', '_', $variable);
+        $variable = str_replace('\\', '_', $variable);
+        $variable = str_replace('/', '_', $variable);
+        return $variable;
+    }
 
     public function getPreviewHtml(MonitoredObject $object, $report = false)
     {
@@ -576,9 +586,9 @@ class Grapher extends GrapherHook
                         $this->publicHost,
                         $this->dashboarduid,
                         $this->dashboard,
-                        rawurlencode($hostName),
-                        rawurlencode($serviceName),
-                        rawurlencode($this->object->check_command),
+                        rawurlencode($this->escapeVarToGraphiteSchema($hostName)),
+                        rawurlencode($this->escapeVarToGraphiteSchema($serviceName)),
+                        rawurlencode($this->escapeVarToGraphiteSchema($this->object->check_command)),
                         $this->customVars,
                         urlencode($this->timerange),
                         urlencode($this->timerangeto),
@@ -595,9 +605,9 @@ class Grapher extends GrapherHook
                         $this->publicHost,
                         $this->dashboardstore,
                         $this->dashboard,
-                        rawurlencode($hostName),
-                        rawurlencode($serviceName),
-                        rawurlencode($this->object->check_command),
+                        rawurlencode($this->escapeVarToGraphiteSchema($hostName)),
+                        rawurlencode($this->escapeVarToGraphiteSchema($serviceName)),
+                        rawurlencode($this->escapeVarToGraphiteSchema($this->object->check_command)),
                         $this->customVars,
                         urlencode($this->timerange),
                         urlencode($this->timerangeto),
