@@ -7,7 +7,6 @@
 
 - Some services not shown in Icingaweb2 2.7.1 when grafana module enabled [\#221](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/221)
 - 'No data points' on host objects with spaces in the name [\#219](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/219)
-- \[Feature request\] Custom vars in graph menu [\#217](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/217)
 - Question concerning the 2 dashboards [\#216](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/216)
 - Timelegend is shown UTC and not Browser / php time [\#215](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/215)
 - Icinga2 not get all  the graphs from grafana , got only ping4 graph [\#197](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/197)
