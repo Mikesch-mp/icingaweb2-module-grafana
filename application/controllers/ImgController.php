@@ -209,6 +209,9 @@ class ImgController extends MonitoringAwareController
         header("Content-type: image/png");
         if (! $res)
         {
+            // set expire to now and max age to 1 minute
+            header("Expires: ".gmdate("D, d M Y H:i:s", time())." GMT");
+            header('Cache-Control: max-age='. 120);
             $string = wordwrap($this->translate('Error'). ': ' . $imageHtml,40,"\n");
             $lines = explode("\n", $string);
             $im = @imagecreate ($this->width, $this->height);
@@ -303,7 +306,7 @@ class ImgController extends MonitoringAwareController
                 $this->grafanaHost,
                 $this->dashboarduid,
                 $this->dashboard,
-                urlencode($hostName),
+                rawurlencode($hostName),
                 rawurlencode($serviceName),
                 rawurlencode($this->object->check_command),
                 $this->customVars,
@@ -323,7 +326,7 @@ class ImgController extends MonitoringAwareController
                 $this->grafanaHost,
                 $this->dashboardstore,
                 $this->dashboard,
-                urlencode($hostName),
+                rawurlencode($hostName),
                 rawurlencode($serviceName),
                 rawurlencode($this->object->check_command),
                 $this->customVars,
