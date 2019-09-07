@@ -50,7 +50,7 @@
                 $child.children().each(function(contentIdx) {
                     var $contentChild = $(this);
                     // All the iframes we use have this class, overwrite any others
-                    if (!$contentChild.hasClass('module-grafana')) {
+                    if (!$contentChild.hasClass('module-grafana') || $contentChild.hasClass('quick-actions')) {
                         $($contentChildren[contentIdx]).html($contentChild.html());
                     }
                 });
