@@ -1,7 +1,18 @@
 # Change Log
 
-## [1.3.5](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.3.5) (2019-05-12)
-[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.4...1.3.5)
+## [1.3.6](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.3.6) (2019-09-07)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.5...1.3.6)
+
+**Closed issues:**
+
+- Some services not shown in Icingaweb2 2.7.1 when grafana module enabled [\#221](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/221)
+- 'No data points' on host objects with spaces in the name [\#219](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/219)
+- Question concerning the 2 dashboards [\#216](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/216)
+- Timelegend is shown UTC and not Browser / php time [\#215](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/215)
+- Icinga2 not get all  the graphs from grafana , got only ping4 graph [\#197](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues/197)
+
+## [v1.3.5](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.3.5) (2019-05-12)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.4...v1.3.5)
 
 **Implemented enhancements:**
 
