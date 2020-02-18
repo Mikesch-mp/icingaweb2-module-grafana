@@ -69,7 +69,8 @@ class Grapher extends GrapherHook
         }
         $this->protocol = $this->config->get('protocol', $this->protocol);
         $this->enableLink = $this->config->get('enableLink', $this->enableLink);
-        if ($this->enableLink == "yes" && $this->permission->hasPermission('grafana/enablelink')) {
+        if ($this->enableLink == "yes"
+            && $this->permission->hasPermission('grafana/enablelink')) {
             $this->usePublic = $this->config->get('usepublic', $this->usePublic);
             if ($this->usePublic == "yes") {
                 $this->publicHost = $this->config->get('publichost', $this->publicHost);
@@ -88,12 +89,15 @@ class Grapher extends GrapherHook
         // Confid needed for Grafana
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
         $this->defaultdashboarduid = $this->config->get('defaultdashboarduid', null);
-        if ($this->grafanaVersion == "1" && is_null($this->defaultdashboarduid)) {
+        if ($this->grafanaVersion == "1"
+            && is_null($this->defaultdashboarduid)) {
             throw new ConfigurationError(
                 'Usage of Grafana 5 is configured but no UID for default dashboard found!'
             );
         }
         $this->defaultDashboardPanelId = $this->config->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
+        $this->defaultDashboardPanelIdHost = $this->config->get('defaultdashboardpanelid_host', $this->defaultDashboardPanelIdHost);
+        $this->defaultDashboardPanelIdServices = $this->config->get('defaultdashboardpanelid_services', $this->defaultDashboardPanelIdServices);
         $this->defaultOrgId = $this->config->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->config->get('theme', $this->grafanaTheme);
         $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
@@ -144,10 +148,10 @@ class Grapher extends GrapherHook
         /**
          * Username & Password or token
          */
-
         $this->apiToken = $this->config->get('apitoken', $this->apiToken);
         $this->authentication = $this->config->get('authentication');
-        if ($this->apiToken == null && $this->authentication == "token") {
+        if ($this->apiToken == null
+            && $this->authentication == "token") {
             throw new ConfigurationError(
                 'API token usage configured, but no token given!'
             );
@@ -171,14 +175,15 @@ class Grapher extends GrapherHook
 
         $this->graphConfig = Config::module('grafana', 'graphs');
 
-        if ($this->graphConfig->hasSection(strtok($serviceName,
-                ' ')) && ($this->graphConfig->hasSection($serviceName) == false)) {
+        if ($this->graphConfig->hasSection(strtok($serviceName, ' '))
+            && ($this->graphConfig->hasSection($serviceName) == false)) {
             $serviceName = strtok($serviceName, ' ');
         }
-        if ($this->graphConfig->hasSection(strtok($serviceName,
-                ' ')) == false && ($this->graphConfig->hasSection($serviceName) == false)) {
+        if ($this->graphConfig->hasSection(strtok($serviceName, ' ')) == false
+            && ($this->graphConfig->hasSection($serviceName) == false)) {
             $serviceName = $serviceCommand;
-            if ($this->graphConfig->hasSection($serviceCommand) == false && $this->defaultDashboard == 'none') {
+            if ($this->graphConfig->hasSection($serviceCommand) == false
+                && $this->defaultDashboard == 'none') {
                 return null;
             }
         }
@@ -194,7 +199,8 @@ class Grapher extends GrapherHook
         $this->orgId = $this->getGraphConfigOption($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $this->getGraphConfigOption($serviceName, 'customVars', '');
 
-        if(Url::fromRequest()->hasParam('tr-from') && Url::fromRequest()->hasParam('tr-to')) {
+        if(Url::fromRequest()->hasParam('tr-from')
+            && Url::fromRequest()->hasParam('tr-to')) {
             $this->timerange = urldecode(Url::fromRequest()->getParam('tr-from'));
             $this->timerangeto = urldecode(Url::fromRequest()->getParam('tr-to'));
         } else {
@@ -313,9 +319,13 @@ class Grapher extends GrapherHook
 
             if ($statusCode > 299) {
                 $error = @json_decode($res);
-                $previewHtml .= "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
-                    " ($statusCode)</b>: " . ($error !== null && property_exists($error,
-                        'message') ? $error->message : "");
+                $previewHtml .= "<b>Cannot fetch Grafana graph: "
+                    . Util::httpStatusCodeToString($statusCode)
+                    . " ($statusCode)</b>: "
+                    . ($error !== null
+                        && property_exists($error, 'message')
+                            ? $error->message
+                            : "");
                 return false;
             }
 
@@ -461,10 +471,24 @@ class Grapher extends GrapherHook
 
     public function has(MonitoredObject $object)
     {
-        if (($object instanceof Host) || ($object instanceof Service)) {
+        if (($object instanceof Host)
+            || ($object instanceof Service)) {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public function getPanelId($graphType)
+    {
+        if ($this->dataSource === 'graphite') {
+            if ($graphType === 'host') {
+                    return $this->defaultDashboardPanelIdHost;
+            } elseif ($graphType === 'services') {
+                    return $this->defaultDashboardPanelIdServices;
+            }
+        } else {
+                return $this->defaultDashboardPanelId;
         }
     }
 
@@ -472,10 +496,13 @@ class Grapher extends GrapherHook
     {
         $this->object = $object;
         // enable_perfdata = true ?  || disablevar == true
-        if (!$this->object->process_perfdata || (( isset($this->object->customvars[$this->custvardisable]) && json_decode(strtolower($this->object->customvars[$this->custvardisable])) !== false)) ) {
+        if (!$this->object->process_perfdata
+            || (( isset($this->object->customvars[$this->custvardisable])
+            && json_decode(strtolower($this->object->customvars[$this->custvardisable])) !== false)) ) {
             return '';
         }
 
+        $graphType = $this->graphType;
         if ($this->object instanceof Host) {
             $this->cacheTime = $this->object->host_next_check - $this->object->host_last_check;
             $serviceName = $this->object->check_command;
@@ -498,8 +525,8 @@ class Grapher extends GrapherHook
         // Preserve timerange if set
         $parameters['timerange'] = $this->timerange;
 
-        if (array_key_exists($this->custvarconfig,
-                $this->object->customvars) && !empty($this->object->customvars[$this->custvarconfig])) {
+        if (array_key_exists($this->custvarconfig, $this->object->customvars)
+            && !empty($this->object->customvars[$this->custvarconfig])) {
             $graphConfiguation = $this->getGraphConf($object->customvars[$this->custvarconfig]);
         } else {
             $graphConfiguation = $this->getGraphConf($serviceName, $object->check_command);
@@ -514,7 +541,8 @@ class Grapher extends GrapherHook
         }
 
         // replace special chars for graphite
-        if ($this->dataSource == "graphite" && $this->accessMode != "indirectproxy") {
+        if ($this->dataSource == "graphite"
+            && $this->accessMode != "indirectproxy") {
             $serviceName = Util::graphiteReplace($serviceName);
             $hostName = Util::graphiteReplace($hostName);
         }
@@ -547,7 +575,8 @@ class Grapher extends GrapherHook
 
         // Hide menu if in reporting or compact mode
         $menu = "";
-        if ($report === false && !$this->getView()->compact) {
+        if ($report === false
+            && !$this->getView()->compact) {
             $timeranges = new Timeranges($parameters, $link);
             $menu = $timeranges->getTimerangeMenu($this->timerange, $this->timerangeto);
         } else {
@@ -610,9 +639,12 @@ class Grapher extends GrapherHook
             }
             $return_html .= $html;
         }
-        if ($this->debug && $this->permission->hasPermission('grafana/debug') && $report === false) {
+        if ($this->debug
+            && $this->permission->hasPermission('grafana/debug')
+            && $report === false) {
             $usedUrl = "";
-            if ($this->accessMode == "proxy" || $this->accessMode == "indirectproxy" ) {
+            if ($this->accessMode == "proxy"
+                || $this->accessMode == "indirectproxy" ) {
                 $usedUrl = $this->pngUrl;
             } else {
                 $usedUrl = preg_replace('/.*?src\s*=\s*[\'\"](.*?)[\'\"].*/', "$1", $previewHtml);

@@ -120,7 +120,8 @@ class GeneralConfigForm extends ConfigForm
                 'description' => $this->translate('Name of the default dashboard.'),
             )
         );
-        if (isset($formData['grafana_version']) && $formData['grafana_version'] === '1' ) {
+        if (isset($formData['grafana_version'])
+            && $formData['grafana_version'] === '1' ) {
             $this->addElement(
                 'text',
                 'grafana_defaultdashboarduid',
@@ -159,7 +160,8 @@ class GeneralConfigForm extends ConfigForm
                 'description' => $this->translate('Show shadows around the graph.'),
             )
         );
-        if (! isset($formData['grafana_version']) || $formData['grafana_version'] === '0' ) {
+        if (! isset($formData['grafana_version'])
+            || $formData['grafana_version'] === '0' ) {
             $this->addElement(
                 'select',
                 'grafana_defaultdashboardstore',
@@ -216,7 +218,9 @@ class GeneralConfigForm extends ConfigForm
             )
         );
 
-        if (isset($formData['grafana_accessmode']) && ($formData['grafana_accessmode'] === 'proxy' || $formData['grafana_accessmode'] === 'indirectproxy')) {
+        if (isset($formData['grafana_accessmode'])
+            && ($formData['grafana_accessmode'] === 'proxy'
+            || $formData['grafana_accessmode'] === 'indirectproxy')) {
             $this->addElement(
                 'number',
                 'grafana_proxytimeout',
@@ -241,7 +245,8 @@ class GeneralConfigForm extends ConfigForm
                     'class' => 'autosubmit'
                 )
             );
-            if (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'basic' ) {
+            if (isset($formData['grafana_authentication'])
+                && $formData['grafana_authentication'] === 'basic' ) {
                     $this->addElement(
                         'text',
                         'grafana_username',
@@ -261,7 +266,8 @@ class GeneralConfigForm extends ConfigForm
                             'required' => true
                         )
                     );
-            } elseif (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'token' ) {
+            } elseif (isset($formData['grafana_authentication'])
+                && $formData['grafana_authentication'] === 'token' ) {
                 $this->addElement(
                     'text',
                     'grafana_apitoken',
@@ -273,8 +279,8 @@ class GeneralConfigForm extends ConfigForm
                 );
             }
         }
-
-        if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'direct') {
+        if (isset($formData['grafana_accessmode'])
+            && $formData['grafana_accessmode'] === 'direct') {
             $this->addElement(
                 'select',
                 'grafana_directrefresh',
@@ -289,7 +295,8 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'indirectproxy') {
+        if (isset($formData['grafana_accessmode'])
+            && $formData['grafana_accessmode'] === 'indirectproxy') {
             $this->addElement(
                 'select',
                 'grafana_indirectproxyrefresh',
@@ -339,7 +346,9 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_enableLink']) && ( $formData['grafana_enableLink'] === 'yes') && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (isset($formData['grafana_enableLink'])
+            && ( $formData['grafana_enableLink'] === 'yes')
+            && ( $formData['grafana_accessmode'] != 'iframe' )) {
             $this->addElement(
                 'select',
                 'grafana_usepublic',
@@ -355,7 +364,9 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_usepublic']) && ( $formData['grafana_usepublic'] === 'yes' ) && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (isset($formData['grafana_usepublic'])
+            && ( $formData['grafana_usepublic'] === 'yes' )
+            && ( $formData['grafana_accessmode'] != 'iframe' )) {
             $this->addElement(
                 'text',
                 'grafana_publichost',

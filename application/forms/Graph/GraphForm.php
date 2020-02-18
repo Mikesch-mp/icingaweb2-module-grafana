@@ -57,8 +57,7 @@ class GraphForm extends ConfigForm
             )
         );
 
-        if($this->grafanaVersion == "1")
-        {
+        if($this->grafanaVersion == "1") {
             $this->addElement(
                 'text',
                 'dashboarduid',
@@ -189,7 +188,7 @@ class GraphForm extends ConfigForm
         $values = array(
             'dashboard'   => $this->getElement('dashboard')->getValue(),
             'panelId'     => $this->getElement('panelId')->getValue(),
-            'orgId'     => $this->getElement('orgId')->getValue(),
+            'orgId'       => $this->getElement('orgId')->getValue(),
             'customVars'  => $this->getElement('customVars')->getValue(),
             'timerange'   => $this->getElement('timerange')->getValue(),
             'height'      => $this->getElement('height')->getValue(),
@@ -197,17 +196,13 @@ class GraphForm extends ConfigForm
             'repeatable'  => $this->getElement('repeatable')->getValue(),
             'nmetrics'    => $this->getElement('nmetrics')->getValue()
         );
-        if($this->grafanaVersion == "1")
-        {
+        if($this->grafanaVersion == "1") {
             $values['dashboarduid'] = $this->getElement('dashboarduid')->getValue();
         }
-
-
-	    if (empty($values['timerange']))
-	    {
+        if (empty($values['timerange'])) {
             $values['timerange'] = null;
         }
-	    if (empty($values['customVars'])) {
+        if (empty($values['customVars'])) {
             $values['customVars'] = null;
         }
         if (empty($values['height'])) {
