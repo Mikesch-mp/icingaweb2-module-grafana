@@ -132,16 +132,40 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        $this->addElement(
-            'number',
-            'grafana_defaultdashboardpanelid',
-            array(
-                'value' => '1',
-                'label' => $this->translate('Default panel id'),
-                'description' => $this->translate('Id of the panel used in the default dashboard.'),
-                'required' => true,
-            )
-        );
+        if (isset($formData['grafana_datasource'])
+            && $formData['grafana_datasource'] === 'graphite' ) {
+            $this->addElement(
+                'number',
+                'grafana_defaultdashboardpanelid_host',
+                array(
+                    'value' => '2',
+                    'label' => $this->translate('Default host panel id '),
+                    'description' => $this->translate('Id of the panel used in the default dashboard for displaying a graph attached to a host.'),
+                    'required' => true,
+                )
+            );
+            $this->addElement(
+                'number',
+                'grafana_defaultdashboardpanelid_services',
+                array(
+                    'value' => '1',
+                    'label' => $this->translate('Default services panel id '),
+                    'description' => $this->translate('Id of the panel used in the default dashboard for displaying a graph attached to services.'),
+                    'required' => true,
+                )
+            );
+        } else {
+            $this->addElement(
+                'number',
+                'grafana_defaultdashboardpanelid',
+                array(
+                    'value' => '1',
+                    'label' => $this->translate('Default panel id'),
+                    'description' => $this->translate('Id of the panel used in the default dashboard.'),
+                    'required' => true,
+                )
+            );
+        }
         $this->addElement(
             'number',
             'grafana_defaultorgid',
@@ -201,6 +225,24 @@ class GeneralConfigForm extends ConfigForm
                 'description' => $this->translate('Grafana Datasource Type.')
             )
         );
+        if (isset($formData['grafana_datasource'])
+            && $formData['grafana_datasource'] === 'graphite' ) {
+            $this->addElement(
+                'select',
+                'grafana_graphType',
+                array(
+                    'label' => 'Graphite graph type',
+                    'value' => 'auto',
+                    'multiOptions' => array(
+                        'auto' => $this->translate('Automatic selection (host/services)'),
+                        'host' => $this->translate('Force branch host'),
+                        'services' => $this->translate('Force branch services'),
+                    ),
+                'description' => $this->translate('Determine the branch to be chosen in the graphite backend.'),
+                'class' => 'autosubmit',
+                )
+            );
+        }
         $this->addElement(
             'select',
             'grafana_accessmode',

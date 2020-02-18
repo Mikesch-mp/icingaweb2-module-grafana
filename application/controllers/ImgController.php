@@ -20,6 +20,7 @@ class ImgController extends MonitoringAwareController
 {
     protected $host;
     protected $service;
+    protected $graphType               = 'services';
     protected $timerange;
     protected $myConfig;
     protected $myAuth;
@@ -34,6 +35,8 @@ class ImgController extends MonitoringAwareController
     protected $height                  = 280;
     protected $defaultDashboard        = "icinga2-default";
     protected $defaultDashboardPanelId = "1";
+    protected $defaultDashboardPanelIdHost = "2";
+    protected $defaultDashboardPanelIdServices = "1";
     protected $defaultOrgId            = "1";
     protected $shadows                 = false;
     protected $defaultDashboardStore   = "db";
@@ -50,7 +53,6 @@ class ImgController extends MonitoringAwareController
 
     public function init()
     {
-
         /* we need at least a host name */
         if (is_null($this->getParam('host')))
         {
@@ -90,6 +92,8 @@ class ImgController extends MonitoringAwareController
             );
         }
         $this->defaultDashboardPanelId = $this->myConfig->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
+        $this->defaultDashboardPanelIdHost = $this->myConfig->get('defaultdashboardpanelid_host', $this->defaultDashboardPanelIdHost);
+        $this->defaultDashboardPanelIdServices = $this->myConfig->get('defaultdashboardpanelid_services', $this->defaultDashboardPanelIdServices);
         $this->defaultOrgId = $this->myConfig->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->myConfig->get('theme', $this->grafanaTheme);
         $this->defaultDashboardStore = $this->myConfig->get('defaultdashboardstore', $this->defaultDashboardStore);
@@ -127,7 +131,6 @@ class ImgController extends MonitoringAwareController
         /**
          * Username & Password or token
          */
-
         $this->apiToken = $this->myConfig->get('apitoken', $this->apiToken);
         $this->authentication = $this->myConfig->get('authentication');
         if ($this->apiToken == null && $this->authentication == "token") {
@@ -147,7 +150,6 @@ class ImgController extends MonitoringAwareController
                 $this->myAuth = "";
             }
         }
-
     }
 
     public function indexAction()
@@ -202,7 +204,7 @@ class ImgController extends MonitoringAwareController
         }
 
         $imageHtml = "";
-        $res = $this->getMyimageHtml($serviceName, $hostName, $imageHtml);
+        $res = $this->getMyImageHtml($serviceName, $hostName, $imageHtml);
         header('Pragma: public');
         if($this->refresh == "yes") {
             header('Pragma: public');
@@ -316,12 +318,13 @@ class ImgController extends MonitoringAwareController
 
         if ($this->grafanaVersion == "1") {
             $this->pngUrl = sprintf(
-                '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
+                '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-type=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboarduid,
                 $this->dashboard,
                 rawurlencode($hostName),
+                rawurlencode($graphType),
                 rawurlencode($serviceName),
                 rawurlencode($this->object->check_command),
                 $this->customVars,
@@ -334,14 +337,14 @@ class ImgController extends MonitoringAwareController
                 urlencode($this->timerangeto)
             );
         } else {
-
             $this->pngUrl = sprintf(
-                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-type=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
                 $this->dashboard,
                 rawurlencode($hostName),
+                rawurlencode($graphType),
                 rawurlencode($serviceName),
                 rawurlencode($this->object->check_command),
                 $this->customVars,
