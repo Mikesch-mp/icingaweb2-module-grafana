@@ -153,7 +153,7 @@ class GraphForm extends ConfigForm
                 'required'      => false
             )
         );
-}
+    }
 
     /**
      * {@inheritdoc}

@@ -175,7 +175,7 @@ class ImgController extends MonitoringAwareController
                 $this->customVars = str_replace($search, $replace, $this->customVars);
             }
 
-            // urlencodee values
+            // urlencode values
             $customVars = "";
             foreach (preg_split('/\&/', $this->customVars, -1, PREG_SPLIT_NO_EMPTY) as $param) {
                 $arr = explode("=", $param);
@@ -366,7 +366,7 @@ class ImgController extends MonitoringAwareController
         if ($res === false) {
             $imageHtml .=$this->translate('Cannot fetch graph with curl') .': '. curl_error($curl_handle). '.';
 
-            //provide a hint for 'Failed to connect to ...: Permission denied'
+            // provide a hint for 'Failed to connect to ...: Permission denied'
             if (curl_errno($curl_handle) == 7) {
                 $imageHtml .= $this->translate(' Check SELinux/Firewall.');
             }

@@ -129,7 +129,7 @@ class Grapher extends GrapherHook
         $this->custvarconfig = ($this->config->get('custvarconfig', $this->custvarconfig));
 
         /**
-         * Show some debug informations?
+         * Show debug information
          */
         $this->debug = ($this->config->get('debug', $this->debug));
         /**
@@ -221,8 +221,8 @@ class Grapher extends GrapherHook
         return $value;
     }
 
-    //returns false on error, previewHTML is passed as reference
     private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
+    // returns false on error, previewHTML is passed as reference
     {
         $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
         if ($this->accessMode == "proxy") {
@@ -304,7 +304,7 @@ class Grapher extends GrapherHook
             if ($res === false) {
                 $previewHtml .= "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
 
-                //provide a hint for 'Failed to connect to ...: Permission denied'
+                // provide a hint for 'Failed to connect to ...: Permission denied'
                 if (curl_errno($curl_handle) == 7) {
                     $previewHtml .= " Check SELinux/Firewall.";
                 }
@@ -528,7 +528,7 @@ class Grapher extends GrapherHook
                 $this->customVars = str_replace($search, $replace, $this->customVars);
             }
 
-            // urlencodee values
+            // urlencode values
             $customVars = "";
             foreach (preg_split('/\&/', $this->customVars, -1, PREG_SPLIT_NO_EMPTY) as $param) {
                 $arr = explode("=", $param);
@@ -555,20 +555,21 @@ class Grapher extends GrapherHook
         }
 
         foreach (explode(',', $this->panelId) as $panelid) {
-
             $html = "";
             $this->panelId = $panelid;
 
-            //image value will be returned as reference
+            // image value will be returned as reference
             $previewHtml = "";
-            $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml);
+            $res = $this->getMyPreviewHtml($serviceName, $hostName, $previewHtml, $graphType);
 
-            //do not render URLs on error or if disabled
-            if (!$res || $this->enableLink == "no" || !$this->permission->hasPermission('grafana/enablelink')) {
+            // do not render URLs on error or if disabled
+            if (!$res
+                || $this->enableLink == "no"
+                || !$this->permission->hasPermission('grafana/enablelink')) {
                 $html .= $previewHtml;
             } else {
                 if ($this->grafanaVersion == "1") {
-                    $html .= '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
+                    $html .= '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-type=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
 
                     $html = sprintf(
                         $html,

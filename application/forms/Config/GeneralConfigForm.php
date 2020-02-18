@@ -385,7 +385,7 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'value'=> false,
                 'label' => $this->translate('Show debug'),
-                'description' => $this->translate('Show debuging information.'),
+                'description' => $this->translate('Show debug information.'),
             )
         );
     }
