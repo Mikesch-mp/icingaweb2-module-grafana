@@ -681,34 +681,70 @@ class Grapher extends GrapherHook
 
             $return_html .= "<h2>Performance Graph Debug</h2>";
             $return_html .= "<table class=\"name-value-table\"><tbody>";
-            $return_html .= "<tr><th>Access mode</th><td>" . $this->accessMode . "</td>";
-            $return_html .= "<tr><th>Authentication type</th><td>" . $this->authentication . "</td>";
-            $return_html .= "<tr><th>Protocol</th><td>" . $this->protocol . "</td>";
-            $return_html .= "<tr><th>Grafana Host</th><td>" . $this->grafanaHost . "</td>";
+            $return_html .= "<tr><th>Access mode</th><td>"
+                . $this->accessMode . "</td>";
+            $return_html .= "<tr><th>Authentication type</th><td>"
+                . $this->authentication . "</td>";
+            $return_html .= "<tr><th>Protocol</th><td>"
+                . $this->protocol . "</td>";
+            $return_html .= "<tr><th>Grafana Host</th><td>"
+                . $this->grafanaHost . "</td>";
             if ($this->grafanaVersion == "1") {
-                $return_html .= "<tr><th>Dashboard UID</th><td>" . $this->dashboarduid . "</td>";
+                $return_html .= "<tr><th>Dashboard UID</th><td>"
+                    . $this->dashboarduid . "</td>";
             } else {
-                $return_html .= "<tr><th>Dashboard Store</th><td>" . $this->defaultDashboardStore . "</td>";
+                $return_html .= "<tr><th>Dashboard Store</th><td>"
+                    . $this->defaultDashboardStore . "</td>";
             }
-            $return_html .= "<tr><th>Dashboard Name</th><td>" . $this->dashboard . "</td>";
-            $return_html .= "<tr><th>Panel ID</th><td>" . $this->panelId . "</td>";
-            $return_html .= "<tr><th>Organization ID</th><td>" . $this->orgId . "</td>";
-            $return_html .= "<tr><th>Theme</th><td>" . $this->grafanaTheme . "</td>";
-            $return_html .= "<tr><th>Timerange</th><td>" . $this->timerange . "</td>";
-            $return_html .= "<tr><th>Timerangeto</th><td>" . $this->timerangeto . "</td>";
-            $return_html .= "<tr><th>Height</th><td>" . $this->height . "</td>";
-            $return_html .= "<tr><th>Width</th><td>" . $this->width . "</td>";
-            $return_html .= "<tr><th>Custom Variables</th><td>" . $this->customVars . "</td>";
-            $return_html .= "<tr><th>Graph URL</th><td>" . $usedUrl . "</td>";
-            $return_html .= "<tr><th>Disable graph custom variable</th><td>" . $this->custvardisable . "</td>";
-            $return_html .= "<tr><th>Graph config custom variable</th><td>" . $this->custvarconfig . "</td>";
+            $return_html .= "<tr><th>Dashboard Name</th><td>"
+                . $this->dashboard . "</td>";
+            $return_html .= "<tr><th>Organization ID</th><td>"
+                . $this->orgId . "</td>";
+            $return_html .= "<tr><th>Panel ID from GraphConfig</th><td>"
+                . $this->getGraphConfigOption(
+                    $serviceName,
+                    'panelId',
+                    $this->defaultDashboardPanelId)
+                . "</td>";
+            $return_html .= "<tr><th>Last Panel ID</th><td>"
+                . $this->panelId . "</td>";
+            $return_html .= "<tr><th>Number of metrics</th><td>"
+                . substr_count($object->perfdata, '=') . "</td>";
+            $return_html .= "<tr><th>Number of metrics per panel</th><td>"
+                . $this->numberMetrics . "</td>";
+            $return_html .= "<tr><th>Theme</th><td>"
+                . $this->grafanaTheme . "</td>";
+            $return_html .= "<tr><th>Timerange</th><td>"
+                . $this->timerange . "</td>";
+            $return_html .= "<tr><th>Timerangeto</th><td>"
+                . $this->timerangeto . "</td>";
+            $return_html .= "<tr><th>Graph Type</th><td>"
+                . $this->graphType . "</td>";
+            $return_html .= "<tr><th>Object Perfdata</th><td>"
+                . $object->perfdata . "</td>";
+            $return_html .= "<tr><th>Width</th><td>"
+                . $this->width . "</td>";
+            $return_html .= "<tr><th>Height</th><td>"
+                . $this->height . "</td>";
+            $return_html .= "<tr><th>Custom Variables</th><td>"
+                . $this->customVars . "</td>";
+            $return_html .= "<tr><th>Graph URL</th><td>"
+                . $usedUrl . "</td>";
+            $return_html .= "<tr><th>Disable graph custom variable</th><td>"
+                . $this->custvardisable . "</td>";
+            $return_html .= "<tr><th>Graph config custom variable</th><td>"
+                . $this->custvarconfig . "</td>";
             if (isset($object->customvars[$this->custvarconfig])) {
-                $return_html .= "<tr><th>" . $this->custvarconfig . "</th><td>" . $object->customvars[$this->custvarconfig] . "</td>";
+                $return_html .= "<tr><th>" . $this->custvarconfig . "</th><td>"
+                    . $object->customvars[$this->custvarconfig] . "</td>";
             }
-            $return_html .= "<tr><th>Shadows</th><td>" . (($this->shadows) ? 'Yes' : 'No') . "</td>";
+            $return_html .= "<tr><th>Shadows</th><td>"
+                . (($this->shadows) ? 'Yes' : 'No') . "</td>";
             if ($this->accessMode == "proxy") {
-                $return_html .= "<tr><th>SSL Verify Peer</th><td>" . (($this->SSLVerifyPeer) ? 'Yes' : 'No') . "</td>";
-                $return_html .= "<tr><th>SSL Verify Host</th><td>" . (($this->SSLVerifyHost) ? 'Yes' : 'No') . "</td>";
+                $return_html .= "<tr><th>SSL Verify Peer</th><td>"
+                . (($this->SSLVerifyPeer) ? 'Yes' : 'No') . "</td>";
+                $return_html .= "<tr><th>SSL Verify Host</th><td>"
+                . (($this->SSLVerifyHost) ? 'Yes' : 'No') . "</td>";
             }
             $return_html .= " </tbody></table>";
 
