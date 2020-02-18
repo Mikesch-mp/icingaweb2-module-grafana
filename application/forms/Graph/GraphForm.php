@@ -114,19 +114,19 @@ class GraphForm extends ConfigForm
         );
         $this->addElement(
             'number',
-            'height',
+            'width',
             array(
-                'label'         => $this->translate('Graph height'),
-                'description'   => $this->translate('The graph height in pixel.'),
+                'label'         => $this->translate('Graph width'),
+                'description'   => $this->translate('The graph width in pixel.'),
                 'required'      => false
             )
         );
         $this->addElement(
             'number',
-            'width',
+            'height',
             array(
-                'label'         => $this->translate('Graph width'),
-                'description'   => $this->translate('The graph width in pixel.'),
+                'label'         => $this->translate('Graph height'),
+                'description'   => $this->translate('The graph height in pixel.'),
                 'required'      => false
             )
         );

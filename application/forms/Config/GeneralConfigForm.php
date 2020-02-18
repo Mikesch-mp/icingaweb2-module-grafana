@@ -311,17 +311,8 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-
-        if (isset($formData['grafana_accessmode']) && ( $formData['grafana_accessmode'] != 'iframe' )) {
-            $this->addElement(
-                'number',
-                'grafana_height',
-                array(
-                    'value' => '280',
-                    'label' => $this->translate('Graph height'),
-                    'description' => $this->translate('The default graph height in pixels.')
-                )
-            );
+        if (isset($formData['grafana_accessmode'])
+            && ( $formData['grafana_accessmode'] != 'iframe' )) {
             $this->addElement(
                 'number',
                 'grafana_width',
@@ -329,6 +320,15 @@ class GeneralConfigForm extends ConfigForm
                     'value' => '640',
                     'label' => $this->translate('Graph width'),
                     'description' => $this->translate('The default graph width in pixels.')
+                )
+            );
+            $this->addElement(
+                'number',
+                'grafana_height',
+                array(
+                    'value' => '280',
+                    'label' => $this->translate('Graph height'),
+                    'description' => $this->translate('The default graph height in pixels.')
                 )
             );
             $this->addElement(
