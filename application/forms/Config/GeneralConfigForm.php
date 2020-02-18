@@ -120,7 +120,8 @@ class GeneralConfigForm extends ConfigForm
                 'description' => $this->translate('Name of the default dashboard.'),
             )
         );
-        if (isset($formData['grafana_version']) && $formData['grafana_version'] === '1' ) {
+        if (isset($formData['grafana_version'])
+            && $formData['grafana_version'] === '1' ) {
             $this->addElement(
                 'text',
                 'grafana_defaultdashboarduid',
@@ -131,16 +132,40 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        $this->addElement(
-            'number',
-            'grafana_defaultdashboardpanelid',
-            array(
-                'value' => '1',
-                'label' => $this->translate('Default panel id'),
-                'description' => $this->translate('Id of the panel used in the default dashboard.'),
-                'required' => true,
-            )
-        );
+        if (isset($formData['grafana_datasource'])
+            && $formData['grafana_datasource'] === 'graphite' ) {
+            $this->addElement(
+                'number',
+                'grafana_defaultdashboardpanelid_host',
+                array(
+                    'value' => '2',
+                    'label' => $this->translate('Default host panel id '),
+                    'description' => $this->translate('Id of the panel used in the default dashboard for displaying a graph attached to a host.'),
+                    'required' => true,
+                )
+            );
+            $this->addElement(
+                'number',
+                'grafana_defaultdashboardpanelid_services',
+                array(
+                    'value' => '1',
+                    'label' => $this->translate('Default services panel id '),
+                    'description' => $this->translate('Id of the panel used in the default dashboard for displaying a graph attached to services.'),
+                    'required' => true,
+                )
+            );
+        } else {
+            $this->addElement(
+                'number',
+                'grafana_defaultdashboardpanelid',
+                array(
+                    'value' => '1',
+                    'label' => $this->translate('Default panel id'),
+                    'description' => $this->translate('Id of the panel used in the default dashboard.'),
+                    'required' => true,
+                )
+            );
+        }
         $this->addElement(
             'number',
             'grafana_defaultorgid',
@@ -159,7 +184,8 @@ class GeneralConfigForm extends ConfigForm
                 'description' => $this->translate('Show shadows around the graph.'),
             )
         );
-        if (! isset($formData['grafana_version']) || $formData['grafana_version'] === '0' ) {
+        if (! isset($formData['grafana_version'])
+            || $formData['grafana_version'] === '0' ) {
             $this->addElement(
                 'select',
                 'grafana_defaultdashboardstore',
@@ -199,6 +225,24 @@ class GeneralConfigForm extends ConfigForm
                 'description' => $this->translate('Grafana Datasource Type.')
             )
         );
+        if (isset($formData['grafana_datasource'])
+            && $formData['grafana_datasource'] === 'graphite' ) {
+            $this->addElement(
+                'select',
+                'grafana_graphType',
+                array(
+                    'label' => 'Graphite graph type',
+                    'value' => 'auto',
+                    'multiOptions' => array(
+                        'auto' => $this->translate('Automatic selection (host/services)'),
+                        'host' => $this->translate('Force branch host'),
+                        'services' => $this->translate('Force branch services'),
+                    ),
+                'description' => $this->translate('Determine the branch to be chosen in the graphite backend.'),
+                'class' => 'autosubmit',
+                )
+            );
+        }
         $this->addElement(
             'select',
             'grafana_accessmode',
@@ -216,7 +260,9 @@ class GeneralConfigForm extends ConfigForm
             )
         );
 
-        if (isset($formData['grafana_accessmode']) && ($formData['grafana_accessmode'] === 'proxy' || $formData['grafana_accessmode'] === 'indirectproxy')) {
+        if (isset($formData['grafana_accessmode'])
+            && ($formData['grafana_accessmode'] === 'proxy'
+            || $formData['grafana_accessmode'] === 'indirectproxy')) {
             $this->addElement(
                 'number',
                 'grafana_proxytimeout',
@@ -241,7 +287,8 @@ class GeneralConfigForm extends ConfigForm
                     'class' => 'autosubmit'
                 )
             );
-            if (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'basic' ) {
+            if (isset($formData['grafana_authentication'])
+                && $formData['grafana_authentication'] === 'basic' ) {
                     $this->addElement(
                         'text',
                         'grafana_username',
@@ -261,7 +308,8 @@ class GeneralConfigForm extends ConfigForm
                             'required' => true
                         )
                     );
-            } elseif (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'token' ) {
+            } elseif (isset($formData['grafana_authentication'])
+                && $formData['grafana_authentication'] === 'token' ) {
                 $this->addElement(
                     'text',
                     'grafana_apitoken',
@@ -273,8 +321,8 @@ class GeneralConfigForm extends ConfigForm
                 );
             }
         }
-
-        if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'direct') {
+        if (isset($formData['grafana_accessmode'])
+            && $formData['grafana_accessmode'] === 'direct') {
             $this->addElement(
                 'select',
                 'grafana_directrefresh',
@@ -289,7 +337,8 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'indirectproxy') {
+        if (isset($formData['grafana_accessmode'])
+            && $formData['grafana_accessmode'] === 'indirectproxy') {
             $this->addElement(
                 'select',
                 'grafana_indirectproxyrefresh',
@@ -304,17 +353,8 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-
-        if (isset($formData['grafana_accessmode']) && ( $formData['grafana_accessmode'] != 'iframe' )) {
-            $this->addElement(
-                'number',
-                'grafana_height',
-                array(
-                    'value' => '280',
-                    'label' => $this->translate('Graph height'),
-                    'description' => $this->translate('The default graph height in pixels.')
-                )
-            );
+        if (isset($formData['grafana_accessmode'])
+            && ( $formData['grafana_accessmode'] != 'iframe' )) {
             $this->addElement(
                 'number',
                 'grafana_width',
@@ -322,6 +362,15 @@ class GeneralConfigForm extends ConfigForm
                     'value' => '640',
                     'label' => $this->translate('Graph width'),
                     'description' => $this->translate('The default graph width in pixels.')
+                )
+            );
+            $this->addElement(
+                'number',
+                'grafana_height',
+                array(
+                    'value' => '280',
+                    'label' => $this->translate('Graph height'),
+                    'description' => $this->translate('The default graph height in pixels.')
                 )
             );
             $this->addElement(
@@ -339,7 +388,9 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_enableLink']) && ( $formData['grafana_enableLink'] === 'yes') && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (isset($formData['grafana_enableLink'])
+            && ( $formData['grafana_enableLink'] === 'yes')
+            && ( $formData['grafana_accessmode'] != 'iframe' )) {
             $this->addElement(
                 'select',
                 'grafana_usepublic',
@@ -355,7 +406,9 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_usepublic']) && ( $formData['grafana_usepublic'] === 'yes' ) && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (isset($formData['grafana_usepublic'])
+            && ( $formData['grafana_usepublic'] === 'yes' )
+            && ( $formData['grafana_accessmode'] != 'iframe' )) {
             $this->addElement(
                 'text',
                 'grafana_publichost',
@@ -385,7 +438,7 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'value'=> false,
                 'label' => $this->translate('Show debug'),
-                'description' => $this->translate('Show debuging information.'),
+                'description' => $this->translate('Show debug information.'),
             )
         );
     }
