@@ -23,8 +23,8 @@ class DashboardController extends Controller
             'url' => $this->getRequest()->getUrl()
         ));
 
-        $hostname = $this->params->getRequired('host');
-        $servicename = $this->params->get('service');
+        $hostname = urldecode($this->params->getRequired('host'));
+        $servicename = urldecode($this->params->get('service'));
 
         if ($servicename != null) {
             $object = new Service($this->backend, $hostname, $servicename);
