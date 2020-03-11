@@ -22,11 +22,15 @@ class GraphController extends Controller
      */
     public function indexAction()
     {
+/*
         $this->getTabs()->add('graphs', array(
             'active'    => true,
             'label'     => $this->translate('Graphs'),
             'url'       => $this->getRequest()->getUrl()
         ));
+        $this->view->graphs = $this->Config('graphs');
+*/
+        $this->view->tabs = $this->Module()->getConfigTabs()->activate('graph');
         $this->view->graphs = $this->Config('graphs');
     }
     /**
