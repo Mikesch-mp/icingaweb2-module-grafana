@@ -654,6 +654,6 @@ class Grapher extends GrapherHook
             $return_html .= " </tbody></table>";
 
         }
-        return '<div class="icinga-module module-grafana">' . $this->title . $menu . $return_html . '</div>';
+        return '<div class="icinga-module module-grafana" style="display: inline-block;">' . $this->title . $menu . $return_html . '</div>';
     }
 }
