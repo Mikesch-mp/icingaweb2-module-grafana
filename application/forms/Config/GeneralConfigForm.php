@@ -168,6 +168,7 @@ class GeneralConfigForm extends ConfigForm
                 'multiOptions' => array(
                     'influxdb' => $this->translate('InfluxDB'),
                     'graphite' => $this->translate('Graphite'),
+                    'prometheus' => $this->translate('Prometheus'),
                 ),
                 'description' => $this->translate('Grafana Datasource Type.')
             )
