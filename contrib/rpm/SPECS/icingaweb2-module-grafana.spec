@@ -26,8 +26,10 @@ tar -xzf %{SOURCE0} -C $RPM_BUILD_ROOT/usr/share/icingaweb2/modules/grafana --st
 
 %files
 %defattr(644,root,root,755)
-usr/share/icingaweb2/modules/
+/usr/share/icingaweb2/modules/grafana
 
 %changelog
+* Fri Nov 06 2020 Joern Ott <joern.ott@schufa.de>
+- Fix spec
 * Wed May 06 2020 Joern Ott <joern.ott@schufa.de>
 - Initial RPM spec
