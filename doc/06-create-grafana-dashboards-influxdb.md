@@ -59,7 +59,7 @@ Choose `Edit` from the opened menu. Now you will see a new menu below the graph.
 
  1. Change the `Data Source` to your InfluxDB data source if it is not your default data source.
  2. Choose a **fixed** measurement or change it to `/^$command$/` if you want it a more dynamically.
- 3. Add to where clause the `hostname =~ /^$hostname$/`.
+ 3. Add the where clause to `hostname =~ /^$hostname$/`.
  4. If you have more then one service for your host that uses **ping6** as command you should also add another where clause for the service with `service =~ /^$service$/`.
  5. Change `fill(null)` to `fill(none)`.
  6. Add `tag(metric)` in the same line where `fill(none)` is. This will give us all metric (short) names to use in the legend.
