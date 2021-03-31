@@ -19,45 +19,78 @@
      *
      * @param   content     {string}    The content to be rendered
      * @param   $container  {jQuery}    The target container
-     * @param   action      {string}    The URL that caused the reload
+     * @param   action      {string}    How the content should be inserted (`replace` or `append`)
      * @param   autorefresh {bool}      Whether the rendering is due to an auto-refresh
+     * @param   autoSubmit  {bool}      Whether the rendering is due to an auto-submit
      *
      * @return  {string|null}           The content to be rendered or null, when nothing should be changed
      */
-    Iframe.prototype.renderHook = function(content, $container, action, autorefresh) {
-        if (!autorefresh) {
+    Iframe.prototype.renderHook = function(content, $container, action, autorefresh, autoSubmit) {
+        if (! autorefresh) {
             return content;
+        }
+
+        var containerId = $container.attr('id');
+        if (containerId === 'menu' || containerId === 'application-state') {
+            // Exit early if there's no chance to find a grafana container
+            return content;
+        }
+
+        var $grafanaContainer = $container.find('.module-grafana');
+        if (! $grafanaContainer.length || ! $grafanaContainer.find('iframe').length) {
+            // Exit early if there's still no grafana container or no iframe in it
+            return content;
+        }
+
+        var $updates = $('<div>').html(content);
+
+        // Update controls and such
+        var $existingContent = $container.children('.content');
+        var newRootChildren = Array.prototype.slice.call($updates[0].children);
+        this.replaceSiblings(newRootChildren, '.content', $existingContent[0]);
+
+        var newChildren;
+        if ($container.is('.module-icingadb')) {
+            newChildren = Array.prototype.slice.call(
+                $updates.children('.content').children('.host-detail')[0].children
+            );
         } else {
-            var containerId = $container.attr('id');
-            if (containerId === 'menu' || containerId === 'application-state') {
-                return content;
-            }
+            newChildren = Array.prototype.slice.call($updates.children('.content')[0].children);
         }
 
-        if (!$container.find('iframe').length) {
-                return content;
+        // Update main content
+        this.replaceSiblings(newChildren, '.module-grafana', $grafanaContainer[0]);
+
+        return null;
+    };
+
+    /**
+     * Replace all siblings of the given refChild but leave the refChild itself alone
+     *
+     * @param {Array} newSiblings The new siblings, including a node representing the location of the refChild
+     * @param {string} refIdentifier A CSS selector to identify the node in newSiblings representing refChild
+     * @param {Node} refChild
+     */
+    Iframe.prototype.replaceSiblings = function(newSiblings, refIdentifier, refChild) {
+        // Remove the existing siblings first
+        while (refChild.previousSibling) {
+            refChild.previousSibling.remove();
+        }
+        while (refChild.nextSibling) {
+            refChild.nextSibling.remove();
         }
 
-        var $children = $container.children();
-        var $contentChildren = $container.find('.content').children();
-        var $content = $('<div>').html(content);
-
-        $content.children().each(function(idx) {
-            var $child = $(this);
-            if (!$child.hasClass('content')) {
-                $($children[idx]).html($child.html());
+        // Then insert the updated siblings, but leave the reference node alone
+        var refPassed = false;
+        $.each(newSiblings, function (_, newSibling) {
+            if (newSibling.matches(refIdentifier)) {
+                refPassed = true;
+            } else if (! refPassed) {
+                refChild.parentNode.insertBefore(newSibling, refChild);
             } else {
-                $child.children().each(function(contentIdx) {
-                    var $contentChild = $(this);
-                    // All the iframes we use have this class, overwrite any others
-                    if (!$contentChild.hasClass('module-grafana') || $contentChild.hasClass('quick-actions')) {
-                        $($contentChildren[contentIdx]).html($contentChild.html());
-                    }
-                });
+                refChild.parentNode.appendChild(newSibling);
             }
         });
-        $container.find('.controls .tabs').after('<div class="tabs-spacer">');
-        return null;
     };
 
     Icinga.Behaviors = Icinga.Behaviors || {};
