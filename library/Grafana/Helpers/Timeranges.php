@@ -135,7 +135,7 @@ class Timeranges
         $menu .= '</tr></table>';
         $menu .= '<script type="text/javascript">
 $( document ).ready(function() {
-    $("a.grafana-module-tr-apply").click(function() {
+    $("a.grafana-module-tr-apply").on("click", function() {
         var old_href = $(this).attr("href");
         var tr_from = $("input[name=tr-from]").val();
         var tr_to = $("input[name=tr-to]").val();
