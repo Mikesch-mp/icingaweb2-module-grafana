@@ -359,11 +359,10 @@ class Grapher extends GrapherHook
                 $serviceName,
                 $this->width,
                 $this->height
-
             );
         } elseif ($this->accessMode == "direct") {
             if ($this->grafanaVersion == "1") {
-                $imghtml = '<div style="min-height: %spx;"><img src="%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" /></div>';
+                $imghtml = '<div style="min-height: %spx;"><img src="%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s&tz=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" /></div>';
                 $previewHtml = sprintf(
                     $imghtml,
                     $this->height,
@@ -383,12 +382,13 @@ class Grapher extends GrapherHook
                     urlencode($this->timerange),
                     urlencode($this->timerangeto),
                     $this->refresh,
+                    date_default_timezone_get(),
                     rawurlencode($serviceName),
                     $this->width,
                     $this->height
                 );
             } else {
-                $imghtml = '<div style="min-height: %spx;"><img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" /></div>';
+                $imghtml = '<div style="min-height: %spx;"><img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s&tz=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" /></div>';
                 $previewHtml = sprintf(
                     $imghtml,
                     $this->height,
@@ -408,6 +408,7 @@ class Grapher extends GrapherHook
                     urlencode($this->timerange),
                     urlencode($this->timerangeto),
                     $this->refresh,
+                    date_default_timezone_get(),
                     rawurlencode($serviceName),
                     $this->width,
                     $this->height
@@ -415,7 +416,7 @@ class Grapher extends GrapherHook
             }
         } elseif ($this->accessMode == "iframe") {
             if ($this->grafanaVersion == "1") {
-                $iframehtml = '<iframe src="%s://%s/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+                $iframehtml = '<iframe src="%s://%s/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s&tz=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
                 $previewHtml = sprintf(
                     $iframehtml,
                     $this->protocol,
@@ -431,11 +432,12 @@ class Grapher extends GrapherHook
                     $this->grafanaTheme,
                     urlencode($this->timerange),
                     urlencode($this->timerangeto),
+                    date_default_timezone_get(),
                     rawurlencode($serviceName),
                     $this->height
                 );
             } else {
-                $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+                $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s&tz=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
                 $previewHtml = sprintf(
                     $iframehtml,
                     $this->protocol,
@@ -451,6 +453,7 @@ class Grapher extends GrapherHook
                     $this->grafanaTheme,
                     urlencode($this->timerange),
                     urlencode($this->timerangeto),
+                    date_default_timezone_get(),
                     rawurlencode($serviceName),
                     $this->height
                 );

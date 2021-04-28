@@ -301,7 +301,7 @@ class ImgController extends MonitoringAwareController
         if ($this->grafanaVersion == "1")
         {
             $this->pngUrl = sprintf(
-                '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
+                '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&tz=%s',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboarduid,
@@ -316,12 +316,13 @@ class ImgController extends MonitoringAwareController
                 $this->height,
                 $this->grafanaTheme,
                 urlencode($this->timerange),
-                urlencode($this->timerangeto)
+                urlencode($this->timerangeto),
+                date_default_timezone_get()
             );
         } else {
 
             $this->pngUrl = sprintf(
-                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
+                '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&tz=%s',
                 $this->protocol,
                 $this->grafanaHost,
                 $this->dashboardstore,
@@ -336,7 +337,8 @@ class ImgController extends MonitoringAwareController
                 $this->height,
                 $this->grafanaTheme,
                 urlencode($this->timerange),
-                urlencode($this->timerangeto)
+                urlencode($this->timerangeto),
+                date_default_timezone_get()
             );
         }
 
