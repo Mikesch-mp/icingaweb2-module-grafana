@@ -6,9 +6,10 @@ to the latest version, please [read on here](05-update.md).
 
 ## Requirements
 
-* [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.1)
-* [Grafana](https://grafana.com/) (>= 4.1)
-* [InfluxDB](https://docs.influxdata.com/influxdb/) (>= 1.0) [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
+* [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>=
+  2.8.2)
+* [Grafana](https://grafana.com/) (>= 7.0)
+* [InfluxDB](https://docs.influxdata.com/influxdb/) (>= 1.0) [Graphite](https://graphiteapp.org) as backend for Grafana
 * [PHP 7](https://www.php.net) **with curl enabled** (for proxy mode)
 
 
