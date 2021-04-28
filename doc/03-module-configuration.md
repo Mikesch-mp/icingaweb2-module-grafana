@@ -61,7 +61,6 @@ ssl_verifyhost = "0"
 
 |Setting                | Short description|
 |-----------------------|-----------------------|
-|version                | **Optional** If you want to use Grafana 5 with all features, enable this option with `1`(true). Defaults to `0` (false).
 |host                   | **Required.** Grafana server host name (and port).|
 |protocol               | **Optional.** Protocol used to access the Grafana server. Defaults to `http`.|
 |height                 | **Optional.** Global graph height in pixel. Defaults to `280`.|
@@ -76,13 +75,12 @@ ssl_verifyhost = "0"
 |shadows                | **Optional.** Show shadows around the graphs. ** Defaults to `false`.|
 |defaultorgid           | **Required.** Number of the default organization id where dashboards are located. Defaults to `1`.
 |defaultdashboardstore  | **Optional.** Grafana backend (file or database). Defaults to `Database`.|
-|accessmode             | **Optional.** Controls whether graphs are fetched with curl (`proxy` & `indirectproxy`), are embedded (`direct`) or in iframe ('iframe'). Direct access & iframe needs `auth.anonymous` enabled in Grafana. Defaults to `proxy`.|
+|accessmode             | **Optional.** Controls whether graphs are fetched with curl (`indirectproxy`) or in iframe ('iframe'). Iframe needs `auth.anonymous` enabled in Grafana. Defaults to `indirectproxy`.|
 |timeout                | **Proxy only** **Optional.** Timeout in seconds for proxy mode to fetch images. Defaults to `5`.|
 |authentication         | **Proxy only** Authentication type used to acccess Grafana. Can be set to `anon`,`token` or `basic`. Defaults to `anon`.
 |username               | **Proxy with basic only** **Required** HTTP Basic Auth user name to access Grafana.|
 |password               | **Proxy with basic only** **Required** HTTP Basic Auth password to access Grafana. Requires the username setting.|
 |apitoken               | **Proxy with token only** **Required** API token used to access Grafana.|
-|directrefresh          | **Direct Only** **Optional.** Refresh graphs on direct access. Defaults to `no`.|
 |indirectproxyrefresh   | **Indirect Proxy Only** **Optional.** Refresh graphs on indirect proxy mode. Defaults to `yes`.|
 |usepublic              | **Optional** Enable usage of publichost/protocol. Defaults to `no`.|
 |publichost             | **Optional** Use a diffrent host for the graph links.|
@@ -96,9 +94,6 @@ ssl_verifyhost = "0"
 
 
 ---
-
-### version
-If you want to use full Grafana 5 features, set this to `1`. Defaults to `false`
 
 ### host
 **Required** Hostname and port or Grafana url depending on your Grafana installation.
@@ -128,7 +123,7 @@ Time range for all graphs feature. Defaults to `Previous week`
 Enable or disable the graphs as a link to the Grafana Server.
 
 ### datasource
-The datasource that Grafana server uses. Can be InfluxDB, Graphite and PNP (untested).
+The datasource that Grafana server uses. Can be InfluxDB, Graphite.
 
 ### defaultorgid
 Number of the default organization id where dashboards are located. Defaults to `1`.
@@ -145,33 +140,19 @@ For example the URL is 'https://192.168.178.52:3000/d/FxAre-ekz/icinga2-default?
 
 ### defaultdashboardpanelid
 The id of the panel used in the defaul dashboard. Defaults to `1`.
-This is needed if you use **Grafana 5** and imported or created a new default dashboard, because the first useable panel id is now `2`.
-
-### defaultdashboardstore
-The dashboard store, `database`or `file`, that is used by Grafana server. Defaults to `database`
 
 ### shadows
 Enable/Disable fancy shadows around the graph image.
 
 ### accessmode
-Controls ihow the graphs are fetched/delivered for/to the users. Defaults to `proxy`.
-
-#### proxy
-With this mode the graphs are feteched with curl on **server side**. The image will be served by Icingaweb2 to the users.
-Here you can use `auth.anonymous`, `auth.basic` or use a [API Token](03-module-configuration.md#apitoken)
-Pro: Very secure
-Contra: slower page rendering, because Icingaweb2 needs to load the image first from Grafana.
+Controls ihow the graphs are fetched/delivered for/to the users.
+Defaults to `indirectproxy`.
 
 #### indirectproxy
 This mode the module still will feth the graphs with curl on **server side**, but the images are given by reference.
 This will speed up the page load, but the image will take some seconds to show up.
 Pro: Very fast page loading, very secure.
 Contra: Images take some seconds to show up.
-
-#### direct
-With `direct` access, the graph images are loaded from the users directly from the Grafana server.
-Pro: fast page rendering, refresh of graph can be disabled by option.
-Contra: Less secure then proxy mode. Needs `auth.anonymous` enabled in Grafana.
 
 #### iframe
 In Iframe mode you have the full power of Grafana features like mouse over tooltip.
@@ -207,10 +188,6 @@ The password used to authenticate to Grafana server.
 
 ### apitoken
 API token used to access Grafana. See [Create API Token](http://docs.grafana.org/http_api/auth/#create-api-token) for details how to create a API token.
-
-### directrefresh
-Only for `direct` access mode. Enables or disable graph refresh.
-Defaults to `no`.
 
 ### indirectproxyrefresh
 Only for `indirectproxy` access mode. Enables or disable graph refresh with an interval of the service interval.

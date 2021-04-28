@@ -22,16 +22,6 @@ class GeneralConfigForm extends ConfigForm
     public function createElements(array $formData)
     {
         $this->addElement(
-            'checkbox',
-            'grafana_version',
-            array(
-                'value'=> false,
-                'label' => $this->translate('Use Grafana v5'),
-                'description' => $this->translate('Use Grafana version 5 UID feature.'),
-                'class' => 'autosubmit',
-            )
-        );
-        $this->addElement(
             'text',
             'grafana_host',
             array(
@@ -120,17 +110,15 @@ class GeneralConfigForm extends ConfigForm
                 'description' => $this->translate('Name of the default dashboard.'),
             )
         );
-        if (isset($formData['grafana_version']) && $formData['grafana_version'] === '1' ) {
-            $this->addElement(
-                'text',
-                'grafana_defaultdashboarduid',
-                array(
-                    'label' => $this->translate('Default dashboard UID'),
-                    'description' => $this->translate('UID of the default dashboard.'),
-                    'required' => true,
-                )
-            );
-        }
+        $this->addElement(
+            'text',
+            'grafana_defaultdashboarduid',
+            array(
+                'label' => $this->translate('Default dashboard UID'),
+                'description' => $this->translate('UID of the default dashboard.'),
+                'required' => true,
+            )
+        );
         $this->addElement(
             'number',
             'grafana_defaultdashboardpanelid',
@@ -159,20 +147,6 @@ class GeneralConfigForm extends ConfigForm
                 'description' => $this->translate('Show shadows around the graph.'),
             )
         );
-        if (! isset($formData['grafana_version']) || $formData['grafana_version'] === '0' ) {
-            $this->addElement(
-                'select',
-                'grafana_defaultdashboardstore',
-                array(
-                    'label' => $this->translate('Datasource Backend'),
-                    'multiOptions' => array(
-                        'db' => $this->translate('Database'),
-                        'file' => $this->translate('File'),
-                    ),
-                    'description' => $this->translate('Grafana Backend Type.')
-                )
-            );
-        }
         $this->addElement(
             'select',
             'grafana_theme',
@@ -194,7 +168,6 @@ class GeneralConfigForm extends ConfigForm
                 'multiOptions' => array(
                     'influxdb' => $this->translate('InfluxDB'),
                     'graphite' => $this->translate('Graphite'),
-                    'pnp' => $this->translate('PNP'),
                 ),
                 'description' => $this->translate('Grafana Datasource Type.')
             )
@@ -205,8 +178,6 @@ class GeneralConfigForm extends ConfigForm
             array(
                 'label' => $this->translate('Grafana access'),
                 'multiOptions' => array(
-                    'direct' => $this->translate('Direct'),
-                    'proxy' => $this->translate('Proxy'),
                     'indirectproxy' => $this->translate('Indirect Proxy'),
                     'iframe' => $this->translate('iFrame'),
                 ),
@@ -216,7 +187,7 @@ class GeneralConfigForm extends ConfigForm
             )
         );
 
-        if (isset($formData['grafana_accessmode']) && ($formData['grafana_accessmode'] === 'proxy' || $formData['grafana_accessmode'] === 'indirectproxy')) {
+        if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'indirectproxy') {
             $this->addElement(
                 'number',
                 'grafana_proxytimeout',
@@ -274,21 +245,6 @@ class GeneralConfigForm extends ConfigForm
             }
         }
 
-        if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'direct') {
-            $this->addElement(
-                'select',
-                'grafana_directrefresh',
-                array(
-                    'label' => $this->translate('Refresh on direct'),
-                    'value' => 'no',
-                    'multiOptions' => array(
-                        'yes' => $this->translate('Yes'),
-                        'no' => $this->translate('No'),
-                    ),
-                    'description' => $this->translate('Refresh graphs on direct access.')
-                )
-            );
-        }
         if (isset($formData['grafana_accessmode']) && $formData['grafana_accessmode'] === 'indirectproxy') {
             $this->addElement(
                 'select',
@@ -390,4 +346,3 @@ class GeneralConfigForm extends ConfigForm
         );
     }
 }
-

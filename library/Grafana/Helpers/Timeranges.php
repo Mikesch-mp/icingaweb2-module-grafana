@@ -123,38 +123,7 @@ class Timeranges
             $timerangeto = $d->format("Y-m-d H:i:s");
         }
 
-        unset($this->urlparams['timerange']);
-        $form_link = $this->view->url($this->link, $this->urlparams);
-        $menu .= '<td>
-                    <form method="get" class="grafana-module-tr-form" action="'.$form_link.'">
-                        <input type="text" value="'.$timerange.'" placeholder="from" name="tr-from" style="width: 8em;"/><br />
-                        <input type="text" value="'.$timerangeto.'" placeholder="to" name="tr-to" style="width: 8em;"/>
-                        <a href="'.$form_link.'" data-base-target="_self" class="action-link grafana-module-tr-apply">Apply</a>
-                    </form>
-                  </td>';
         $menu .= '</tr></table>';
-        $menu .= '<script type="text/javascript">
-$( document ).ready(function() {
-    $("a.grafana-module-tr-apply").on("click", function() {
-        var old_href = $(this).attr("href");
-        var tr_from = $("input[name=tr-from]").val();
-        var tr_to = $("input[name=tr-to]").val();
-        
-        var d_tr_from = new Date(tr_from);
-        var d_tr_to = new Date(tr_to);
-                
-        if(d_tr_from != "Invalid Date") {
-            tr_from = d_tr_from.getTime();
-        }
-        if(d_tr_to != "Invalid Date") {
-            tr_to = d_tr_to.getTime();
-        }
-        
-        var new_href = old_href + "&tr-from=" + encodeURIComponent(tr_from) + "&tr-to=" + encodeURIComponent(tr_to);
-        $(this).attr("href", new_href);
-    });    
-});
-</script>';
         return $menu;
     }
 

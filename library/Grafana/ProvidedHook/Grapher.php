@@ -88,15 +88,14 @@ class Grapher extends GrapherHook
         // Confid needed for Grafana
         $this->defaultDashboard = $this->config->get('defaultdashboard', $this->defaultDashboard);
         $this->defaultdashboarduid = $this->config->get('defaultdashboarduid', null);
-        if ($this->grafanaVersion == "1" && is_null($this->defaultdashboarduid)) {
+        if (is_null($this->defaultdashboarduid)) {
             throw new ConfigurationError(
-                'Usage of Grafana 5 is configured but no UID for default dashboard found!'
+                'no UID for default dashboard found!'
             );
         }
         $this->defaultDashboardPanelId = $this->config->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
         $this->defaultOrgId = $this->config->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->config->get('theme', $this->grafanaTheme);
-        $this->defaultDashboardStore = $this->config->get('defaultdashboardstore', $this->defaultDashboardStore);
         $this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
 
@@ -106,11 +105,6 @@ class Grapher extends GrapherHook
          * Read the global default timerange
          */
         $this->timerange = $this->config->get('timerange', $this->timerange);
-        /**
-         * Direct mode refresh graphs trick
-         */
-        $this->refresh = $this->config->get('directrefresh', $this->refresh);
-        $this->refresh = ($this->refresh == "yes" && $this->accessMode == "direct" ? time() : 'now');
         /**
          * Datasource needed to regex special chars
          */
@@ -225,112 +219,7 @@ class Grapher extends GrapherHook
     private function getMyPreviewHtml($serviceName, $hostName, &$previewHtml)
     {
         $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
-        if ($this->accessMode == "proxy") {
-
-            // Test whether curl is loaded
-            if (extension_loaded('curl') === false) {
-                $previewHtml = "<b>CURL extension is missing. Please install CURL for PHP and ensure it is loaded.</b>";
-                return false;
-            }
-            if ($this->grafanaVersion == "1") {
-                $this->pngUrl = sprintf(
-                    '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
-                    $this->protocol,
-                    $this->grafanaHost,
-                    $this->dashboarduid,
-                    $this->dashboard,
-                    rawurlencode($hostName),
-                    rawurlencode($serviceName),
-                    rawurlencode($this->object->check_command),
-                    $this->customVars,
-                    $this->panelId,
-                    $this->orgId,
-                    $this->width,
-                    $this->height,
-                    $this->grafanaTheme,
-                    urlencode($this->timerange),
-                    urlencode($this->timerangeto)
-                );
-            } else {
-
-                $this->pngUrl = sprintf(
-                    '%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
-                    $this->protocol,
-                    $this->grafanaHost,
-                    $this->dashboardstore,
-                    $this->dashboard,
-                    rawurlencode($hostName),
-                    rawurlencode($serviceName),
-                    rawurlencode($this->object->check_command),
-                    $this->customVars,
-                    $this->panelId,
-                    $this->orgId,
-                    $this->width,
-                    $this->height,
-                    $this->grafanaTheme,
-                    urlencode($this->timerange),
-                    urlencode($this->timerangeto)
-                );
-            }
-            // fetch image with curl
-            $curl_handle = curl_init();
-            $curl_opts = array(
-                CURLOPT_URL => $this->pngUrl,
-                CURLOPT_CONNECTTIMEOUT => 2,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_SSL_VERIFYPEER => $this->SSLVerifyPeer,
-                CURLOPT_SSL_VERIFYHOST => ($this->SSLVerifyHost) ? 2 : 0,
-                CURLOPT_TIMEOUT => $this->proxyTimeout,
-                CURLOPT_USERPWD => "$this->auth",
-                CURLOPT_HTTPAUTH,
-                CURLAUTH_ANY
-            );
-
-            if ($this->authentication == "token") {
-                $curl_opts[CURLOPT_HTTPHEADER] = array(
-                    'Content-Type: application/json',
-                    "Authorization: Bearer " . $this->apiToken
-                );
-            } else {
-                $curl_opts[CURLOPT_USERPWD] = "$this->auth";
-            }
-
-            curl_setopt_array($curl_handle, $curl_opts);
-            $res = curl_exec($curl_handle);
-
-            $statusCode = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-
-            if ($res === false) {
-                $previewHtml .= "<b>Cannot fetch graph with curl:</b> '" . curl_error($curl_handle) . "'.";
-
-                //provide a hint for 'Failed to connect to ...: Permission denied'
-                if (curl_errno($curl_handle) == 7) {
-                    $previewHtml .= " Check SELinux/Firewall.";
-                }
-                return false;
-            }
-
-            if ($statusCode > 299) {
-                $error = @json_decode($res);
-                $previewHtml .= "<b>Cannot fetch Grafana graph: " . Util::httpStatusCodeToString($statusCode) .
-                    " ($statusCode)</b>: " . ($error !== null && property_exists($error,
-                        'message') ? $error->message : "");
-                return false;
-            }
-
-            curl_close($curl_handle);
-
-            $img = 'data:image/png;base64,' . base64_encode($res);
-            $imghtml = '<img src="%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '"/>';
-            $previewHtml = sprintf(
-                $imghtml,
-                $img,
-                rawurlencode($serviceName),
-                $this->width,
-                $this->height
-            );
-        } elseif ($this->accessMode == "indirectproxy") {
+        if ($this->accessMode == "indirectproxy") {
             if ($this->object instanceof Service) {
                 $this->pngUrl = Url::frompath('grafana/img', array(
                     'host' => rawurlencode($hostName),
@@ -361,100 +250,26 @@ class Grapher extends GrapherHook
                 $this->height
 
             );
-        } elseif ($this->accessMode == "direct") {
-            if ($this->grafanaVersion == "1") {
-                $imghtml = '<div style="min-height: %spx;"><img src="%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" /></div>';
-                $previewHtml = sprintf(
-                    $imghtml,
-                    $this->height,
-                    $this->protocol,
-                    $this->grafanaHost,
-                    $this->dashboarduid,
-                    $this->dashboard,
-                    rawurlencode($hostName),
-                    rawurlencode($serviceName),
-                    rawurlencode($this->object->check_command),
-                    $this->customVars,
-                    $this->panelId,
-                    $this->orgId,
-                    $this->width,
-                    $this->height,
-                    $this->grafanaTheme,
-                    urlencode($this->timerange),
-                    urlencode($this->timerangeto),
-                    $this->refresh,
-                    rawurlencode($serviceName),
-                    $this->width,
-                    $this->height
-                );
-            } else {
-                $imghtml = '<div style="min-height: %spx;"><img src="%s://%s/render/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s&trickrefresh=%s" alt="%s" width="%spx" height="%spx" class="' . $imgClass . '" /></div>';
-                $previewHtml = sprintf(
-                    $imghtml,
-                    $this->height,
-                    $this->protocol,
-                    $this->grafanaHost,
-                    $this->dashboardstore,
-                    $this->dashboard,
-                    rawurlencode($hostName),
-                    rawurlencode($serviceName),
-                    rawurlencode($this->object->check_command),
-                    $this->customVars,
-                    $this->panelId,
-                    $this->orgId,
-                    $this->width,
-                    $this->height,
-                    $this->grafanaTheme,
-                    urlencode($this->timerange),
-                    urlencode($this->timerangeto),
-                    $this->refresh,
-                    rawurlencode($serviceName),
-                    $this->width,
-                    $this->height
-                );
-            }
         } elseif ($this->accessMode == "iframe") {
-            if ($this->grafanaVersion == "1") {
-                $iframehtml = '<iframe src="%s://%s/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
-                $previewHtml = sprintf(
-                    $iframehtml,
-                    $this->protocol,
-                    $this->grafanaHost,
-                    $this->dashboarduid,
-                    $this->dashboard,
-                    rawurlencode($hostName),
-                    rawurlencode($serviceName),
-                    rawurlencode($this->object->check_command),
-                    $this->customVars,
-                    $this->panelId,
-                    $this->orgId,
-                    $this->grafanaTheme,
-                    urlencode($this->timerange),
-                    urlencode($this->timerangeto),
-                    rawurlencode($serviceName),
-                    $this->height
-                );
-            } else {
-                $iframehtml = '<iframe src="%s://%s/dashboard-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
-                $previewHtml = sprintf(
-                    $iframehtml,
-                    $this->protocol,
-                    $this->grafanaHost,
-                    $this->dashboardstore,
-                    $this->dashboard,
-                    rawurlencode($hostName),
-                    rawurlencode($serviceName),
-                    rawurlencode($this->object->check_command),
-                    $this->customVars,
-                    $this->panelId,
-                    $this->orgId,
-                    $this->grafanaTheme,
-                    urlencode($this->timerange),
-                    urlencode($this->timerangeto),
-                    rawurlencode($serviceName),
-                    $this->height
-                );
-            }
+            $iframehtml = '<iframe src="%s://%s/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+            $previewHtml = sprintf(
+                $iframehtml,
+                $this->protocol,
+                $this->grafanaHost,
+                $this->dashboarduid,
+                $this->dashboard,
+                rawurlencode($hostName),
+                rawurlencode($serviceName),
+                rawurlencode($this->object->check_command),
+                $this->customVars,
+                $this->panelId,
+                $this->orgId,
+                $this->grafanaTheme,
+                urlencode($this->timerange),
+                urlencode($this->timerangeto),
+                rawurlencode($serviceName),
+                $this->height
+            );
         }
         return true;
     }
@@ -567,51 +382,31 @@ class Grapher extends GrapherHook
             if (!$res || $this->enableLink == "no" || !$this->permission->hasPermission('grafana/enablelink')) {
                 $html .= $previewHtml;
             } else {
-                if ($this->grafanaVersion == "1") {
-                    $html .= '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
 
-                    $html = sprintf(
-                        $html,
-                        $this->publicProtocol,
-                        $this->publicHost,
-                        $this->dashboarduid,
-                        $this->dashboard,
-                        rawurlencode(($this->dataSource == "graphite" ? Util::graphiteReplace($hostName) : $hostName)),
-                        rawurlencode(($this->dataSource == "graphite" ? Util::graphiteReplace($serviceName) : $serviceName)),
-                        rawurlencode($this->object->check_command),
-                        $this->customVars,
-                        urlencode($this->timerange),
-                        urlencode($this->timerangeto),
-                        $this->orgId,
-                        $this->panelId,
-                        $previewHtml
-                    );
-                } else {
-                    $html .= '<a href="%s://%s/dashboard/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&panelId=%s&fullscreen" target="_blank">%s</a>';
+                $html .= '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&viewPanel=%s" target="_blank">%s</a>';
 
-                    $html = sprintf(
-                        $html,
-                        $this->publicProtocol,
-                        $this->publicHost,
-                        $this->dashboardstore,
-                        $this->dashboard,
-                        rawurlencode(($this->dataSource == "graphite" ? Util::graphiteReplace($hostName) : $hostName)),
-                        rawurlencode(($this->dataSource == "graphite" ? Util::graphiteReplace($serviceName) : $serviceName)),
-                        rawurlencode($this->object->check_command),
-                        $this->customVars,
-                        urlencode($this->timerange),
-                        urlencode($this->timerangeto),
-                        $this->orgId,
-                        $this->panelId,
-                        $previewHtml
-                    );
-                }
+                $html = sprintf(
+                    $html,
+                    $this->publicProtocol,
+                    $this->publicHost,
+                    $this->dashboarduid,
+                    $this->dashboard,
+                    rawurlencode(($this->dataSource == "graphite" ? Util::graphiteReplace($hostName) : $hostName)),
+                    rawurlencode(($this->dataSource == "graphite" ? Util::graphiteReplace($serviceName) : $serviceName)),
+                    rawurlencode($this->object->check_command),
+                    $this->customVars,
+                    urlencode($this->timerange),
+                    urlencode($this->timerangeto),
+                    $this->orgId,
+                    $this->panelId,
+                    $previewHtml
+                );
             }
             $return_html .= $html;
         }
         if ($this->debug && $this->permission->hasPermission('grafana/debug') && $report === false) {
             $usedUrl = "";
-            if ($this->accessMode == "proxy" || $this->accessMode == "indirectproxy" ) {
+            if ($this->accessMode == "indirectproxy" ) {
                 $usedUrl = $this->pngUrl;
             } else {
                 $usedUrl = preg_replace('/.*?src\s*=\s*[\'\"](.*?)[\'\"].*/', "$1", $previewHtml);
