@@ -58,18 +58,15 @@ class GraphForm extends ConfigForm
             )
         );
 
-        if($this->grafanaVersion == "1")
-        {
-            $this->addElement(
-                'text',
-                'dashboarduid',
-                array(
-                    'label' => $this->translate('Dashboard UID'),
-                    'description' => $this->translate('UID of the dashboard.'),
-                    'required' => true,
-                )
-            );
-        }
+        $this->addElement(
+            'text',
+            'dashboarduid',
+            array(
+                'label' => $this->translate('Dashboard UID'),
+                'description' => $this->translate('UID of the dashboard.'),
+                'required' => true,
+            )
+        );
 
         $this->addElement(
             'text',
@@ -196,13 +193,9 @@ class GraphForm extends ConfigForm
             'height'      => $this->getElement('height')->getValue(),
             'width'       => $this->getElement('width')->getValue(),
             'repeatable'  => $this->getElement('repeatable')->getValue(),
-            'nmetrics'    => $this->getElement('nmetrics')->getValue()
+            'nmetrics'    => $this->getElement('nmetrics')->getValue(),
+            'dashboarduid' => $this->getElement('dashboarduid')->getValue()
         );
-        if($this->grafanaVersion == "1")
-        {
-            $values['dashboarduid'] = $this->getElement('dashboarduid')->getValue();
-        }
-
 
 	    if (empty($values['timerange']))
 	    {
@@ -343,11 +336,4 @@ class GraphForm extends ConfigForm
         }
         return $this;
     }
-
-    public function setGrafanaVersion ($version = "0")
-    {
-        $this->grafanaVersion = $version;
-        return $this;
-    }
-
 }
