@@ -1,0 +1,5 @@
+contrib/rpm/BUILD
+contrib/rpm/BUILDROOT
+contrib/rpm/RPMS
+contrib/rpm/SOURCES
+contrib/rpm/SRPMS
