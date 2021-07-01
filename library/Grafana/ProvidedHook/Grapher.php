@@ -165,16 +165,34 @@ class Grapher extends GrapherHook
 
         $this->graphConfig = Config::module('grafana', 'graphs');
 
-        if ($this->graphConfig->hasSection(strtok($serviceName,
-                ' ')) && ($this->graphConfig->hasSection($serviceName) == false)) {
-            $serviceName = strtok($serviceName, ' ');
-        }
-        if ($this->graphConfig->hasSection(strtok($serviceName,
-                ' ')) == false && ($this->graphConfig->hasSection($serviceName) == false)) {
-            $serviceName = $serviceCommand;
-            if ($this->graphConfig->hasSection($serviceCommand) == false && $this->defaultDashboard == 'none') {
-                return null;
+        $selectedSectionName = null;
+        foreach ($this->graphConfig->keys() as $sectionName) {
+            $serviceFilter = $this->getGraphConfigOption($sectionName, 'serviceFilter');
+            $commandFilter = $this->getGraphConfigOption($sectionName, 'commandFilter');
+            if ($serviceFilter == null && $commandFilter == null) {
+                continue;
             }
+            if (($serviceFilter == null || preg_match('/' . $serviceFilter . '/', $serviceName)) &&
+                ($commandFilter == null || preg_match('/' . $commandFilter . '/', $serviceCommand))) {
+                $selectedSectionName = $sectionName;
+                break;
+            }
+        }
+
+        if ($selectedSectionName == null) {
+            if ($this->graphConfig->hasSection(strtok($serviceName,
+            ' ')) && ($this->graphConfig->hasSection($serviceName) == false)) {
+                $serviceName = strtok($serviceName, ' ');
+            }
+            if ($this->graphConfig->hasSection(strtok($serviceName,
+                    ' ')) == false && ($this->graphConfig->hasSection($serviceName) == false)) {
+                $serviceName = $serviceCommand;
+                if ($this->graphConfig->hasSection($serviceCommand) == false && $this->defaultDashboard == 'none') {
+                    return null;
+                }
+            }
+        } else {
+            $serviceName = $selectedSectionName;
         }
 
         $this->dashboard = $this->getGraphConfigOption($serviceName, 'dashboard', $this->defaultDashboard);
