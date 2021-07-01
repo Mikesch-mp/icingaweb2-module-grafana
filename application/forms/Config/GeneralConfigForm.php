@@ -45,12 +45,12 @@ class GeneralConfigForm extends ConfigForm
              )
         );
 
-        if (isset($formData['grafana_protocol']) && $formData['grafana_protocol'] === 'https' ) {
+        if (isset($formData['grafana_protocol']) && $formData['grafana_protocol'] === 'https') {
             $this->addElement(
                 'checkbox',
                 'grafana_ssl_verifypeer',
                 array(
-                    'value'=> false,
+                    'value' => false,
                     'label' => $this->translate('SSL verify peer'),
                     'description' => $this->translate('Verify the peer\'s SSL certificate.'),
                 )
@@ -60,7 +60,7 @@ class GeneralConfigForm extends ConfigForm
                 'checkbox',
                 'grafana_ssl_verifyhost',
                 array(
-                    'value'=> false,
+                    'value' => false,
                     'label' => $this->translate('SSL verify host'),
                     'description' => $this->translate('Verify the certificate\'s name against host.'),
                 )
@@ -90,7 +90,9 @@ class GeneralConfigForm extends ConfigForm
             'grafana_custvardisable',
             array(
                 'label' => $this->translate('Disable customvar'),
-                'description' => $this->translate('Name of the custom variable that, if set to true, will disable the graph.'),
+                'description' => $this->translate(
+                    'Name of the custom variable that, if set to true, will disable the graph.'
+                ),
             )
         );
         $this->addElement(
@@ -98,7 +100,9 @@ class GeneralConfigForm extends ConfigForm
             'grafana_custvarconfig',
             array(
                 'label' => $this->translate('Config customvar'),
-                'description' => $this->translate('Name of the custom variable that, if set, hold the config name to be used.'),
+                'description' => $this->translate(
+                    'Name of the custom variable that, if set, hold the config name to be used.'
+                ),
             )
         );
         $this->addElement(
@@ -142,7 +146,7 @@ class GeneralConfigForm extends ConfigForm
             'checkbox',
             'grafana_shadows',
             array(
-                'value'=> false,
+                'value' => false,
                 'label' => $this->translate('Show shadows'),
                 'description' => $this->translate('Show shadows around the graph.'),
             )
@@ -212,7 +216,7 @@ class GeneralConfigForm extends ConfigForm
                     'class' => 'autosubmit'
                 )
             );
-            if (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'basic' ) {
+            if (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'basic') {
                     $this->addElement(
                         'text',
                         'grafana_username',
@@ -232,7 +236,7 @@ class GeneralConfigForm extends ConfigForm
                             'required' => true
                         )
                     );
-            } elseif (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'token' ) {
+            } elseif (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'token') {
                 $this->addElement(
                     'text',
                     'grafana_apitoken',
@@ -295,7 +299,11 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_enableLink']) && ( $formData['grafana_enableLink'] === 'yes') && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (
+            isset($formData['grafana_enableLink'])
+            && ( $formData['grafana_enableLink'] === 'yes')
+            && ( $formData['grafana_accessmode'] != 'iframe' )
+        ) {
             $this->addElement(
                 'select',
                 'grafana_usepublic',
@@ -311,7 +319,11 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_usepublic']) && ( $formData['grafana_usepublic'] === 'yes' ) && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (
+            isset($formData['grafana_usepublic'])
+            && ( $formData['grafana_usepublic'] === 'yes' )
+            && ( $formData['grafana_accessmode'] != 'iframe' )
+        ) {
             $this->addElement(
                 'text',
                 'grafana_publichost',
@@ -339,7 +351,7 @@ class GeneralConfigForm extends ConfigForm
             'checkbox',
             'grafana_debug',
             array(
-                'value'=> false,
+                'value' => false,
                 'label' => $this->translate('Show debug'),
                 'description' => $this->translate('Show debuging information.'),
             )

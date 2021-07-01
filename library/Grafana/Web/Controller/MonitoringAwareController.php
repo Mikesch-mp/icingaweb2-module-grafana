@@ -1,7 +1,10 @@
 <?php
+
 namespace Icinga\Module\Grafana\Web\Controller;
+
 use Icinga\Module\Monitoring\Controller;
 use Icinga\Module\Monitoring\DataView\DataView;
+
 abstract class MonitoringAwareController extends Controller
 {
     /**

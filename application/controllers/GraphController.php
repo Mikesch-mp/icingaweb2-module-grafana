@@ -2,7 +2,6 @@
 
 namespace Icinga\Module\Grafana\Controllers;
 
-
 use Icinga\Exception\NotFoundError;
 use Icinga\Forms\ConfirmRemovalForm;
 use Icinga\Module\Grafana\Forms\Graph\GraphForm;
@@ -13,8 +12,8 @@ class GraphController extends Controller
 {
     public function init()
     {
-	$this->assertPermission('grafana/graphconfig');
-	}
+        $this->assertPermission('grafana/graphconfig');
+    }
 
     /**
      * List Grafana graphs
@@ -109,4 +108,3 @@ class GraphController extends Controller
         $this->view->form = $graphs;
     }
 }
-

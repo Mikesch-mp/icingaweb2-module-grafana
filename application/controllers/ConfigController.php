@@ -2,7 +2,6 @@
 
 namespace Icinga\Module\Grafana\Controllers;
 
-
 use Icinga\Web\Controller;
 use Icinga\Module\Grafana\Forms\Config\GeneralConfigForm;
 
@@ -23,4 +22,3 @@ class ConfigController extends Controller
         $this->view->tabs = $this->Module()->getConfigTabs()->activate('config');
     }
 }
-

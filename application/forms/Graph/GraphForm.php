@@ -1,6 +1,7 @@
 <?php
 
 namespace Icinga\Module\Grafana\Forms\Graph;
+
 //namespace Icinga\Module\Grafana\Forms\Config;
 
 use Icinga\Module\Grafana\Forms\Config\GeneralConfigForm;
@@ -29,7 +30,7 @@ class GraphForm extends ConfigForm
      */
     public function init()
     {
-       $this->setName('form_config_grafana_graph');
+        $this->setName('form_config_grafana_graph');
     }
 
     /**
@@ -41,7 +42,9 @@ class GraphForm extends ConfigForm
             'text',
             'name',
             array(
-                'description'   => $this->translate('The name of the service or check_command which should use a premade dashboard'),
+                'description'   => $this->translate(
+                    'The name of the service or check_command which should use a premade dashboard'
+                ),
                 'label'         => $this->translate('Name'),
                 'required'      => true
             )
@@ -74,7 +77,9 @@ class GraphForm extends ConfigForm
             array(
                 'placeholder'   => 'example 1 or 1,4,10 ...',
                 'label'         => $this->translate('PanelId(s)'),
-                'description'   => $this->translate('Single panelId or comma seperated list of panelIds that will be used to show the graph(s).'),
+                'description'   => $this->translate(
+                    'Single panelId or comma seperated list of panelIds that will be used to show the graph(s).'
+                ),
                 'required'      => true
             )
         );
@@ -151,7 +156,7 @@ class GraphForm extends ConfigForm
                 'required'      => false
             )
         );
-}
+    }
 
     /**
      * {@inheritdoc}
@@ -197,11 +202,10 @@ class GraphForm extends ConfigForm
             'dashboarduid' => $this->getElement('dashboarduid')->getValue()
         );
 
-	    if (empty($values['timerange']))
-	    {
+        if (empty($values['timerange'])) {
             $values['timerange'] = null;
         }
-	    if (empty($values['customVars'])) {
+        if (empty($values['customVars'])) {
             $values['customVars'] = null;
         }
         if (empty($values['height'])) {

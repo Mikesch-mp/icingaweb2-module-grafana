@@ -14,7 +14,6 @@ use Icinga\Web\Url;
 use Icinga\Module\Grafana\Helpers\Util;
 use Icinga\Module\Grafana\Helpers\Timeranges;
 
-
 class Grapher extends GrapherHook
 {
     protected $config;
@@ -165,12 +164,20 @@ class Grapher extends GrapherHook
 
         $this->graphConfig = Config::module('grafana', 'graphs');
 
-        if ($this->graphConfig->hasSection(strtok($serviceName,
-                ' ')) && ($this->graphConfig->hasSection($serviceName) == false)) {
+        if (
+            $this->graphConfig->hasSection(strtok(
+                $serviceName,
+                ' '
+            )) && ($this->graphConfig->hasSection($serviceName) == false)
+        ) {
             $serviceName = strtok($serviceName, ' ');
         }
-        if ($this->graphConfig->hasSection(strtok($serviceName,
-                ' ')) == false && ($this->graphConfig->hasSection($serviceName) == false)) {
+        if (
+            $this->graphConfig->hasSection(strtok(
+                $serviceName,
+                ' '
+            )) == false && ($this->graphConfig->hasSection($serviceName) == false)
+        ) {
             $serviceName = $serviceCommand;
             if ($this->graphConfig->hasSection($serviceCommand) == false && $this->defaultDashboard == 'none') {
                 return null;
@@ -183,7 +190,7 @@ class Grapher extends GrapherHook
         $this->orgId = $this->getGraphConfigOption($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $this->getGraphConfigOption($serviceName, 'customVars', '');
 
-        if(Url::fromRequest()->hasParam('tr-from') && Url::fromRequest()->hasParam('tr-to')) {
+        if (Url::fromRequest()->hasParam('tr-from') && Url::fromRequest()->hasParam('tr-to')) {
             $this->timerange = urldecode(Url::fromRequest()->getParam('tr-from'));
             $this->timerangeto = urldecode(Url::fromRequest()->getParam('tr-to'));
         } else {
@@ -243,10 +250,13 @@ class Grapher extends GrapherHook
                 $serviceName,
                 $this->width,
                 $this->height
-
             );
         } elseif ($this->accessMode == "iframe") {
-            $iframehtml = '<iframe src="%s://%s/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
+            $iframehtml = '<iframe '
+                . 'src="%s://%s/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&'
+                . 'panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" '
+                . 'alt="%s" height="%d" frameBorder="0" '
+                . 'style="width: 100%%;"></iframe>';
             $previewHtml = sprintf(
                 $iframehtml,
                 $this->protocol,
@@ -282,7 +292,13 @@ class Grapher extends GrapherHook
     {
         $this->object = $object;
         // enable_perfdata = true ?  || disablevar == true
-        if (!$this->object->process_perfdata || (( isset($this->object->customvars[$this->custvardisable]) && json_decode(strtolower($this->object->customvars[$this->custvardisable])) !== false)) ) {
+        if (
+            !$this->object->process_perfdata
+            || (
+                isset($this->object->customvars[$this->custvardisable])
+                && json_decode(strtolower($this->object->customvars[$this->custvardisable])) !== false
+            )
+        ) {
             return '';
         }
 
@@ -308,8 +324,12 @@ class Grapher extends GrapherHook
         // Preserve timerange if set
         $parameters['timerange'] = $this->timerange;
 
-        if (array_key_exists($this->custvarconfig,
-                $this->object->customvars) && !empty($this->object->customvars[$this->custvarconfig])) {
+        if (
+            array_key_exists(
+                $this->custvarconfig,
+                $this->object->customvars
+            ) && !empty($this->object->customvars[$this->custvarconfig])
+        ) {
             $graphConfiguation = $this->getGraphConf($object->customvars[$this->custvarconfig]);
         } else {
             $graphConfiguation = $this->getGraphConf($serviceName, $object->check_command);
@@ -319,8 +339,10 @@ class Grapher extends GrapherHook
         }
 
         if ($this->repeatable == "yes") {
-            $this->panelId = implode(',', range($this->panelId,
-                ($this->panelId - 1) + intval(substr_count($object->perfdata, '=') / $this->numberMetrics)));
+            $this->panelId = implode(',', range(
+                $this->panelId,
+                ($this->panelId - 1) + intval(substr_count($object->perfdata, '=') / $this->numberMetrics)
+            ));
         }
 
         // replace special chars for graphite
@@ -365,7 +387,6 @@ class Grapher extends GrapherHook
         }
 
         foreach (explode(',', $this->panelId) as $panelid) {
-
             $html = "";
             $this->panelId = $panelid;
 
@@ -377,8 +398,8 @@ class Grapher extends GrapherHook
             if (!$res || $this->enableLink == "no" || !$this->permission->hasPermission('grafana/enablelink')) {
                 $html .= $previewHtml;
             } else {
-
-                $html .= '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&viewPanel=%s" target="_blank">%s</a>';
+                $html .= '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s'
+                    . '&orgId=%s&viewPanel=%s" target="_blank">%s</a>';
 
                 $html = sprintf(
                     $html,
@@ -386,8 +407,12 @@ class Grapher extends GrapherHook
                     $this->publicHost,
                     $this->dashboarduid,
                     $this->dashboard,
-                    rawurlencode(($this->dataSource == "graphite" ? Util::graphiteReplace($hostName) : $hostName)),
-                    rawurlencode(($this->dataSource == "graphite" ? Util::graphiteReplace($serviceName) : $serviceName)),
+                    rawurlencode(
+                        ($this->dataSource == "graphite" ? Util::graphiteReplace($hostName) : $hostName)
+                    ),
+                    rawurlencode(
+                        ($this->dataSource == "graphite" ? Util::graphiteReplace($serviceName) : $serviceName)
+                    ),
                     rawurlencode($this->object->check_command),
                     $this->customVars,
                     urlencode($this->timerange),
@@ -401,7 +426,7 @@ class Grapher extends GrapherHook
         }
         if ($this->debug && $this->permission->hasPermission('grafana/debug') && $report === false) {
             $usedUrl = "";
-            if ($this->accessMode == "indirectproxy" ) {
+            if ($this->accessMode == "indirectproxy") {
                 $usedUrl = $this->pngUrl;
             } else {
                 $usedUrl = preg_replace('/.*?src\s*=\s*[\'\"](.*?)[\'\"].*/', "$1", $previewHtml);
@@ -434,7 +459,8 @@ class Grapher extends GrapherHook
             $return_html .= "<tr><th>Disable graph custom variable</th><td>" . $this->custvardisable . "</td>";
             $return_html .= "<tr><th>Graph config custom variable</th><td>" . $this->custvarconfig . "</td>";
             if (isset($object->customvars[$this->custvarconfig])) {
-                $return_html .= "<tr><th>" . $this->custvarconfig . "</th><td>" . $object->customvars[$this->custvarconfig] . "</td>";
+                $return_html .= "<tr><th>" . $this->custvarconfig . "</th>"
+                    . "<td>" . $object->customvars[$this->custvarconfig] . "</td>";
             }
             $return_html .= "<tr><th>Shadows</th><td>" . (($this->shadows) ? 'Yes' : 'No') . "</td>";
             if ($this->accessMode == "proxy") {
@@ -442,8 +468,8 @@ class Grapher extends GrapherHook
                 $return_html .= "<tr><th>SSL Verify Host</th><td>" . (($this->SSLVerifyHost) ? 'Yes' : 'No') . "</td>";
             }
             $return_html .= " </tbody></table>";
-
         }
-        return '<div class="icinga-module module-grafana" style="display: inline-block;">' . $this->title . $menu . $return_html . '</div>';
+        return '<div class="icinga-module module-grafana" style="display: inline-block;">'
+            . $this->title . $menu . $return_html . '</div>';
     }
 }
