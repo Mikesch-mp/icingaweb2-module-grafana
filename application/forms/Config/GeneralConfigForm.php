@@ -90,7 +90,9 @@ class GeneralConfigForm extends ConfigForm
             'grafana_custvardisable',
             array(
                 'label' => $this->translate('Disable customvar'),
-                'description' => $this->translate('Name of the custom variable that, if set to true, will disable the graph.'),
+                'description' => $this->translate(
+                    'Name of the custom variable that, if set to true, will disable the graph.'
+                ),
             )
         );
         $this->addElement(
@@ -98,7 +100,9 @@ class GeneralConfigForm extends ConfigForm
             'grafana_custvarconfig',
             array(
                 'label' => $this->translate('Config customvar'),
-                'description' => $this->translate('Name of the custom variable that, if set, hold the config name to be used.'),
+                'description' => $this->translate(
+                    'Name of the custom variable that, if set, hold the config name to be used.'
+                ),
             )
         );
         $this->addElement(
@@ -295,7 +299,11 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_enableLink']) && ( $formData['grafana_enableLink'] === 'yes') && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (
+            isset($formData['grafana_enableLink'])
+            && ( $formData['grafana_enableLink'] === 'yes')
+            && ( $formData['grafana_accessmode'] != 'iframe' )
+        ) {
             $this->addElement(
                 'select',
                 'grafana_usepublic',
@@ -311,7 +319,11 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_usepublic']) && ( $formData['grafana_usepublic'] === 'yes' ) && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (
+            isset($formData['grafana_usepublic'])
+            && ( $formData['grafana_usepublic'] === 'yes' )
+            && ( $formData['grafana_accessmode'] != 'iframe' )
+        ) {
             $this->addElement(
                 'text',
                 'grafana_publichost',

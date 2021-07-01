@@ -42,7 +42,9 @@ class GraphForm extends ConfigForm
             'text',
             'name',
             array(
-                'description'   => $this->translate('The name of the service or check_command which should use a premade dashboard'),
+                'description'   => $this->translate(
+                    'The name of the service or check_command which should use a premade dashboard'
+                ),
                 'label'         => $this->translate('Name'),
                 'required'      => true
             )
@@ -75,7 +77,9 @@ class GraphForm extends ConfigForm
             array(
                 'placeholder'   => 'example 1 or 1,4,10 ...',
                 'label'         => $this->translate('PanelId(s)'),
-                'description'   => $this->translate('Single panelId or comma seperated list of panelIds that will be used to show the graph(s).'),
+                'description'   => $this->translate(
+                    'Single panelId or comma seperated list of panelIds that will be used to show the graph(s).'
+                ),
                 'required'      => true
             )
         );

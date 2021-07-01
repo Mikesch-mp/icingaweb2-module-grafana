@@ -17,7 +17,7 @@ class Timeranges
     private $link;
     private $view;
 
-    static $timeRanges = array(
+    private static $timeRanges = array(
         'Minutes' => array(
             '5m' => '5 minutes',
             '15m' => '15 minutes',

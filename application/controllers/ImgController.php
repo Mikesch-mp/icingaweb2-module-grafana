@@ -81,7 +81,10 @@ class ImgController extends MonitoringAwareController
                 'Usage of Grafana 5 is configured but no UID for default dashboard found!'
             );
         }
-        $this->defaultDashboardPanelId = $this->myConfig->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
+        $this->defaultDashboardPanelId = $this->myConfig->get(
+            'defaultdashboardpanelid',
+            $this->defaultDashboardPanelId
+        );
         $this->defaultOrgId = $this->myConfig->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->myConfig->get('theme', $this->grafanaTheme);
         $this->defaultDashboardStore = $this->myConfig->get('defaultdashboardstore', $this->defaultDashboardStore);
@@ -155,7 +158,10 @@ class ImgController extends MonitoringAwareController
             $hostName = $this->object->getName();
         }
 
-        if (array_key_exists($this->custvarconfig, $this->object->customvars) && ! empty($this->object->customvars[$this->custvarconfig])) {
+        if (
+            array_key_exists($this->custvarconfig, $this->object->customvars)
+            && ! empty($this->object->customvars[$this->custvarconfig])
+        ) {
             $this->setGraphConf($this->object->customvars[$this->custvarconfig]);
         } else {
             $this->setGraphConf($serviceName, $this->object->check_command);
@@ -263,7 +269,10 @@ class ImgController extends MonitoringAwareController
         if ($graphConfig->hasSection(strtok($serviceName, ' ')) && ($graphConfig->hasSection($serviceName) == false)) {
             $serviceName = strtok($serviceName, ' ');
         }
-        if ($graphConfig->hasSection(strtok($serviceName, ' ')) == false && ($graphConfig->hasSection($serviceName) == false)) {
+        if (
+            $graphConfig->hasSection(strtok($serviceName, ' ')) == false
+            && ($graphConfig->hasSection($serviceName) == false)
+        ) {
             $serviceName = $serviceCommand;
             if ($graphConfig->hasSection($serviceCommand) == false && $this->defaultDashboard == 'none') {
                 return null;
@@ -272,7 +281,11 @@ class ImgController extends MonitoringAwareController
 
         $this->dashboard = $graphConfig->get($serviceName, 'dashboard', $this->defaultDashboard);
         $this->dashboarduid = $graphConfig->get($serviceName, 'dashboarduid', $this->defaultdashboarduid);
-        $this->panelId = $this->hasParam('panelid') ? $this->getParam('panelid') : $graphConfig->get($serviceName, 'panelId', $this->defaultDashboardPanelId);
+        $this->panelId = $this->hasParam('panelid') ? $this->getParam('panelid') : $graphConfig->get(
+            $serviceName,
+            'panelId',
+            $this->defaultDashboardPanelId
+        );
         $this->orgId = $graphConfig->get($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $graphConfig->get($serviceName, 'customVars', '');
         $this->height = $graphConfig->get($serviceName, 'height', $this->height);
@@ -283,11 +296,14 @@ class ImgController extends MonitoringAwareController
         $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
         // Test whether curl is loaded
         if (extension_loaded('curl') === false) {
-            $imageHtml = $this->translate('CURL extension is missing. Please install CURL for PHP and ensure it is loaded.');
+            $imageHtml = $this->translate(
+                'CURL extension is missing. Please install CURL for PHP and ensure it is loaded.'
+            );
             return false;
         }
         $this->pngUrl = sprintf(
-            '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
+            '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s'
+            . '&width=%s&height=%s&theme=%s&from=%s&to=%s',
             $this->protocol,
             $this->grafanaHost,
             $this->dashboarduid,
@@ -318,7 +334,10 @@ class ImgController extends MonitoringAwareController
         );
 
         if ($this->authentication == "token") {
-            $curl_opts[CURLOPT_HTTPHEADER] = array('Content-Type: application/json' , "Authorization: Bearer " . $this->apiToken);
+            $curl_opts[CURLOPT_HTTPHEADER] = array(
+                'Content-Type: application/json' ,
+                "Authorization: Bearer " . $this->apiToken
+            );
         } else {
             $curl_opts[CURLOPT_USERPWD] = "$this->myAuth";
         }
@@ -340,8 +359,11 @@ class ImgController extends MonitoringAwareController
 
         if ($statusCode > 299) {
             $error = @json_decode($res);
-            $imageHtml .= $this->translate('Cannot fetch Grafana graph') . ": " . Util::httpStatusCodeToString($statusCode) .
-                " " . $statusCode . ": " . ($error !== null && property_exists($error, 'message') ? $error->message : "");
+            $imageHtml .= $this->translate('Cannot fetch Grafana graph')
+                . ": " . Util::httpStatusCodeToString($statusCode)
+                . " " . $statusCode . ": " . (
+                    $error !== null && property_exists($error, 'message') ? $error->message : ""
+                );
             return false;
         }
 

@@ -77,7 +77,13 @@ class ShowController extends MonitoringAwareController
         /* first host object for host graph */
         $this->object = $this->getHostObject($this->host);
         $customvars = $this->object->fetchCustomvars()->customvars;
-        if ($this->object->process_perfdata || !(isset($customvars[$this->custvardisable]) && json_decode(strtolower($customvars[$this->custvardisable])) !== false)) {
+        if (
+            $this->object->process_perfdata
+            || !(
+                isset($customvars[$this->custvardisable])
+                && json_decode(strtolower($customvars[$this->custvardisable])) !== false
+            )
+        ) {
             $objects[] = $this->object;
         }
         /* Get all services for this host */
@@ -89,7 +95,13 @@ class ShowController extends MonitoringAwareController
         foreach ($query->where('host_name', $this->host) as $service) {
             $this->object = $this->getServiceObject($service->service_description, $this->host);
             $customvars = $this->object->fetchCustomvars()->customvars;
-            if ($this->object->process_perfdata && !(isset($customvars[$this->custvardisable]) && json_decode(strtolower($customvars[$this->custvardisable])) !== false)) {
+            if (
+                $this->object->process_perfdata
+                && !(
+                    isset($customvars[$this->custvardisable])
+                    && json_decode(strtolower($customvars[$this->custvardisable])) !== false
+                )
+            ) {
                 $objects[] = $this->object;
             }
         }
