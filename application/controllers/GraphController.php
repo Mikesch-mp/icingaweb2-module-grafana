@@ -13,8 +13,8 @@ class GraphController extends Controller
 {
     public function init()
     {
-	$this->assertPermission('grafana/graphconfig');
-	}
+        $this->assertPermission('grafana/graphconfig');
+    }
 
     /**
      * List Grafana graphs

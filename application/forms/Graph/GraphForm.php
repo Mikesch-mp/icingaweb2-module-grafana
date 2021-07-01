@@ -197,11 +197,11 @@ class GraphForm extends ConfigForm
             'dashboarduid' => $this->getElement('dashboarduid')->getValue()
         );
 
-	    if (empty($values['timerange']))
-	    {
+        if (empty($values['timerange']))
+        {
             $values['timerange'] = null;
         }
-	    if (empty($values['customVars'])) {
+        if (empty($values['customVars'])) {
             $values['customVars'] = null;
         }
         if (empty($values['height'])) {
