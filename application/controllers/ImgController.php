@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: carst
@@ -14,7 +15,6 @@ use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Application\Config;
 use Icinga\Exception\ConfigurationError;
 use Icinga\Module\Grafana\Helpers\Util;
-
 
 class ImgController extends MonitoringAwareController
 {
@@ -51,14 +51,13 @@ class ImgController extends MonitoringAwareController
     {
 
         /* we need at least a host name */
-        if (is_null($this->getParam('host')))
-        {
+        if (is_null($this->getParam('host'))) {
             throw new \Error('No host given!');
         }
 
         /* save timerange from params for later use */
         $this->timerange = $this->hasParam('timerange') ? urldecode($this->getParam('timerange')) : null;
-        if($this->hasParam('timerangeto')) {
+        if ($this->hasParam('timerangeto')) {
             $this->timerangeto = urldecode($this->getParam('timerangeto'));
         } else {
             $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : "now";
@@ -76,7 +75,7 @@ class ImgController extends MonitoringAwareController
         $this->protocol = $this->myConfig->get('protocol', $this->protocol);
 
         $this->defaultDashboard = $this->myConfig->get('defaultdashboard', $this->defaultDashboard);
-        $this->defaultdashboarduid = $this->myConfig->get('defaultdashboarduid', NULL);
+        $this->defaultdashboarduid = $this->myConfig->get('defaultdashboarduid', null);
         if (is_null($this->defaultdashboarduid)) {
             throw new ConfigurationError(
                 'Usage of Grafana 5 is configured but no UID for default dashboard found!'
@@ -93,7 +92,7 @@ class ImgController extends MonitoringAwareController
         /**
          * Read the global default timerange
          */
-        if($this->timerange == null) {
+        if ($this->timerange == null) {
             $this->timerange = $this->config->get('timerange', $this->timerange);
         }
         /**
@@ -140,13 +139,11 @@ class ImgController extends MonitoringAwareController
                 $this->myAuth = "";
             }
         }
-
     }
 
     public function indexAction()
     {
-        if ($this->hasParam('service') && ! is_null($this->getParam('service')))
-        {
+        if ($this->hasParam('service') && ! is_null($this->getParam('service'))) {
             $service = $this->getServiceObject();
             $this->object = $service;
             $serviceName = $this->object->service_description;
@@ -196,25 +193,24 @@ class ImgController extends MonitoringAwareController
         $imageHtml = "";
         $res = $this->getMyimageHtml($serviceName, $hostName, $imageHtml);
         header('Pragma: public');
-        if($this->refresh == "yes") {
+        if ($this->refresh == "yes") {
             header('Pragma: public');
-            header("Expires: ".gmdate("D, d M Y H:i:s", time() + $this->cacheTime)." GMT");
-            header('Cache-Control: max-age='.$this->cacheTime).', public';
+            header("Expires: " . gmdate("D, d M Y H:i:s", time() + $this->cacheTime) . " GMT");
+            header('Cache-Control: max-age=' . $this->cacheTime) . ', public';
         } else {
-            header("Expires: ".gmdate("D, d M Y H:i:s", time() + 365*86440)." GMT");
-            header('Cache-Control: max-age='. (365*86440));
+            header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365 * 86440) . " GMT");
+            header('Cache-Control: max-age=' . (365 * 86440));
         }
         header("Content-type: image/png");
-        if (! $res)
-        {
+        if (! $res) {
             // set expire to now and max age to 1 minute
-            header("Expires: ".gmdate("D, d M Y H:i:s", time())." GMT");
-            header('Cache-Control: max-age='. 120);
-            $string = wordwrap($this->translate('Error'). ': ' . $imageHtml,40,"\n");
+            header("Expires: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
+            header('Cache-Control: max-age=' . 120);
+            $string = wordwrap($this->translate('Error') . ': ' . $imageHtml, 40, "\n");
             $lines = explode("\n", $string);
-            $im = @imagecreate ($this->width, $this->height);
-            $background_color = imagecolorallocate ($im, 255, 255, 255); //white background
-            $text_color = imagecolorallocate ($im, 255, 0,0);//black text
+            $im = @imagecreate($this->width, $this->height);
+            $background_color = imagecolorallocate($im, 255, 255, 255); //white background
+            $text_color = imagecolorallocate($im, 255, 0, 0);//black text
             foreach ($lines as $i => $line) {
                 imagestring($im, 5, 0, 5 + $i * 15, $line, $text_color);
             }
@@ -260,17 +256,17 @@ class ImgController extends MonitoringAwareController
         return $myService;
     }
 
-    private function setGraphConf($serviceName, $serviceCommand = NULL)
+    private function setGraphConf($serviceName, $serviceCommand = null)
     {
         $graphConfig = Config::module('grafana', 'graphs');
 
-        if ($graphConfig->hasSection(strtok($serviceName, ' ')) && ($graphConfig->hasSection($serviceName) == False)) {
+        if ($graphConfig->hasSection(strtok($serviceName, ' ')) && ($graphConfig->hasSection($serviceName) == false)) {
             $serviceName = strtok($serviceName, ' ');
         }
-        if ($graphConfig->hasSection(strtok($serviceName, ' ')) == False && ($graphConfig->hasSection($serviceName) == False)) {
+        if ($graphConfig->hasSection(strtok($serviceName, ' ')) == false && ($graphConfig->hasSection($serviceName) == false)) {
             $serviceName = $serviceCommand;
-            if($graphConfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
-                return NULL;
+            if ($graphConfig->hasSection($serviceCommand) == false && $this->defaultDashboard == 'none') {
+                return null;
             }
         }
 
@@ -281,7 +277,6 @@ class ImgController extends MonitoringAwareController
         $this->customVars = $graphConfig->get($serviceName, 'customVars', '');
         $this->height = $graphConfig->get($serviceName, 'height', $this->height);
         $this->width = $graphConfig->get($serviceName, 'width', $this->width);
-
     }
     private function getMyimageHtml($serviceName, $hostName, &$imageHtml)
     {
@@ -323,7 +318,7 @@ class ImgController extends MonitoringAwareController
         );
 
         if ($this->authentication == "token") {
-            $curl_opts[CURLOPT_HTTPHEADER] = array('Content-Type: application/json' , "Authorization: Bearer ". $this->apiToken);
+            $curl_opts[CURLOPT_HTTPHEADER] = array('Content-Type: application/json' , "Authorization: Bearer " . $this->apiToken);
         } else {
             $curl_opts[CURLOPT_USERPWD] = "$this->myAuth";
         }
@@ -334,7 +329,7 @@ class ImgController extends MonitoringAwareController
         $statusCode = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
 
         if ($res === false) {
-            $imageHtml .=$this->translate('Cannot fetch graph with curl') .': '. curl_error($curl_handle). '.';
+            $imageHtml .= $this->translate('Cannot fetch graph with curl') . ': ' . curl_error($curl_handle) . '.';
 
             //provide a hint for 'Failed to connect to ...: Permission denied'
             if (curl_errno($curl_handle) == 7) {
@@ -345,8 +340,8 @@ class ImgController extends MonitoringAwareController
 
         if ($statusCode > 299) {
             $error = @json_decode($res);
-            $imageHtml .= $this->translate('Cannot fetch Grafana graph'). ": " . Util::httpStatusCodeToString($statusCode) .
-                " ". $statusCode .": " . ($error !== null && property_exists($error, 'message') ? $error->message : "");
+            $imageHtml .= $this->translate('Cannot fetch Grafana graph') . ": " . Util::httpStatusCodeToString($statusCode) .
+                " " . $statusCode . ": " . ($error !== null && property_exists($error, 'message') ? $error->message : "");
             return false;
         }
 

@@ -45,12 +45,12 @@ class GeneralConfigForm extends ConfigForm
              )
         );
 
-        if (isset($formData['grafana_protocol']) && $formData['grafana_protocol'] === 'https' ) {
+        if (isset($formData['grafana_protocol']) && $formData['grafana_protocol'] === 'https') {
             $this->addElement(
                 'checkbox',
                 'grafana_ssl_verifypeer',
                 array(
-                    'value'=> false,
+                    'value' => false,
                     'label' => $this->translate('SSL verify peer'),
                     'description' => $this->translate('Verify the peer\'s SSL certificate.'),
                 )
@@ -60,7 +60,7 @@ class GeneralConfigForm extends ConfigForm
                 'checkbox',
                 'grafana_ssl_verifyhost',
                 array(
-                    'value'=> false,
+                    'value' => false,
                     'label' => $this->translate('SSL verify host'),
                     'description' => $this->translate('Verify the certificate\'s name against host.'),
                 )
@@ -142,7 +142,7 @@ class GeneralConfigForm extends ConfigForm
             'checkbox',
             'grafana_shadows',
             array(
-                'value'=> false,
+                'value' => false,
                 'label' => $this->translate('Show shadows'),
                 'description' => $this->translate('Show shadows around the graph.'),
             )
@@ -212,7 +212,7 @@ class GeneralConfigForm extends ConfigForm
                     'class' => 'autosubmit'
                 )
             );
-            if (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'basic' ) {
+            if (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'basic') {
                     $this->addElement(
                         'text',
                         'grafana_username',
@@ -232,7 +232,7 @@ class GeneralConfigForm extends ConfigForm
                             'required' => true
                         )
                     );
-            } elseif (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'token' ) {
+            } elseif (isset($formData['grafana_authentication']) && $formData['grafana_authentication'] === 'token') {
                 $this->addElement(
                     'text',
                     'grafana_apitoken',
@@ -339,7 +339,7 @@ class GeneralConfigForm extends ConfigForm
             'checkbox',
             'grafana_debug',
             array(
-                'value'=> false,
+                'value' => false,
                 'label' => $this->translate('Show debug'),
                 'description' => $this->translate('Show debuging information.'),
             )

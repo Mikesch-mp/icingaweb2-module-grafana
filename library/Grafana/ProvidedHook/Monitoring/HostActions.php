@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: carst
  * Date: 21.05.2017
  * Time: 09:13
  */
+
 namespace Icinga\Module\Grafana\ProvidedHook\Monitoring;
 
 use Icinga\Authentication\Auth;
@@ -14,8 +16,6 @@ use Icinga\Web\Navigation\Navigation;
 use Icinga\Web\Navigation\NavigationItem;
 use Icinga\Web\Url;
 use Icinga\Application\Config;
-
-
 
 class HostActions extends HostActionsHook
 {

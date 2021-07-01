@@ -1,6 +1,7 @@
 <?php
 
 namespace Icinga\Module\Grafana\Forms\Graph;
+
 //namespace Icinga\Module\Grafana\Forms\Config;
 
 use Icinga\Module\Grafana\Forms\Config\GeneralConfigForm;
@@ -29,7 +30,7 @@ class GraphForm extends ConfigForm
      */
     public function init()
     {
-       $this->setName('form_config_grafana_graph');
+        $this->setName('form_config_grafana_graph');
     }
 
     /**
@@ -151,7 +152,7 @@ class GraphForm extends ConfigForm
                 'required'      => false
             )
         );
-}
+    }
 
     /**
      * {@inheritdoc}
@@ -197,8 +198,7 @@ class GraphForm extends ConfigForm
             'dashboarduid' => $this->getElement('dashboarduid')->getValue()
         );
 
-        if (empty($values['timerange']))
-        {
+        if (empty($values['timerange'])) {
             $values['timerange'] = null;
         }
         if (empty($values['customVars'])) {

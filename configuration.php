@@ -1,6 +1,7 @@
 <?php
 
 use Icinga\Authentication\Auth;
+
 $auth = Auth::getInstance();
 
 $this->providePermission('grafana/graphconfig', $this->translate('Allow to configure graphs.'));
@@ -15,14 +16,13 @@ $this->provideConfigTab('config', array(
     'url' => 'config'
 ));
 
-if ($auth->hasPermission('grafana/graphconfig'))
-{
-   $this->menuSection(N_('Configuration'))->add('Grafana Graphs')->setUrl('grafana/graph')->setPriority(900);
-   $this->provideConfigTab('graph', array(
+if ($auth->hasPermission('grafana/graphconfig')) {
+    $this->menuSection(N_('Configuration'))->add('Grafana Graphs')->setUrl('grafana/graph')->setPriority(900);
+    $this->provideConfigTab('graph', array(
        'title' => 'Graphs',
        'label' => 'Graphs',
        'url' => 'graph'
-   ));
+    ));
 }
 
 $this->provideJsFile('behavior/iframe.js');
