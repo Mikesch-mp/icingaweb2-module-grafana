@@ -36,14 +36,14 @@ LICENSE file included in the source package.
 
 ## Support
 
-Join the [Icinga community channels](https://www.icinga.com/community/get-involved/) for questions.
+Join the [Icinga community channels](https://icinga.com/community/) for questions.
 
 ## Requirements
 
-* [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.4.1)
-* [Grafana](https://grafana.com/) (>= 4.1) **For Grafana 5, dashboard names need to be unique!**
-* [InfluxDB](https://docs.influxdata.com/influxdb/), [Graphite](https://graphiteapp.org) or [PNP](https://docs.pnp4nagios.org/) (untested) as backend for Grafana
-* [PHP](https://www.php.net) **with curl enabled** (for proxy mode)
+* [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.8.2)
+* [Grafana](https://grafana.com/) (>= 7.0)
+* [InfluxDB](https://docs.influxdata.com/influxdb/) (>= 1.0) [Graphite](https://graphiteapp.org) as backend for Grafana
+* [PHP 7](https://www.php.net) **with curl enabled** (for proxy mode)
 
 ## Documentation
 
