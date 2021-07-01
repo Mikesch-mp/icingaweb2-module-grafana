@@ -20,6 +20,8 @@
         <thead>
             <tr>
                 <th><?= $this->translate('Name') ?></th>
+                <th><?= $this->translate('Service filter') ?></th>
+                <th><?= $this->translate('Command filter') ?></th>
                 <th><?= $this->translate('Dashboard') ?></th>
                 <th><?= $this->translate('Dashboard UID') ?></th>
                 <th><?= $this->translate('PanelID') ?></th>
@@ -43,6 +45,8 @@
                         array('title' => sprintf($this->translate('Update Grafana graph %s'), $name))
                     ) ?>
                 </td>
+                <td><?= $this->escape($graph->serviceFilter) ?></td>
+                <td><?= $this->escape($graph->commandFilter) ?></td>
                 <td><?= $this->escape($graph->dashboard) ?></td>
                 <td><?= $this->escape($graph->dashboarduid) ?></td>
                 <td><?= $this->escape($graph->panelId) ?></td>

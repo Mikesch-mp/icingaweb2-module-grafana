@@ -49,6 +49,31 @@ class GraphForm extends ConfigForm
 
         $this->addElement(
             'text',
+            'serviceFilter',
+            array(
+                'description'   => $this->translate(
+                    'Use the dashboard if the filter matches the service name.  (String or RegEx) '
+                    . '(Examples: "disk.*" or "disk /var/(log|lib).*")'
+                ),
+                'label'         => $this->translate('Service filter'),
+                'required'      => false
+            )
+        );
+
+        $this->addElement(
+            'text',
+            'commandFilter',
+            array(
+                'description'   => $this->translate(
+                    'Use the dashboard if the filter matches the check_command. (String or RegEx)'
+                ),
+                'label'         => $this->translate('Command filter'),
+                'required'      => false
+            )
+        );
+
+        $this->addElement(
+            'text',
             'dashboard',
             array(
                 'placeholder'   => 'DashboardName',
@@ -185,6 +210,8 @@ class GraphForm extends ConfigForm
     {
         $name = $this->getElement('name')->getValue();
         $values = array(
+            'serviceFilter' => $this->getElement('serviceFilter')->getValue(),
+            'commandFilter' => $this->getElement('commandFilter')->getValue(),
             'dashboard'   => $this->getElement('dashboard')->getValue(),
             'panelId'     => $this->getElement('panelId')->getValue(),
             'orgId'     => $this->getElement('orgId')->getValue(),
@@ -197,6 +224,12 @@ class GraphForm extends ConfigForm
             'dashboarduid' => $this->getElement('dashboarduid')->getValue()
         );
 
+        if (empty($values['serviceFilter'])) {
+            $values['serviceFilter'] = null;
+        }
+        if (empty($values['commandFilter'])) {
+            $values['commandFilter'] = null;
+        }
 	    if (empty($values['timerange']))
 	    {
             $values['timerange'] = null;
