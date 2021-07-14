@@ -134,6 +134,6 @@ class Timeranges
 
     public static function getTimeranges()
     {
-        return call_user_func_array('array_merge', self::$timeRanges);
+        return call_user_func_array('array_merge', array_values(self::$timeRanges));
     }
 }
