@@ -348,7 +348,7 @@ class Grapher extends GrapherHook
                 if ($this->dataSource == "graphite") {
                     $arr[1] = Util::graphiteReplace($arr[1]);
                 }
-                $customVars .= '&' . $arr[0] . '=' . rawurlencode($arr[1]);
+                $customVars .= '&' . $arr[0] . '=' . rawurlencode(implode('=',array_slice($arr, 1)));
             }
             $this->customVars = $customVars;
         }
