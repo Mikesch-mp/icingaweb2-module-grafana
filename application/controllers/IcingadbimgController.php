@@ -8,18 +8,19 @@
 
 namespace Icinga\Module\Grafana\Controllers;
 
-use Icinga\Application\Modules\Module;
-use Icinga\Module\Grafana\ProvidedHook\Icingadb\IcingadbSupport;
-use Icinga\Module\Grafana\Web\Controller\MonitoringAwareController;
-use Icinga\Module\Monitoring\Object\Service;
-use Icinga\Module\Monitoring\Object\Host;
+use Icinga\Exception\NotFoundError;
+use Icinga\Module\Grafana\Web\Controller\IcingadbGrafanaController;
 use Icinga\Application\Config;
 use Icinga\Exception\ConfigurationError;
 use Icinga\Module\Grafana\Helpers\Util;
-use Icinga\Web\Url;
+use Icinga\Module\Icingadb\Model\CustomvarFlat;
+use Icinga\Module\Icingadb\Model\Host;
+use Icinga\Module\Icingadb\Model\Service;
+use ipl\Stdlib\Filter;
+use ipl\Web\Url;
 
 
-class ImgController extends MonitoringAwareController
+class IcingadbimgController extends IcingadbGrafanaController
 {
     protected $host;
     protected $service;
@@ -52,7 +53,9 @@ class ImgController extends MonitoringAwareController
 
     public function init()
     {
-
+        if (! $this->useIcingadbAsBackend) {
+            $this->redirectNow(Url::fromPath('grafana/dashboard')->setQueryString($this->params));
+        }
         /* we need at least a host name */
         if (is_null($this->getParam('host')))
         {
@@ -148,32 +151,40 @@ class ImgController extends MonitoringAwareController
 
     public function indexAction()
     {
-        if (Module::exists('icingadb') && IcingadbSupport::useIcingaDbAsBackend()) {
-            $this->redirectNow(Url::fromPath('grafana/icingadbimg')->setQueryString($this->params));
+        if (! $this->useIcingadbAsBackend) {
+            $this->redirectNow(Url::fromPath('grafana/img')->setQueryString($this->params));
         }
+        $varsFlat = CustomvarFlat::on($this->getDb());
 
+        $varsFlat
+            ->columns(['flatname', 'flatvalue'])
+            ->orderBy('flatname');
         if ($this->hasParam('service') && ! is_null($this->getParam('service')))
         {
             $service = $this->getServiceObject();
             $this->object = $service;
-            $serviceName = $this->object->service_description;
-            $hostName = $this->object->host_name;
+            $serviceName = $this->object->name;
+            $hostName = $this->object->host->name;
+            $varsFlat->filter(Filter::equal('host.id', $this->object->id));
+
         } else {
             $host = $this->getHostObject();
             $this->object = $host;
-            $serviceName = $this->object->check_command;
-            $hostName = $this->object->getName();
+            $serviceName = $this->object->checkcommand;
+            $hostName = $this->object->name;
+            $varsFlat->filter(Filter::equal('host.id', $this->object->id));
+
         }
 
-        if (array_key_exists($this->custvarconfig, $this->object->customvars) && ! empty($this->object->customvars[$this->custvarconfig])) {
+        $this->applyRestrictions($varsFlat);
+        $customVars = $this->getDb()->fetchPairs($varsFlat->assembleSelect());
+        if (array_key_exists($this->custvarconfig, $customVars) && ! empty($customVars[$this->custvarconfig])) {
             $this->setGraphConf($this->object->customvars[$this->custvarconfig]);
         } else {
-            $this->setGraphConf($serviceName, $this->object->check_command);
+            $this->setGraphConf($serviceName, $this->object->checkcommand);
         }
 
         if (!empty($this->customVars)) {
-            // replace template to customVars from Icinga2
-            $customVars = $this->object->fetchCustomvars()->customvars;
             foreach ($customVars as $k => $v) {
                 $search[] = "\$$k\$";
                 $replace[] = is_string($v) ? $v : null;
@@ -241,30 +252,34 @@ class ImgController extends MonitoringAwareController
 
     private function getHostObject()
     {
-        $myHost = new Host(
-            $this->backend,
-            urldecode($this->getParam('host'))
-        );
-        $this->applyRestriction('monitoring/filter/objects', $myHost);
-        if ($myHost->fetch() === false) {
-            $this->httpNotFound($this->translate('Host not found'));
+        $query = Host::on($this->getDb());
+        $query->filter(Filter::equal('name', urldecode($this->getParam('host'))));
+
+        $this->applyRestrictions($query);
+
+        $host = $query->first();
+        if ($host === null) {
+            throw new NotFoundError(t('Service not found'));
         }
 
-        return $myHost;
+        return $host;
     }
 
     private function getServiceObject()
     {
-        $myService = new Service(
-            $this->backend,
-            urldecode($this->getParam('host')),
-            rawurldecode($this->getParam('service'))
-        );
-        $this->applyRestriction('monitoring/filter/objects', $myService);
-        if ($myService->fetch() === false) {
-            $this->httpNotFound($this->translate('Service not found'));
+        $query = Service::on($this->getDb());
+        $query->filter(Filter::equal('name', $this->getParam('service')));
+        $query->filter(Filter::equal('host.name', $this->getParam('host')));
+
+        $this->applyRestrictions($query);
+
+        /** @var Service $service */
+        $service = $query->first();
+        if ($service === null) {
+            throw new NotFoundError(t('Service not found'));
         }
-        return $myService;
+
+        return $service;
     }
 
     private function setGraphConf($serviceName, $serviceCommand = NULL)
@@ -290,6 +305,7 @@ class ImgController extends MonitoringAwareController
         $this->width = $graphConfig->get($serviceName, 'width', $this->width);
 
     }
+
     private function getMyimageHtml($serviceName, $hostName, &$imageHtml)
     {
         $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
@@ -306,7 +322,7 @@ class ImgController extends MonitoringAwareController
             $this->dashboard,
             rawurlencode($hostName),
             rawurlencode($serviceName),
-            rawurlencode($this->object->check_command),
+            rawurlencode($this->object->checkcommand),
             $this->customVars,
             $this->panelId,
             $this->orgId,

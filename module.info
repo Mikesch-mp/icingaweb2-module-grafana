@@ -1,6 +1,7 @@
 Name: Grafana
 Version: 1.4.2
-Depends: monitoring
+Requires:
+  Modules: monitoring, icingadb (>= 1.0.0)
 Description: Grafana - A perfdata visualisation module
  Shows Grafana graphs for captured metrics.
 

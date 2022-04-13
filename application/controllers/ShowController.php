@@ -8,9 +8,12 @@
 
 namespace Icinga\Module\Grafana\Controllers;
 
+use Icinga\Application\Modules\Module;
+use Icinga\Module\Grafana\ProvidedHook\Icingadb\IcingadbSupport;
 use Icinga\Module\Grafana\Web\Controller\MonitoringAwareController;
 use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Module\Monitoring\Object\Host;
+use Icinga\Web\Url;
 use Icinga\Web\Widget\Tab;
 use Icinga\Web\Hook;
 use Icinga\Module\Grafana\Helpers\Timeranges;
@@ -40,6 +43,10 @@ class ShowController extends MonitoringAwareController
 
     public function indexAction()
     {
+        if (Module::exists('icingadb') && IcingadbSupport::useIcingaDbAsBackend()) {
+            $this->redirectNow(Url::fromPath('grafana/icingadbshow')->setQueryString($this->params));
+        }
+
         $this->disableAutoRefresh();
         $this->view->host = $this->host;
 
