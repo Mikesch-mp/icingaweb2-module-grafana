@@ -1,7 +1,7 @@
 # Change Log
 
-## [1.3.6](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/1.3.6) (2019-09-07)
-[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.5...1.3.6)
+## [v1.3.6](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v1.3.6) (2019-09-07)
+[Full Changelog](https://github.com/mikesch-mp/icingaweb2-module-grafana/compare/v1.3.5...v1.3.6)
 
 **Closed issues:**
 
