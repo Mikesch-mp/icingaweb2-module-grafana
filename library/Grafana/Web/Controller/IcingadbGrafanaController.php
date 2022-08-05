@@ -5,7 +5,7 @@
 namespace Icinga\Module\Grafana\Web\Controller;
 
 use Icinga\Application\Modules\Module;
-use Icinga\Module\Graphite\ProvidedHook\Icingadb\IcingadbSupport;
+use Icinga\Module\Grafana\ProvidedHook\Icingadb\IcingadbSupport;
 use Icinga\Module\Icingadb\Common\Auth;
 use Icinga\Module\Icingadb\Common\Database;
 use ipl\Web\Compat\CompatController;
