@@ -91,7 +91,7 @@ class IcingadbshowController extends IcingadbGrafanaController
             ->columns(['flatname', 'flatvalue'])
             ->orderBy('flatname');
         $varsFlat->filter(Filter::equal('host.id', $this->object->id));
-        $customVars = $this->getDb()->fetchAll($varsFlat->assembleSelect());
+        $customVars = $this->getDb()->fetchPairs($varsFlat->assembleSelect());
         if ($this->object->perfdata_enabled
             || !(isset($customVars[$this->custvardisable])
                 && json_decode(strtolower($customVars[$this->custvardisable])) !== false)
@@ -121,7 +121,7 @@ class IcingadbshowController extends IcingadbGrafanaController
                 ->columns(['flatname', 'flatvalue'])
                 ->orderBy('flatname');
             $varsFlat->filter(Filter::equal('service.id', $service->id));
-            $customVars = $this->getDb()->fetchAll($varsFlat->assembleSelect());
+            $customVars = $this->getDb()->fetchPairs($varsFlat->assembleSelect());
             if ($this->object->perfdata_enabled
                 && !(isset($customVars[$this->custvardisable])
                     && json_decode(strtolower($customVars[$this->custvardisable])) !== false)
