@@ -203,14 +203,15 @@ class ImgController extends MonitoringAwareController
         $imageHtml = "";
         $res = $this->getMyimageHtml($serviceName, $hostName, $imageHtml);
         header('Pragma: public');
+				/* makes trouble with IcingaDB or php8.1
         if($this->refresh == "yes") {
-            header('Pragma: public');
             header("Expires: ".gmdate("D, d M Y H:i:s", time() + $this->cacheTime)." GMT");
             header('Cache-Control: max-age='.$this->cacheTime).', public';
         } else {
             header("Expires: ".gmdate("D, d M Y H:i:s", time() + 365*86440)." GMT");
             header('Cache-Control: max-age='. (365*86440));
         }
+        */
         header("Content-type: image/png");
         if (! $res)
         {
