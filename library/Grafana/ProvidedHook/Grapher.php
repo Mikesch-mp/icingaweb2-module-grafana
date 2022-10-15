@@ -13,7 +13,7 @@ use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Web\Url;
 use Icinga\Module\Grafana\Helpers\Util;
 use Icinga\Module\Grafana\Helpers\Timeranges;
-
+use Icinga\Application\Modules\Module;
 
 class Grapher extends GrapherHook
 {
@@ -290,19 +290,34 @@ class Grapher extends GrapherHook
             $this->cacheTime = $this->object->host_next_check - $this->object->host_last_check;
             $serviceName = $this->object->check_command;
             $hostName = $this->object->host_name;
-            $parameters = array(
-                'host' => $this->object->host_name,
-            );
-            $link = 'monitoring/host/show';
+            if (Module::exists('icingadb')) {
+                $parameters = array(
+                    'name' => $this->object->host_name,
+                );
+                $link = 'icingadb/host';
+            } else {
+                $parameters = array(
+                    'host' => $this->object->host_name,
+                );
+                $link = 'monitoring/host/show';
+            }
         } elseif ($this->object instanceof Service) {
             $this->cacheTime = $this->object->service_next_check - $this->object->service_last_check;
             $serviceName = $this->object->service_description;
             $hostName = $this->object->host->getName();
-            $parameters = array(
-                'host' => $this->object->host->getName(),
-                'service' => $this->object->service_description,
-            );
-            $link = 'monitoring/service/show';
+            if (Module::exists('icingadb')) {
+                $parameters = array(
+                    'host.name' => $this->object->host->getName(),
+                    'name' => $this->object->service_description,
+                );
+                $link = 'icingadb/service';
+            } else {
+                $parameters = array(
+                    'host' => $this->object->host->getName(),
+                    'service' => $this->object->service_description,
+                );
+                $link = 'monitoring/service/show';
+            }
         }
 
         // Preserve timerange if set
