@@ -246,8 +246,8 @@ class Grapher extends GrapherHook
 
             );
         } elseif ($this->accessMode == "iframe") {
-            $iframehtml = '<iframe src="%s://%s/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s" alt="%s" height="%d" frameBorder="0" style="width: 100%%;"></iframe>';
-            $framehtml = sprintf(
+            $iframehtml = '<iframe src="%s://%s/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&theme=%s&from=%s&to=%s&refresh=5m" alt="%s" height="%d" frameBorder="0" style="width: 100%%"></iframe>';
+            $previewHtml = sprintf(
                 $iframehtml,
                 $this->protocol,
                 $this->grafanaHost,
@@ -265,30 +265,6 @@ class Grapher extends GrapherHook
                 rawurlencode($serviceName),
                 $this->height
             );
-
-            if ($this->enableLink == "no" || !$this->permission->hasPermission('grafana/enablelink')) {
-                $htmllink = "";
-            } else {
-                            $html = '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&viewPanel=%s" target="_blank">%s</a>';
-    
-                $htmllink = sprintf(
-                    $html,
-                    $this->protocol,
-                    $this->grafanaHost,
-                    $this->dashboarduid,
-                    $this->dashboard,
-                    rawurlencode(($this->dataSource == "graphite" ? Util::graphiteReplace($hostName) : $hostName)),
-                    rawurlencode(($this->dataSource == "graphite" ? Util::graphiteReplace($serviceName) : $serviceName)),
-                    rawurlencode($this->object->check_command),
-                    $this->customVars,
-                    urlencode($this->timerange),
-                    urlencode($this->timerangeto),
-                    $this->orgId,
-                    $this->panelId,
-                    "=> see in Grafana"
-                );
-            }               
-            $previewHtml = "<div>" . $htmllink . $framehtml . "</div>";
         }
         return true;
     }
@@ -401,8 +377,10 @@ class Grapher extends GrapherHook
             if (!$res || $this->enableLink == "no" || !$this->permission->hasPermission('grafana/enablelink')) {
                 $html .= $previewHtml;
             } else {
-
-                $html .= '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&viewPanel=%s" target="_blank">%s</a>';
+            	if ($this->accessMode == "iframe") {
+            		$previewHtml = " => see in Grafana</a>" . $previewHtml;
+            	}
+                $html .= '<a href="%s://%s/d/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&from=%s&to=%s&orgId=%s&viewPanel=%s" target="_blank" style="width: 100%%">%s';
 
                 $html = sprintf(
                     $html,
@@ -468,6 +446,6 @@ class Grapher extends GrapherHook
             $return_html .= " </tbody></table>";
 
         }
-        return '<div class="icinga-module module-grafana" style="display: inline-block;">' . $this->title . $menu . $return_html . '</div>';
+        return '<div class="icinga-module module-grafana" style="display: inline-block; width: 100%;">' . $this->title . $menu . $return_html . '</div>';
     }
 }
