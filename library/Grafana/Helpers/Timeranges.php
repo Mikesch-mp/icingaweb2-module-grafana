@@ -9,6 +9,8 @@
 namespace Icinga\Module\Grafana\Helpers;
 
 use Icinga\Application\Icinga;
+use Icinga\Application\Modules\Module;
+use Icinga\Module\Grafana\ProvidedHook\Icingadb\IcingadbSupport;
 
 
 class Timeranges
@@ -91,8 +93,13 @@ class Timeranges
 
     private function buildTimerangeMenu($timerange = "", $timerangeto = "")
     {
+        $url = 'grafana/dashboard?';
+        if (Module::exists('icingadb') && IcingadbSupport::useIcingaDbAsBackend()) {
+            $url = 'grafana/icingadbdashboard?';
+        }
+
         $clockIcon = $this->view->qlink('', 'dashboard/new-dashlet',
-            ['url' => 'grafana/dashboard?' . http_build_query($this->urlparams, '', '&', PHP_QUERY_RFC3986)],
+            ['url' => $url . http_build_query($this->urlparams, '', '&', PHP_QUERY_RFC3986)],
             ['icon' => 'clock', 'title' => 'Add graph to dashboard']);
 
         $menu = '<table class="grafana-table"><tr>';
