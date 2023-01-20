@@ -19,7 +19,6 @@ use Icinga\Module\Icingadb\Model\Service;
 use ipl\Stdlib\Filter;
 use ipl\Web\Url;
 
-
 class IcingadbimgController extends IcingadbGrafanaController
 {
     protected $host;
@@ -57,14 +56,13 @@ class IcingadbimgController extends IcingadbGrafanaController
             $this->redirectNow(Url::fromPath('grafana/dashboard')->setQueryString($this->params));
         }
         /* we need at least a host name */
-        if (is_null($this->getParam('host')))
-        {
+        if (is_null($this->getParam('host'))) {
             throw new \Error('No host given!');
         }
 
         /* save timerange from params for later use */
         $this->timerange = $this->hasParam('timerange') ? urldecode($this->getParam('timerange')) : null;
-        if($this->hasParam('timerangeto')) {
+        if ($this->hasParam('timerangeto')) {
             $this->timerangeto = urldecode($this->getParam('timerangeto'));
         } else {
             $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : "now";
@@ -82,13 +80,16 @@ class IcingadbimgController extends IcingadbGrafanaController
         $this->protocol = $this->myConfig->get('protocol', $this->protocol);
 
         $this->defaultDashboard = $this->myConfig->get('defaultdashboard', $this->defaultDashboard);
-        $this->defaultdashboarduid = $this->myConfig->get('defaultdashboarduid', NULL);
+        $this->defaultdashboarduid = $this->myConfig->get('defaultdashboarduid', null);
         if (is_null($this->defaultdashboarduid)) {
             throw new ConfigurationError(
                 'Usage of Grafana 5 is configured but no UID for default dashboard found!'
             );
         }
-        $this->defaultDashboardPanelId = $this->myConfig->get('defaultdashboardpanelid', $this->defaultDashboardPanelId);
+        $this->defaultDashboardPanelId = $this->myConfig->get(
+            'defaultdashboardpanelid',
+            $this->defaultDashboardPanelId
+        );
         $this->defaultOrgId = $this->myConfig->get('defaultorgid', $this->defaultOrgId);
         $this->grafanaTheme = $this->myConfig->get('theme', $this->grafanaTheme);
         $this->defaultDashboardStore = $this->myConfig->get('defaultdashboardstore', $this->defaultDashboardStore);
@@ -99,7 +100,7 @@ class IcingadbimgController extends IcingadbGrafanaController
         /**
          * Read the global default timerange
          */
-        if($this->timerange == null) {
+        if ($this->timerange == null) {
             $this->timerange = $this->config->get('timerange', $this->timerange);
         }
         /**
@@ -146,7 +147,6 @@ class IcingadbimgController extends IcingadbGrafanaController
                 $this->myAuth = "";
             }
         }
-
     }
 
     public function indexAction()
@@ -159,29 +159,25 @@ class IcingadbimgController extends IcingadbGrafanaController
         $varsFlat
             ->columns(['flatname', 'flatvalue'])
             ->orderBy('flatname');
-        if ($this->hasParam('service') && ! is_null($this->getParam('service')))
-        {
+        if ($this->hasParam('service') && ! is_null($this->getParam('service'))) {
             $service = $this->getServiceObject();
             $this->object = $service;
             $serviceName = $this->object->name;
             $hostName = $this->object->host->name;
-            $varsFlat->filter(Filter::equal('host.id', $this->object->id));
-
         } else {
             $host = $this->getHostObject();
             $this->object = $host;
-            $serviceName = $this->object->checkcommand;
+            $serviceName = $this->object->checkcommand_name;
             $hostName = $this->object->name;
-            $varsFlat->filter(Filter::equal('host.id', $this->object->id));
-
         }
+        $varsFlat->filter(Filter::equal('host.id', $this->object->id));
 
         $this->applyRestrictions($varsFlat);
         $customVars = $this->getDb()->fetchPairs($varsFlat->assembleSelect());
         if (array_key_exists($this->custvarconfig, $customVars) && ! empty($customVars[$this->custvarconfig])) {
             $this->setGraphConf($this->object->customvars[$this->custvarconfig]);
         } else {
-            $this->setGraphConf($serviceName, $this->object->checkcommand);
+            $this->setGraphConf($serviceName, $this->object->checkcommand_name);
         }
 
         if (!empty($this->customVars)) {
@@ -214,7 +210,7 @@ class IcingadbimgController extends IcingadbGrafanaController
         $imageHtml = "";
         $res = $this->getMyimageHtml($serviceName, $hostName, $imageHtml);
         header('Pragma: public');
-        if($this->refresh == "yes") {
+        if ($this->refresh == "yes") {
             header('Pragma: public');
             header("Expires: ".gmdate("D, d M Y H:i:s", time() + $this->cacheTime)." GMT");
             header('Cache-Control: max-age='.$this->cacheTime).', public';
@@ -223,16 +219,15 @@ class IcingadbimgController extends IcingadbGrafanaController
             header('Cache-Control: max-age='. (365*86440));
         }
         header("Content-type: image/png");
-        if (! $res)
-        {
+        if (! $res) {
             // set expire to now and max age to 1 minute
             header("Expires: ".gmdate("D, d M Y H:i:s", time())." GMT");
             header('Cache-Control: max-age='. 120);
-            $string = wordwrap($this->translate('Error'). ': ' . $imageHtml,40,"\n");
+            $string = wordwrap($this->translate('Error'). ': ' . $imageHtml, 40, "\n");
             $lines = explode("\n", $string);
-            $im = @imagecreate ($this->width, $this->height);
-            $background_color = imagecolorallocate ($im, 255, 255, 255); //white background
-            $text_color = imagecolorallocate ($im, 255, 0,0);//black text
+            $im = @imagecreate($this->width, $this->height);
+            $background_color = imagecolorallocate($im, 255, 255, 255); //white background
+            $text_color = imagecolorallocate($im, 255, 0, 0);//black text
             foreach ($lines as $i => $line) {
                 imagestring($im, 5, 0, 5 + $i * 15, $line, $text_color);
             }
@@ -252,7 +247,7 @@ class IcingadbimgController extends IcingadbGrafanaController
 
     private function getHostObject()
     {
-        $query = Host::on($this->getDb());
+        $query = Host::on($this->getDb())->with(['state', 'icon_image']);
         $query->filter(Filter::equal('name', urldecode($this->getParam('host'))));
 
         $this->applyRestrictions($query);
@@ -267,7 +262,12 @@ class IcingadbimgController extends IcingadbGrafanaController
 
     private function getServiceObject()
     {
-        $query = Service::on($this->getDb());
+        $query = Service::on($this->getDb())->with([
+            'state',
+            'icon_image',
+            'host',
+            'host.state'
+        ]);
         $query->filter(Filter::equal('name', $this->getParam('service')));
         $query->filter(Filter::equal('host.name', $this->getParam('host')));
 
@@ -282,28 +282,32 @@ class IcingadbimgController extends IcingadbGrafanaController
         return $service;
     }
 
-    private function setGraphConf($serviceName, $serviceCommand = NULL)
+    private function setGraphConf($serviceName, $serviceCommand = null)
     {
         $graphConfig = Config::module('grafana', 'graphs');
 
-        if ($graphConfig->hasSection(strtok($serviceName, ' ')) && ($graphConfig->hasSection($serviceName) == False)) {
+        if ($graphConfig->hasSection(strtok($serviceName, ' ')) && ($graphConfig->hasSection($serviceName) == false)) {
             $serviceName = strtok($serviceName, ' ');
         }
-        if ($graphConfig->hasSection(strtok($serviceName, ' ')) == False && ($graphConfig->hasSection($serviceName) == False)) {
+
+        if ($graphConfig->hasSection(strtok($serviceName, ' ')) == false
+            && ($graphConfig->hasSection($serviceName) == false)
+        ) {
             $serviceName = $serviceCommand;
-            if($graphConfig->hasSection($serviceCommand) == False && $this->defaultDashboard == 'none') {
-                return NULL;
+            if ($graphConfig->hasSection($serviceCommand) == false && $this->defaultDashboard == 'none') {
+                return null;
             }
         }
 
         $this->dashboard = $graphConfig->get($serviceName, 'dashboard', $this->defaultDashboard);
         $this->dashboarduid = $graphConfig->get($serviceName, 'dashboarduid', $this->defaultdashboarduid);
-        $this->panelId = $this->hasParam('panelid') ? $this->getParam('panelid') : $graphConfig->get($serviceName, 'panelId', $this->defaultDashboardPanelId);
+        $this->panelId = $this->hasParam('panelid') ?
+            $this->getParam('panelid')
+            : $graphConfig->get($serviceName, 'panelId', $this->defaultDashboardPanelId);
         $this->orgId = $graphConfig->get($serviceName, 'orgId', $this->defaultOrgId);
         $this->customVars = $graphConfig->get($serviceName, 'customVars', '');
         $this->height = $graphConfig->get($serviceName, 'height', $this->height);
         $this->width = $graphConfig->get($serviceName, 'width', $this->width);
-
     }
 
     private function getMyimageHtml($serviceName, $hostName, &$imageHtml)
@@ -311,18 +315,21 @@ class IcingadbimgController extends IcingadbGrafanaController
         $imgClass = $this->shadows ? "grafana-img grafana-img-shadows" : "grafana-img";
         // Test whether curl is loaded
         if (extension_loaded('curl') === false) {
-            $imageHtml = $this->translate('CURL extension is missing. Please install CURL for PHP and ensure it is loaded.');
+            $imageHtml = $this->translate('CURL extension is missing.'
+                . ' Please install CURL for PHP and ensure it is loaded.');
             return false;
         }
+
         $this->pngUrl = sprintf(
-            '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s&width=%s&height=%s&theme=%s&from=%s&to=%s',
+            '%s://%s/render/d-solo/%s/%s?var-hostname=%s&var-service=%s&var-command=%s%s&panelId=%s&orgId=%s'
+            . '&width=%s&height=%s&theme=%s&from=%s&to=%s',
             $this->protocol,
             $this->grafanaHost,
             $this->dashboarduid,
             $this->dashboard,
             rawurlencode($hostName),
             rawurlencode($serviceName),
-            rawurlencode($this->object->checkcommand),
+            rawurlencode($this->object->checkcommand_name),
             $this->customVars,
             $this->panelId,
             $this->orgId,
@@ -346,7 +353,10 @@ class IcingadbimgController extends IcingadbGrafanaController
         );
 
         if ($this->authentication == "token") {
-            $curl_opts[CURLOPT_HTTPHEADER] = array('Content-Type: application/json' , "Authorization: Bearer ". $this->apiToken);
+            $curl_opts[CURLOPT_HTTPHEADER] = [
+                'Content-Type: application/json',
+                "Authorization: Bearer ". $this->apiToken
+            ];
         } else {
             $curl_opts[CURLOPT_USERPWD] = "$this->myAuth";
         }
@@ -368,8 +378,13 @@ class IcingadbimgController extends IcingadbGrafanaController
 
         if ($statusCode > 299) {
             $error = @json_decode($res);
-            $imageHtml .= $this->translate('Cannot fetch Grafana graph'). ": " . Util::httpStatusCodeToString($statusCode) .
-                " ". $statusCode .": " . ($error !== null && property_exists($error, 'message') ? $error->message : "");
+            $imageHtml .= $this->translate('Cannot fetch Grafana graph')
+                . ": "
+                . Util::httpStatusCodeToString($statusCode)
+                . " "
+                . $statusCode
+                . ": "
+                . ($error !== null && property_exists($error, 'message') ? $error->message : "");
             return false;
         }
 

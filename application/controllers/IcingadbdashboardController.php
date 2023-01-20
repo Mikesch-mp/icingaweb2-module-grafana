@@ -38,7 +38,12 @@ class IcingadbdashboardController extends IcingadbGrafanaController
         $serviceName = $this->params->get('service');
 
         if ($serviceName != null) {
-            $query = Service::on($this->getDb());
+            $query = Service::on($this->getDb())->with([
+                'state',
+                'icon_image',
+                'host',
+                'host.state'
+            ]);
             $query->filter(
                 Filter::all(
                     Filter::equal('service.name', $serviceName),
@@ -46,7 +51,7 @@ class IcingadbdashboardController extends IcingadbGrafanaController
                 )
             );
         } else {
-            $query = Host::on($this->getDb());
+            $query = Host::on($this->getDb())->with(['state', 'icon_image']);
             $query->filter(Filter::equal('host.name', $hostName));
         }
 

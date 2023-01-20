@@ -97,12 +97,17 @@ class IcingadbshowController extends IcingadbGrafanaController
                 && json_decode(strtolower($customVars[$this->custvardisable])) !== false)
         ) {
             $object = (new HtmlDocument())
-                ->addHtml(HtmlElement::create('h2', null, $this->object->checkcommand));
+                ->addHtml(HtmlElement::create('h2', null, $this->object->checkcommand_name));
             $this->addContent($object);
             $this->addContent((new HostDetailExtension())->getPreviewHtml($this->object, true));
         }
         /* Get all services for this host */
-        $query = Service::on($this->getDb());
+        $query = Service::on($this->getDb())->with([
+            'state',
+            'icon_image',
+            'host',
+            'host.state'
+        ]);
         $query->filter(Filter::equal('host.name', $this->host));
 
         $this->applyRestrictions($query);
@@ -135,7 +140,7 @@ class IcingadbshowController extends IcingadbGrafanaController
 
     public function getHostObject($host)
     {
-        $query = Host::on($this->getDb());
+        $query = Host::on($this->getDb())->with(['state', 'icon_image']);
         $query->filter(Filter::equal('name', $host));
         $this->applyRestrictions($query);
         $host = $query->first();
