@@ -18,6 +18,7 @@ use ipl\Html\Html;
 use ipl\Html\HtmlDocument;
 use ipl\Html\HtmlElement;
 use ipl\Html\HtmlString;
+use ipl\Html\ValidHtml;
 use ipl\Orm\Model;
 use ipl\Stdlib\Filter;
 use ipl\Web\Url;
@@ -267,7 +268,8 @@ trait IcingaDbGrapher
                     'panelid' => $this->panelId,
                     'timerange' => urlencode($this->timerange),
                     'timerangeto' => urlencode($this->timerangeto),
-                    'cachetime' => $this->cacheTime]
+                    'cachetime' => $this->cacheTime
+                    ]
                 );
             } else {
                 $this->pngUrl = Url::frompath(
@@ -336,18 +338,20 @@ trait IcingaDbGrapher
     /**
      * @param Model $object
      * @param $report
-     * @return false|HtmlElement
+     * @return ValidHtml
      * @throws ConfigurationError
      * @throws \Icinga\Exception\ProgrammingError
      */
     public function getPreviewHtml(Model $object, $report = false)
     {
-        $this->cacheTime = $object->state->next_check - $object->state->last_update;
+        $this->object = $object;
+        $this->cacheTime = round($object->state->next_check - $object->state->last_update);
 
         if ($object instanceof Host) {
             $serviceName = $object->checkcommand_name;
             $hostName = $object->name;
             $link = Links::host($object);
+            $parameters = ['host' => $hostName];
         } elseif ($object instanceof Service) {
             $serviceName = $object->name;
             $hostName = $object->host->name;
@@ -379,7 +383,7 @@ trait IcingaDbGrapher
             $graphConfiguation = $this->getGraphConf($serviceName, $object->checkcommand_name);
         }
         if ($graphConfiguation === null) {
-            return false;
+            return HtmlString::create('');
         }
 
         if ($this->repeatable === "yes") {
