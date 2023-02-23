@@ -268,8 +268,8 @@ class IcingadbimgController extends IcingadbGrafanaController
             'host',
             'host.state'
         ]);
-        $query->filter(Filter::equal('name', $this->getParam('service')));
-        $query->filter(Filter::equal('host.name', $this->getParam('host')));
+        $query->filter(Filter::equal('name', urldecode($this->getParam('service'))));
+        $query->filter(Filter::equal('host.name', urldecode($this->getParam('host'))));
 
         $this->applyRestrictions($query);
 

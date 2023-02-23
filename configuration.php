@@ -1,6 +1,8 @@
 <?php
 
 use Icinga\Authentication\Auth;
+use Icinga\Module\Grafana\ProvidedHook\Icingadb\IcingadbSupport;
+
 $auth = Auth::getInstance();
 
 $this->providePermission('grafana/graphconfig', $this->translate('Allow to configure graphs.'));
@@ -17,7 +19,11 @@ $this->provideConfigTab('config', array(
 
 if ($auth->hasPermission('grafana/graphconfig'))
 {
-   $this->menuSection(N_('Configuration'))->add('Grafana Graphs')->setUrl('grafana/graph')->setPriority(900);
+   $section = $this->menuSection('Grafana Graphs')->setUrl('grafana/graph')->setPriority(999)->setIcon('chart-area');
+
+   $section->add(N_('Graphs Configuration'))->setUrl('grafana/graph')->setPriority(30);
+   $section->add(N_('Module Configuration'))->setUrl('grafana/config')->setPriority(40);
+
    $this->provideConfigTab('graph', array(
        'title' => 'Graphs',
        'label' => 'Graphs',

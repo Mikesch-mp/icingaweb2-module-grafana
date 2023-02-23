@@ -18,7 +18,7 @@ we will delete the old module directory first. Get the [latest version number](h
 into the `MODULE_VERSION` variable
 
 ```bash
-MODULE_VERSION="1.2.0"
+MODULE_VERSION="2.0.0"
 ICINGAWEB_MODULEPATH="/usr/share/icingaweb2/modules"
 REPO_URL="https://github.com/Mikesch-mp/icingaweb2-module-grafana"
 TARGET_DIR="${ICINGAWEB_MODULEPATH}/grafana"
@@ -38,7 +38,3 @@ and or changed configuration options. When done, just hit the `Save Changes` but
 
 Dont forget to check the dashboard directories for newer versions of existing ones 
 or new dashboards.
-
-## Grafana 5
-
-If you enable Grafana 5 support in general configurations. You have to add the UID to all your configured graphs or they will not work anymore!

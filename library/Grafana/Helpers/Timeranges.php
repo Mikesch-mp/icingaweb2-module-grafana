@@ -98,7 +98,7 @@ class Timeranges
             $url = 'grafana/icingadbdashboard?';
         }
 
-        $clockIcon = $this->view->qlink('', 'dashboard/new-dashlet',
+        $clockIcon = $this->view->qlink($timerange, 'dashboard/new-dashlet',
             ['url' => $url . http_build_query($this->urlparams, '', '&', PHP_QUERY_RFC3986)],
             ['icon' => 'clock', 'title' => 'Add graph to dashboard']);
 

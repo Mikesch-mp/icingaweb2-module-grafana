@@ -22,4 +22,4 @@ LICENSE file included in the source package.
 
 ## Support
 
-Join the [Icinga community channels](https://www.icinga.com/community/get-involved/) for questions.
+[Github Issues](https://github.com/Mikesch-mp/icingaweb2-module-grafana/issues)

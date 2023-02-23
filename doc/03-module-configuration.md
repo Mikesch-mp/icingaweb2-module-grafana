@@ -158,6 +158,7 @@ Contra: Images take some seconds to show up.
 In Iframe mode you have the full power of Grafana features like mouse over tooltip.
 Pro: All features from Grafana enabled. Fast page rendering.
 Contra: Less secure, page refresh from Icingaweb2 will be distracting! Needs `auth.anonymous` enabled in Grafana.
+Also you need `allow_embedding = true` enabled in your grafana.ini
 
 ### ssl_verifypeer
 Only for `proxy` & `ìndirectproxy` modes. Verify the peer's SSL certificate. Defaults to `false`.

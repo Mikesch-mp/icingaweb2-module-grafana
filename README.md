@@ -40,10 +40,10 @@ Join the [Icinga community channels](https://icinga.com/community/) for question
 
 ## Requirements
 
-* [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.8.2)
+* [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>= 2.11)
 * [Grafana](https://grafana.com/) (>= 7.0)
 * [InfluxDB](https://docs.influxdata.com/influxdb/) (>= 1.0) [Graphite](https://graphiteapp.org) as backend for Grafana
-* [PHP 7](https://www.php.net) **with curl enabled** (for proxy mode)
+* [PHP 8.1](https://www.php.net) **with curl and gd enabled**
 
 ## Documentation
 
@@ -60,7 +60,4 @@ whether it be sending patches, testing, reporting bugs, or reviewing and
 updating the documentation. Every contribution is appreciated!
 
 Please continue reading in the [contributing chapter](CONTRIBUTING.md).
-
-## Donations
-This module is and will always be free of charge. But if you feel the urge to make the developer happy, you can donate item(s) from his [Amazon wishlist](https://www.amazon.de/hz/wishlist/ls/1QS5BHOL5V7AE?&sort=default) :)
 

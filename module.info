@@ -1,9 +1,10 @@
 Name: Grafana
-Version: 1.4.3
+Version: 2.0.0b
 Requires:
-  Modules: monitoring (>=2.9.0), icingadb (>=1.0.0)
+  Libraries: icinga-php-library (>=0.10.1)
+  Modules: icingadb (>=1.0.0)
 Description: Grafana - A perfdata visualisation module
- Shows Grafana graphs for captured metrics.
+ Shows Grafana panels for captured metrics.
 
  This module requires:
 
@@ -11,7 +12,7 @@ Description: Grafana - A perfdata visualisation module
 
  * InfluxDB or Graphite as datasource backend.
 
- * PHP 7 with curl enabled (for proxy modes)
+ * PHP 8.1 with curl enabled (for proxy modes)
 
 
  Thanks for bug reporting/fixing or enhancements goes to:
@@ -45,3 +46,5 @@ Description: Grafana - A perfdata visualisation module
  Lasse W. & Ruben M.
 
  Bernhard F. & Garrett S.
+
+ raviks789 (IcingaDB support)

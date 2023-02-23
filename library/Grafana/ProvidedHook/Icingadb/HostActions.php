@@ -25,7 +25,7 @@ class HostActions extends HostActionsHook
         return [
             new Link(
                 t('Show all graphs'),
-                Url::fromPath('grafana/show', ['host' => $host->name, 'timerange' => $timerange]),
+                Url::fromPath('grafana/icingadbshow', ['host' => $host->name, 'timerange' => $timerange]),
                 ['target' => '_next', 'icon' => 'gauge']
             )
         ];
