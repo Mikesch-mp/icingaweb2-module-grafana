@@ -1,4 +1,4 @@
-# Grafana Module for IcingaDB Web
+# Grafana Module for Icinga Web 2
 
 #### Table of Contents
 
