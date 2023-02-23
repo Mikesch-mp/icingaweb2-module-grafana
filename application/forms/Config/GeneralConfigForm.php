@@ -261,7 +261,7 @@ class GeneralConfigForm extends ConfigForm
             );
         }
 
-        if (isset($formData['grafana_accessmode']) && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (isset($formData['grafana_accessmode'])) {
             $this->addElement(
                 'number',
                 'grafana_height',
@@ -271,15 +271,26 @@ class GeneralConfigForm extends ConfigForm
                     'description' => $this->translate('The default graph height in pixels.')
                 )
             );
-            $this->addElement(
-                'number',
-                'grafana_width',
-                array(
-                    'value' => '640',
-                    'label' => $this->translate('Graph width'),
-                    'description' => $this->translate('The default graph width in pixels.')
-                )
-            );
+            if ( $formData['grafana_accessmode'] != 'iframe' ) {
+	            $this->addElement(
+	                'number',
+	                'grafana_width',
+	                array(
+	                    'value' => '640',
+	                    'label' => $this->translate('Graph width'),
+	                    'description' => $this->translate('The default graph width in pixels.')
+	                )
+	            );
+            }
+        } 
+ 
+        if (isset($formData['grafana_accessmode'])) {
+            if ($formData['grafana_accessmode'] === 'indirectproxy') {
+                $desc = 'Image is a link to the dashboard on the Grafana server.';
+            }
+            else {
+                $desc = 'Above image is a link to the dashboard on the Grafana server.';
+            }
             $this->addElement(
                 'select',
                 'grafana_enableLink',
@@ -290,12 +301,12 @@ class GeneralConfigForm extends ConfigForm
                         'yes' => $this->translate('Yes'),
                         'no' => $this->translate('No'),
                     ),
-                    'description' => $this->translate('Image is an link to the dashboard on the Grafana server.'),
+                    'description' => $this->translate($desc),
                     'class' => 'autosubmit'
                 )
             );
         }
-        if (isset($formData['grafana_enableLink']) && ( $formData['grafana_enableLink'] === 'yes') && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (isset($formData['grafana_enableLink']) && ( $formData['grafana_enableLink'] === 'yes')) {
             $this->addElement(
                 'select',
                 'grafana_usepublic',
@@ -311,7 +322,7 @@ class GeneralConfigForm extends ConfigForm
                 )
             );
         }
-        if (isset($formData['grafana_usepublic']) && ( $formData['grafana_usepublic'] === 'yes' ) && ( $formData['grafana_accessmode'] != 'iframe' )) {
+        if (isset($formData['grafana_usepublic']) && ( $formData['grafana_usepublic'] === 'yes' )) {
             $this->addElement(
                 'text',
                 'grafana_publichost',
