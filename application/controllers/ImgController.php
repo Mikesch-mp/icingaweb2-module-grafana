@@ -8,12 +8,15 @@
 
 namespace Icinga\Module\Grafana\Controllers;
 
+use Icinga\Application\Modules\Module;
+use Icinga\Module\Grafana\ProvidedHook\Icingadb\IcingadbSupport;
 use Icinga\Module\Grafana\Web\Controller\MonitoringAwareController;
 use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Application\Config;
 use Icinga\Exception\ConfigurationError;
 use Icinga\Module\Grafana\Helpers\Util;
+use Icinga\Web\Url;
 
 
 class ImgController extends MonitoringAwareController
@@ -145,6 +148,10 @@ class ImgController extends MonitoringAwareController
 
     public function indexAction()
     {
+        if (Module::exists('icingadb') && IcingadbSupport::useIcingaDbAsBackend()) {
+            $this->redirectNow(Url::fromPath('grafana/icingadbimg')->setQueryString($this->params));
+        }
+
         if ($this->hasParam('service') && ! is_null($this->getParam('service')))
         {
             $service = $this->getServiceObject();
