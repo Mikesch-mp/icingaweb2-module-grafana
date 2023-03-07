@@ -48,9 +48,6 @@ class IcingadbshowController extends IcingadbGrafanaController
 
     public function indexAction()
     {
-        if (! $this->useIcingadbAsBackend) {
-            $this->redirectNow(Url::fromPath('grafana/show')->setQueryString($this->params));
-        }
         $this->disableAutoRefresh();
 
 				/*
@@ -82,7 +79,7 @@ class IcingadbshowController extends IcingadbGrafanaController
         }
 
         /* The timerange menu */
-        $menu = new Timeranges($parameters, 'grafana/show');
+        $menu = new Timeranges($parameters, 'grafana/icingadbshow');
         $this->addControl(new HtmlString($menu->getTimerangeMenu()));
 
         /* first host object for host graph */
@@ -95,7 +92,7 @@ class IcingadbshowController extends IcingadbGrafanaController
             ->orderBy('flatname');
         $varsFlat->filter(Filter::equal('host.id', $this->object->id));
         $customVars = $this->getDb()->fetchPairs($varsFlat->assembleSelect());
-        if ($this->object->perfdata_enabled
+        if ($this->object->perfdata_enabled == "y"
             || !(isset($customVars[$this->custvardisable])
                 && json_decode(strtolower($customVars[$this->custvardisable])) !== false)
         ) {
@@ -125,7 +122,7 @@ class IcingadbshowController extends IcingadbGrafanaController
                 ->orderBy('flatname');
             $varsFlat->filter(Filter::equal('service.id', $service->id));
             $customVars = $this->getDb()->fetchPairs($varsFlat->assembleSelect());
-            if ($this->object->perfdata_enabled
+            if ($this->object->perfdata_enabled == "y"
                 && !(isset($customVars[$this->custvardisable])
                     && json_decode(strtolower($customVars[$this->custvardisable])) !== false)
             ) {
