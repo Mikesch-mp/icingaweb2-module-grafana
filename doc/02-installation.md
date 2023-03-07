@@ -6,8 +6,8 @@ to the latest version, please [read on here](05-update.md).
 
 ## Requirements
 
-* [Icinga Web 2](https://www.icinga.com/products/icinga-web-2/) (>=
-  2.11)
+* [Icinga Web 2](https://github.com/Icinga/icingaweb2) (>= 2.11)
+* [Icinga DB Web](https://github.com/Icinga/icingadb-web) (>= 1.02)
 * [Grafana](https://grafana.com/) (>= 7.0)
 * [InfluxDB](https://docs.influxdata.com/influxdb/) (>= 1.0) [Graphite](https://graphiteapp.org) as backend for Grafana
 * [PHP 8.1](https://www.php.net) **with curl and gd enabled**
