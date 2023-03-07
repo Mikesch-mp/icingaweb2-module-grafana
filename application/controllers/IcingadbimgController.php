@@ -154,28 +154,33 @@ class IcingadbimgController extends IcingadbGrafanaController
         if (! $this->useIcingadbAsBackend) {
             $this->redirectNow(Url::fromPath('grafana/img')->setQueryString($this->params));
         }
+
         $varsFlat = CustomvarFlat::on($this->getDb());
+
+        $this->applyRestrictions($varsFlat);
 
         $varsFlat
             ->columns(['flatname', 'flatvalue'])
             ->orderBy('flatname');
+
         if ($this->hasParam('service') && ! is_null($this->getParam('service'))) {
             $service = $this->getServiceObject();
             $this->object = $service;
             $serviceName = $this->object->name;
             $hostName = $this->object->host->name;
+            $varsFlat->filter(Filter::equal('service.id', $this->object->id));
         } else {
             $host = $this->getHostObject();
             $this->object = $host;
             $serviceName = $this->object->checkcommand_name;
             $hostName = $this->object->name;
+            $varsFlat->filter(Filter::equal('host.id', $this->object->id));
         }
-        $varsFlat->filter(Filter::equal('host.id', $this->object->id));
 
-        $this->applyRestrictions($varsFlat);
         $customVars = $this->getDb()->fetchPairs($varsFlat->assembleSelect());
-        if (array_key_exists($this->custvarconfig, $customVars) && ! empty($customVars[$this->custvarconfig])) {
-            $this->setGraphConf($this->object->customvars[$this->custvarconfig]);
+
+        if (array_key_exists($this->custvarconfig, $customVars) && !empty($customVars[$this->custvarconfig])) {
+            $this->setGraphConf($customVars[$this->custvarconfig]);
         } else {
             $this->setGraphConf($serviceName, $this->object->checkcommand_name);
         }
