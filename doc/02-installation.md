@@ -124,7 +124,3 @@ Depending which metric backend (influxdb/graphite) you use, import the 2 provide
 
 #### icinga2-default dashboard
 ![Grafana import icinga2-default dashboard](images/grafana-import-icinga2-default-dashboard.png "Grafana import icinga2-default dashboard")
-
-#### base-metrics dashboard
-![Grafana import base-metric dashboard](images/grafana-import-base-metrics-dashboard.png "Grafana import base-metric dashboard")
-
