@@ -3,7 +3,6 @@
 namespace Icinga\Module\Grafana\Controllers;
 
 use Icinga\Application\Modules\Module;
-use Icinga\Module\Grafana\ProvidedHook\Grapher;
 use Icinga\Module\Grafana\ProvidedHook\Icingadb\IcingadbSupport;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Controller;
