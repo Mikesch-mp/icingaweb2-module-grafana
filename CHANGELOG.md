@@ -1,4 +1,7 @@
 # Change Log
+## [v2.0.3](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v2.0.3) (2023-04-06)
+**Fixes**
+- Seervices can now be added to dashlets again (#309)
 
 ## [v2.0.2](https://github.com/mikesch-mp/icingaweb2-module-grafana/tree/v2.0.2) (2023-04-06)
 **Fixes**

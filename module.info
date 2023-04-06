@@ -1,5 +1,5 @@
 Name: Grafana
-Version: 2.0.2
+Version: 2.0.3
 Requires:
   Libraries: icinga-php-library (>=0.10.1)
   Modules: icingadb (>=1.0.0)
