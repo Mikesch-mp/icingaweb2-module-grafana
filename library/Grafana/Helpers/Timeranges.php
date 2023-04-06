@@ -93,10 +93,7 @@ class Timeranges
 
     private function buildTimerangeMenu($timerange = "", $timerangeto = "")
     {
-        $url = 'grafana/dashboard?';
-        if (Module::exists('icingadb') && IcingadbSupport::useIcingaDbAsBackend()) {
-            $url = 'grafana/icingadbdashboard?';
-        }
+        $url = 'grafana/icingadbdashboard?';
 
         $clockIcon = $this->view->qlink($timerange, 'dashboard/new-dashlet',
             ['url' => $url . http_build_query($this->urlparams, '', '&', PHP_QUERY_RFC3986)],
