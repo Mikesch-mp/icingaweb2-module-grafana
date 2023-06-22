@@ -19,6 +19,7 @@ use Icinga\Module\Icingadb\Model\Service;
 use ipl\Stdlib\Filter;
 use ipl\Web\Url;
 
+#[\AllowDynamicProperties]
 class IcingadbimgController extends IcingadbGrafanaController
 {
     protected $host;
