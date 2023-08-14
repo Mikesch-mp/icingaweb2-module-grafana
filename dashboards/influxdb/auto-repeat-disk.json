@@ -12,14 +12,14 @@
       "name": "VAR_HOSTNAME",
       "type": "constant",
       "label": "hostname",
-      "value": "",
+      "value": "null",
       "description": ""
     },
     {
       "name": "VAR_SERVICE",
       "type": "constant",
       "label": "service",
-      "value": "",
+      "value": "null",
       "description": ""
     }
   ],
