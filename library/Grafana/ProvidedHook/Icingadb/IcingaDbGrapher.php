@@ -325,8 +325,9 @@ trait IcingaDbGrapher
                 [
                     "src" => $iFramesrc,
                     "alt" => rawurlencode($serviceName),
+                    "width" => "100%",
                     "height" => $this->height,
-                    "style" => "width: 100%; border: none;"
+                    "style" => "border: none;"
                 ]
             );
             $previewHtml->add($iframeHtml);
