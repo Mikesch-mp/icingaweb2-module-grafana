@@ -236,7 +236,7 @@ trait IcingaDbGrapher
             $this->timerange = Url::fromRequest()->hasParam('timerange') ?
                 'now-' . urldecode(Url::fromRequest()->getParam('timerange')) :
                 'now-' . $this->getGraphConfigOption($serviceName, 'timerange', $this->timerange);
-            $this->timerangeto = strpos($this->timerange, '/') ? $this->timerange : $this->timerangeto;
+            $this->timerangeto = strpos($this->timerange ?? '', '/') ? $this->timerange : $this->timerangeto;
         }
 
         $this->height = $this->getGraphConfigOption($serviceName, 'height', $this->height);
