@@ -34,7 +34,7 @@ trait IcingaDbGrapher
     protected $auth;
     protected $authentication;
     protected $grafanaHost = null;
-    protected $grafanaTheme = 'light';
+    protected $grafanaTheme = null;
     protected $protocol = "http";
     protected $usePublic = "no";
     protected $publicHost = null;
@@ -114,7 +114,7 @@ trait IcingaDbGrapher
             $this->defaultDashboardPanelId
         );
         $this->defaultOrgId = $this->config->get('defaultorgid', $this->defaultOrgId);
-        $this->grafanaTheme = $this->config->get('theme', $this->grafanaTheme);
+        $this->grafanaTheme = Auth::getInstance()->getUser()->getPreferences()->getValue('icingaweb', 'theme_mode', 'dark');
         $this->height = $this->config->get('height', $this->height);
         $this->width = $this->config->get('width', $this->width);
 
