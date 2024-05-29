@@ -149,19 +149,6 @@ class GeneralConfigForm extends ConfigForm
         );
         $this->addElement(
             'select',
-            'grafana_theme',
-            array(
-                'label' => $this->translate('Grafana theme'),
-                'value' => 'light',
-                'multiOptions' => array(
-                    'light' => $this->translate('Light'),
-                    'dark' => $this->translate('Dark'),
-                ),
-                'description' => $this->translate('Grafana theme that will be used.')
-            )
-        );
-        $this->addElement(
-            'select',
             'grafana_datasource',
             array(
                 'label' => $this->translate('Datasource Type'),
