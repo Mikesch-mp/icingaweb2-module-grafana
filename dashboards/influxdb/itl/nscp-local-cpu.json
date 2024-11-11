@@ -10,21 +10,21 @@
     },
     {
       "name": "VAR_HOSTNAME",
-      "type": "custom",
+      "type": "constant",
       "label": "hostname",
       "value": "null",
       "description": ""
     },
     {
       "name": "VAR_SERVICE",
-      "type": "custom",
+      "type": "constant",
       "label": "service",
       "value": "null",
       "description": ""
     },
     {
       "name": "VAR_COMMAND",
-      "type": "custom",
+      "type": "constant",
       "label": "command",
       "value": "null",
       "description": ""

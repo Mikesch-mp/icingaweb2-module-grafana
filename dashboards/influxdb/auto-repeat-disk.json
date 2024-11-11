@@ -10,14 +10,14 @@
     },
     {
       "name": "VAR_HOSTNAME",
-      "type": "custom",
+      "type": "constant",
       "label": "hostname",
       "value": "",
       "description": ""
     },
     {
       "name": "VAR_SERVICE",
-      "type": "custom",
+      "type": "constant",
       "label": "service",
       "value": "",
       "description": ""
