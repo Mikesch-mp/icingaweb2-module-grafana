@@ -354,7 +354,7 @@
           }
         ],
         "query": "${VAR_HOSTNAME}",
-        "type": "constant"
+        "type": "custom"
       },
       {
         "current": {
@@ -371,7 +371,7 @@
           }
         ],
         "query": "${VAR_SERVICE}",
-        "type": "constant"
+        "type": "custom"
       },
       {
         "current": {
@@ -388,7 +388,7 @@
           }
         ],
         "query": "${VAR_COMMAND}",
-        "type": "constant"
+        "type": "custom"
       }
     ]
   },
