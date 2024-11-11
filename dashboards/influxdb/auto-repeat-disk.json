@@ -10,14 +10,14 @@
     },
     {
       "name": "VAR_HOSTNAME",
-      "type": "constant",
+      "type": "custom",
       "label": "hostname",
       "value": "",
       "description": ""
     },
     {
       "name": "VAR_SERVICE",
-      "type": "constant",
+      "type": "custom",
       "label": "service",
       "value": "",
       "description": ""
@@ -220,7 +220,7 @@
           }
         ],
         "query": "${VAR_HOSTNAME}",
-        "type": "constant"
+        "type": "custom"
       },
       {
         "current": {
@@ -237,7 +237,7 @@
           }
         ],
         "query": "${VAR_SERVICE}",
-        "type": "constant"
+        "type": "custom"
       },
       {
         "allValue": null,
