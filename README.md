@@ -1,3 +1,21 @@
+# **Due to lack of time, i gave Netways GmbH the module for future development, please go to [Netways Grafana Module](https://github.com/NETWAYS/icingaweb2-module-grafana) from now on.** 
+# **Thanks for your support during the last years.**
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>  
+<br>
 # Grafana Module for Icinga Web 2
 
 #### Table of Contents
