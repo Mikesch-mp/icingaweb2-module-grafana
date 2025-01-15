@@ -222,7 +222,7 @@
           }
         ],
         "query": "${VAR_HOSTNAME}",
-        "type": "constant"
+        "type": "custom"
       }
     ]
   },
