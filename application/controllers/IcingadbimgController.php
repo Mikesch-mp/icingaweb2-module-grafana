@@ -66,7 +66,7 @@ class IcingadbimgController extends IcingadbGrafanaController
         if ($this->hasParam('timerangeto')) {
             $this->timerangeto = urldecode($this->getParam('timerangeto'));
         } else {
-            $this->timerangeto = strpos($this->timerange, '/') ? 'now-' . $this->timerange : "now";
+            $this->timerangeto = strpos($this->timerange ?? '', '/') ? 'now-' . $this->timerange ?? '' : "now";
         }
         $this->cacheTime = $this->hasParam('cachetime') ? $this->getParam('cachetime') : 300;
 
